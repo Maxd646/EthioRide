@@ -32,8 +32,7 @@ The system follows a **Three-Tier Architecture** to ensure modularity and scalab
 
 ## System Architecture
 
-![System Architecture](client-passenger/src/main/resources/ui/images/Natural Language Query Flow-2026-04-11-123637.png)
-
+![System Architecture](client-driver/src/main/resources/ui/images/Natural%20Language%20Query%20Flow-2026-04-11-123637.png)
 ---
 
 ## Folder Structure
