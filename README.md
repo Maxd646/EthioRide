@@ -243,5 +243,4 @@ Build & Run:
 # Start the Server
 java -cp bin com.ethioride.server.Main
 
-# Start Passenger Client
 java -cp bin com.ethioride.client.PassengerApp
