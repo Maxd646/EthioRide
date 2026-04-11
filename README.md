@@ -24,9 +24,191 @@ The system follows a Three-Tier Architecture to ensure modularity and scalabilit
 
 - Data Layer: A relational schema optimized for ride telemetry and role-based access control (RBAC).
 
-## System Workflow
+## System Architecture
+![System Architecture](<Natural Language Query Flow-2026-04-11-123637.png>)
 
-![System Workflow](image.png)
+## Folder Stucture 
+EthioRide/
+│
+├── pom.xml                        
+├── README.md
+├── .gitignore
+│
+├── docs/
+│   ├── architecture/
+│   ├── diagrams/
+│   ├── api-specs/
+│   └── workflow/
+│
+├── scripts/
+│   ├── start-server.sh
+│   ├── start-passenger.sh
+│   ├── start-driver.sh
+│   └── docker/
+│       ├── Dockerfile.server
+│       └── docker-compose.yml
+│
+├── data/                           
+│   ├── logs/
+│   ├── snapshots/
+│   └── exports/
+│
+├── shared/                         
+│   ├── pom.xml
+│   └── src/
+│       ├── main/
+│       │   ├── java/com/ethioride/shared/
+│       │   │   ├── dto/
+│       │   │   │   ├── RideRequestDTO.java
+│       │   │   │   ├── DriverDTO.java
+│       │   │   │   └── TripDTO.java
+│       │   │   │
+│       │   │   ├── enums/
+│       │   │   │   ├── UserRole.java
+│       │   │   │   ├── TripStatus.java
+│       │   │   │   └── DriverStatus.java
+│       │   │   │
+│       │   │   ├── protocol/
+│       │   │   │   ├── SocketMessage.java   
+│       │   │   │   ├── RequestType.java
+│       │   │   │   └── ResponseType.java
+│       │   │   │
+│       │   │   ├── utils/
+│       │   │   │   ├── GeoUtils.java        
+│       │   │   │   ├── SerializationUtils.java
+│       │   │   │   └── TimeUtils.java
+│       │   │   │
+│       │   │   ├── validation/              # 
+│       │   │   │   ├── PhoneValidator.java  # +251 / 09
+│       │   │   │   ├── CoordinateValidator.java
+│       │   │   │   └── InputSanitizer.java
+│       │   │   │
+│       │   │   ├── exceptions/
+│       │   │   │   ├── EthioRideException.java
+│       │   │   │   ├── DriverNotFoundException.java
+│       │   │   │   └── RideConflictException.java
+│       │   │   │
+│       │   │   └── constants/
+│       │   │       └── AppConstants.java
+│       │   │
+│       │   └── resources/                  
+│       │
+│       └── test/
+│
+├── server/
+│   ├── pom.xml
+│   └── src/
+│       ├── main/
+│       │   ├── java/com/ethioride/server/
+│       │   │   ├── Main.java
+│       │   │
+│       │   │   ├── config/
+│       │   │
+│       │   │   ├── network/
+│       │   │   │   ├── SocketServer.java
+│       │   │   │   ├── ClientHandler.java
+│       │   │   │   └── protocol/
+│       │   │
+│       │   │   ├── core/
+│       │   │   │   ├── matchmaking/
+│       │   │   │   │   ├── MatchingEngine.java
+│       │   │   │   │   └── LocationService.java
+│       │   │   │   │
+│       │   │   │   ├── session/
+│       │   │   │   │   └── SessionManager.java
+│       │   │   │   │
+│       │   │   │   ├── trip/
+│       │   │   │   │   ├── TripManager.java
+│       │   │   │   │   └── FareCalculator.java
+│       │   │   │   │
+│       │   │   │   └── transaction/
+│       │   │   │       └── TransactionCoordinator.java
+│       │   │
+│       │   │   ├── concurrency/
+│       │   │   │   ├── ThreadPoolManager.java
+│       │   │   │   ├── locks/
+│       │   │   │   │   └── DriverLockManager.java
+│       │   │   │   └── queues/
+│       │   │   │       └── RequestQueue.java
+│       │   │
+│       │   │   ├── persistence/
+│       │   │   │   ├── db/
+│       │   │   │   │   ├── DBConnection.java
+│       │   │   │   │   └── migrations/
+│       │   │   │   │       ├── V1__init.sql
+│       │   │   │   │       └── V2__add_ratings.sql
+│       │   │   │   │
+│       │   │   │   ├── entity/
+│       │   │   │   │   ├── User.java
+│       │   │   │   │   ├── Driver.java   
+│       │   │   │   │   └── Trip.java
+│       │   │   │   │
+│       │   │   │   └── repository/
+│       │   │   │       ├── UserRepository.java
+│       │   │   │       ├── DriverRepository.java
+│       │   │   │       └── TripRepository.java
+│       │   │
+│       │   │   ├── security/
+│       │   │   │   ├── auth/
+│       │   │   │   └── rbac/
+│       │   │
+│       │   │   ├── fault/
+│       │   │   │   ├── HeartbeatMonitor.java
+│       │   │   │   ├── GracefulShutdown.java
+│       │   │   │   ├── SnapshotManager.java
+│       │   │   │   └── RecoveryManager.java
+│       │   │
+│       │   │   └── logging/
+│       │   │       └── LoggerService.java
+│       │   │
+│       │   └── resources/             
+│       │       ├── application.properties
+│       │       ├── db.properties
+│       │       └── logging.properties
+│       │
+│       └── test/
+│
+├── client-passenger/
+│   ├── pom.xml
+│   └── src/
+│       ├── main/
+│       │   ├── java/com/ethioride/passenger/
+│       │   │   ├── Main.java
+│       │   │   ├── network/SocketClient.java
+│       │   │   ├── service/PassengerService.java
+│       │   │   └── state/PassengerSession.java
+│       │   │
+│       │   └── resources/              # 
+│       │       ├── ui/
+│       │       │   ├── views/          # .fxml
+│       │       │   ├── styles/         # .css
+│       │       │   └── images/
+│       │       └── i18n/               # localization
+│       │           ├── messages_en.properties
+│       │           └── messages_am.properties
+│       │
+│       └── test/
+│
+├── client-driver/
+│   ├── pom.xml
+│   └── src/
+│       ├── main/
+│       │   ├── java/com/ethioride/driver/
+│       │   │   ├── Main.java
+│       │   │   ├── network/
+│       │   │   ├── service/
+│       │   │   └── state/
+│       │   │
+│       │   └── resources/
+│       │       ├── ui/
+│       │       └── i18n/
+│       │
+│       └── test/
+│
+└── tests/                          # 🧪 System-level testing
+    ├── unit/
+    ├── integration/
+    └── stress/
 
 ## Technical Challenges & Solutions
 
