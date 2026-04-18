@@ -14,6 +14,7 @@
         <module>server</module>
         <module>client-passenger</module>
         <module>client-driver</module>
+        <module>admin-dashboard</module>
     </modules>
 
     <properties>

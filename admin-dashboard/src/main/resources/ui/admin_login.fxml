@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.ethioride.admin.controller.LoginController"
+           stylesheets="@../styles/dark-theme.css"
+           style="-fx-background-color:#0a0e1a;"
+           prefWidth="480" prefHeight="600">
+
+    <VBox alignment="CENTER" spacing="0" maxWidth="360" StackPane.alignment="CENTER">
+
+        <!-- Logo -->
+        <VBox alignment="CENTER" spacing="6">
+            <padding><Insets top="40" bottom="20"/></padding>
+            <Label text="EthioRide" styleClass="sidebar-logo" style="-fx-font-size:26px;"/>
+            <Label text="SYSTEM MONITOR" styleClass="sidebar-subtitle"/>
+        </VBox>
+
+        <!-- Icon -->
+        <StackPane alignment="CENTER"
+                   style="-fx-background-color:#1a2235; -fx-background-radius:16px;"
+                   prefWidth="64" prefHeight="64">
+            <Label text="🖥" style="-fx-font-size:28px;"/>
+        </StackPane>
+
+        <!-- Title -->
+        <VBox spacing="4" alignment="CENTER">
+            <padding><Insets top="16" bottom="4"/></padding>
+            <HBox alignment="CENTER" spacing="6">
+                <Label text="Admin" style="-fx-text-fill:#f1f5f9; -fx-font-size:20px; -fx-font-weight:bold;"/>
+                <Label text="Login" style="-fx-text-fill:#3b82f6; -fx-font-size:20px; -fx-font-weight:bold;"/>
+            </HBox>
+            <Label fx:id="lblSubtitle" styleClass="label-subtitle"/>
+        </VBox>
+
+        <!-- Form -->
+        <VBox spacing="14" maxWidth="340">
+            <padding><Insets top="28"/></padding>
+
+            <!-- Username -->
+            <VBox spacing="6">
+                <Label fx:id="lblUsername" styleClass="label-section"/>
+                <HBox spacing="0" style="-fx-background-color:#0d1526; -fx-border-color:#1e3a5f; -fx-border-radius:8px; -fx-background-radius:8px;">
+                    <Label text="👤" style="-fx-padding:10 8 10 14; -fx-font-size:13px;"/>
+                    <TextField fx:id="tfUsername" promptText="admin"
+                               style="-fx-background-color:transparent; -fx-text-fill:#f1f5f9; -fx-prompt-text-fill:#475569; -fx-border-color:transparent; -fx-padding:10 14 10 4; -fx-font-size:13px;"
+                               HBox.hgrow="ALWAYS"/>
+                </HBox>
+            </VBox>
+
+            <!-- Password -->
+            <VBox spacing="6">
+                <Label fx:id="lblPassword" styleClass="label-section"/>
+                <HBox spacing="0" style="-fx-background-color:#0d1526; -fx-border-color:#1e3a5f; -fx-border-radius:8px; -fx-background-radius:8px;">
+                    <Label text="🔒" style="-fx-padding:10 8 10 14; -fx-font-size:13px;"/>
+                    <PasswordField fx:id="pfPassword" promptText="••••••••"
+                                   style="-fx-background-color:transparent; -fx-text-fill:#f1f5f9; -fx-prompt-text-fill:#475569; -fx-border-color:transparent; -fx-padding:10 14 10 4; -fx-font-size:13px;"
+                                   HBox.hgrow="ALWAYS"/>
+                    <Button text="👁" onAction="#onTogglePassword"
+                            style="-fx-background-color:transparent; -fx-text-fill:#475569; -fx-cursor:hand; -fx-padding:10 14 10 4;"/>
+                </HBox>
+            </VBox>
+
+            <!-- Error -->
+            <Label fx:id="lblError" style="-fx-text-fill:#ef4444; -fx-font-size:12px;"
+                   visible="false" managed="false"/>
+
+            <!-- Login button -->
+            <Button fx:id="btnLogin" styleClass="btn-primary" onAction="#onLogin"
+                    maxWidth="Infinity"/>
+
+            <!-- Audit note -->
+            <HBox alignment="CENTER">
+                <padding><Insets top="8" bottom="40"/></padding>
+                <Label text="🔐  All admin sessions are logged and audited"
+                       style="-fx-text-fill:#475569; -fx-font-size:11px;"/>
+            </HBox>
+        </VBox>
+    </VBox>
+</StackPane>

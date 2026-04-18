@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.ethioride.admin.controller.DriverController"
+            stylesheets="@../styles/dark-theme.css"
+            style="-fx-background-color:#0a0e1a;"
+            prefWidth="1100" prefHeight="720">
+
+    <left>
+        <VBox styleClass="sidebar" spacing="0" prefWidth="220">
+            <VBox spacing="2" style="-fx-padding:24 20 20 20;">
+                <Label text="EthioRide" styleClass="sidebar-logo"/>
+                <Label text="SYSTEM MONITOR" styleClass="sidebar-subtitle"/>
+            </VBox>
+            <VBox spacing="4" style="-fx-padding:0 12 0 12;" VBox.vgrow="ALWAYS">
+                <Button text="📊  Dashboard" styleClass="nav-item" maxWidth="Infinity" onAction="#onNavDashboard"/>
+                <Button text="🚗  Drivers"   styleClass="nav-item,nav-item-active" maxWidth="Infinity" onAction="#onNavDrivers"/>
+                <Button text="🗺  Trips"     styleClass="nav-item" maxWidth="Infinity" onAction="#onNavTrips"/>
+                <Button text="🖥  System"    styleClass="nav-item" maxWidth="Infinity" onAction="#onNavSystem"/>
+            </VBox>
+            <VBox spacing="0" style="-fx-padding:12 20 8 20; -fx-border-color:#1e3a5f; -fx-border-width:1 0 0 0;">
+                <Button text="📍  Support"  styleClass="nav-item" maxWidth="Infinity" onAction="#onSupport"/>
+                <Button text="↩  Sign Out" styleClass="nav-item" maxWidth="Infinity" onAction="#onSignOut"/>
+            </VBox>
+        </VBox>
+    </left>
+
+    <center>
+        <VBox spacing="16" style="-fx-padding:24;">
+
+            <!-- Header -->
+            <HBox alignment="CENTER_LEFT" spacing="16">
+                <Label fx:id="lblTitle" styleClass="label-title"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <TextField fx:id="tfSearch" promptText="Search drivers..."
+                           style="-fx-background-color:#0d1526; -fx-text-fill:#f1f5f9; -fx-prompt-text-fill:#475569; -fx-border-color:#1e3a5f; -fx-border-radius:8px; -fx-background-radius:8px; -fx-padding:8 14; -fx-font-size:13px; -fx-min-width:220px;"
+                           onKeyReleased="#onSearch"/>
+                <ComboBox fx:id="cbStatusFilter" prefWidth="140"
+                          style="-fx-background-color:#0d1526; -fx-border-color:#1e3a5f; -fx-border-radius:6px;"
+                          onAction="#onFilterChange"/>
+            </HBox>
+
+            <!-- Table -->
+            <TableView fx:id="driversTable" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="colDriverId"   text="Driver ID"   prefWidth="100"/>
+                    <TableColumn fx:id="colName"       text="Name"        prefWidth="160"/>
+                    <TableColumn fx:id="colStatus"     text="Status"      prefWidth="100"/>
+                    <TableColumn fx:id="colLocation"   text="Location"    prefWidth="200"/>
+                    <TableColumn fx:id="colRating"     text="Rating"      prefWidth="80"/>
+                    <TableColumn fx:id="colTripsToday" text="Trips Today" prefWidth="100"/>
+                </columns>
+                <placeholder>
+                    <Label text="No drivers found." style="-fx-text-fill:#475569;"/>
+                </placeholder>
+            </TableView>
+
+            <!-- Footer -->
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <Label fx:id="lblCount" styleClass="label-subtitle"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="Refresh" styleClass="btn-secondary" onAction="#onRefresh"/>
+            </HBox>
+        </VBox>
+    </center>
+</BorderPane>
