@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.ethioride.passenger.ui.controllers.SettingsController"
+            stylesheets="@../styles/dark-theme.css"
+            style="-fx-background-color:#0a0e1a;"
+            prefWidth="1100" prefHeight="720">
+
+    <left>
+        <VBox styleClass="sidebar" spacing="0" prefWidth="220">
+            <VBox spacing="2" style="-fx-padding:24 20 20 20;">
+                <Label text="EthioRide" styleClass="sidebar-logo"/>
+                <Label text="PASSENGER SUITE" styleClass="sidebar-subtitle"/>
+            </VBox>
+            <VBox spacing="4" style="-fx-padding:0 12 0 12;" VBox.vgrow="ALWAYS">
+                <Button text="🗺  Map View"    styleClass="nav-item" maxWidth="Infinity" onAction="#onNavMap"/>
+                <Button text="🕐  Ride History" styleClass="nav-item" maxWidth="Infinity" onAction="#onNavHistory"/>
+                <Button text="💳  Payments"    styleClass="nav-item" maxWidth="Infinity" onAction="#onNavPayments"/>
+                <Button text="🏷  Promotions"  styleClass="nav-item" maxWidth="Infinity" onAction="#onNavPromotions"/>
+                <Button text="⚙  Settings"    styleClass="nav-item,nav-item-active" maxWidth="Infinity" onAction="#onNavSettings"/>
+            </VBox>
+            <VBox spacing="0" style="-fx-padding:12 20 8 20; -fx-border-color:#1e3a5f; -fx-border-width:1 0 0 0;">
+                <Button text="📍  Support"  styleClass="nav-item" maxWidth="Infinity" onAction="#onSupport"/>
+                <Button text="↩  Sign Out" styleClass="nav-item" maxWidth="Infinity" onAction="#onSignOut"/>
+            </VBox>
+        </VBox>
+    </left>
+
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-background-color:transparent; -fx-background:transparent;">
+            <VBox spacing="20" style="-fx-padding:28;">
+                <Label text="Settings" styleClass="label-title"/>
+
+                <!-- Profile -->
+                <VBox styleClass="card" spacing="14">
+                    <Label text="PROFILE" style="-fx-text-fill:#475569; -fx-font-size:10px; -fx-font-weight:bold;"/>
+                    <HBox spacing="16" alignment="CENTER_LEFT">
+                        <StackPane style="-fx-background-color:#1e3a5f; -fx-background-radius:50%; -fx-min-width:60px; -fx-min-height:60px;" alignment="CENTER">
+                            <Label text="👤" style="-fx-font-size:26px;"/>
+                        </StackPane>
+                        <VBox spacing="4">
+                            <Label fx:id="lblProfileName" style="-fx-text-fill:#f1f5f9; -fx-font-size:16px; -fx-font-weight:bold;"/>
+                            <Label fx:id="lblProfilePhone" styleClass="label-subtitle"/>
+                            <Label fx:id="lblProfileEmail" styleClass="label-subtitle"/>
+                        </VBox>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button text="Edit Profile" styleClass="btn-secondary" onAction="#onEditProfile"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Language -->
+                <VBox styleClass="card" spacing="12">
+                    <Label text="LANGUAGE &amp; REGION" style="-fx-text-fill:#475569; -fx-font-size:10px; -fx-font-weight:bold;"/>
+                    <HBox alignment="CENTER_LEFT" spacing="16">
+                        <Label text="App Language" style="-fx-text-fill:#f1f5f9; -fx-font-size:13px;" HBox.hgrow="ALWAYS"/>
+                        <ComboBox fx:id="cbLanguage" prefWidth="180" onAction="#onLanguageChange"
+                                  style="-fx-background-color:#0d1526; -fx-border-color:#1e3a5f; -fx-border-radius:6px;"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Notifications -->
+                <VBox styleClass="card" spacing="12">
+                    <Label text="NOTIFICATIONS" style="-fx-text-fill:#475569; -fx-font-size:10px; -fx-font-weight:bold;"/>
+                    <HBox alignment="CENTER_LEFT">
+                        <Label text="Ride updates" style="-fx-text-fill:#f1f5f9; -fx-font-size:13px;" HBox.hgrow="ALWAYS"/>
+                        <CheckBox fx:id="cbRideUpdates" selected="true"/>
+                    </HBox>
+                    <HBox alignment="CENTER_LEFT">
+                        <Label text="Promotions &amp; offers" style="-fx-text-fill:#f1f5f9; -fx-font-size:13px;" HBox.hgrow="ALWAYS"/>
+                        <CheckBox fx:id="cbPromoNotifs" selected="true"/>
+                    </HBox>
+                    <HBox alignment="CENTER_LEFT">
+                        <Label text="Driver arrival alerts" style="-fx-text-fill:#f1f5f9; -fx-font-size:13px;" HBox.hgrow="ALWAYS"/>
+                        <CheckBox fx:id="cbArrivalAlerts" selected="true"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Security -->
+                <VBox styleClass="card" spacing="12">
+                    <Label text="SECURITY" style="-fx-text-fill:#475569; -fx-font-size:10px; -fx-font-weight:bold;"/>
+                    <Button text="Change Password" styleClass="btn-secondary"
+                            style="-fx-max-width:200px;" onAction="#onChangePassword"/>
+                </VBox>
+
+                <!-- Save -->
+                <HBox>
+                    <Button text="Save Changes" styleClass="btn-primary"
+                            style="-fx-min-width:160px;" onAction="#onSave"/>
+                </HBox>
+            </VBox>
+        </ScrollPane>
+    </center>
+</BorderPane>

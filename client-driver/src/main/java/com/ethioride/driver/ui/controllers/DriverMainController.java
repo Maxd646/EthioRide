@@ -118,13 +118,13 @@ public class DriverMainController implements Initializable {
     }
 
     @FXML private void onTabLiveMap()  { /* already on map */ }
-    @FXML private void onTabFleet()    { /* TODO: navigate to fleet */ }
-    @FXML private void onTabEarnings() { /* TODO: navigate to earnings */ }
-    @FXML private void onTabDrivers()  { /* TODO: navigate to drivers list */ }
+    @FXML private void onTabFleet()    { Navigator.navigateTo("/ui/views/fleet.fxml"); }
+    @FXML private void onTabEarnings() { Navigator.navigateTo("/ui/views/earnings.fxml"); }
+    @FXML private void onTabDrivers()  { Navigator.navigateTo("/ui/views/fleet.fxml"); }
 
     @FXML private void onNavMap()        { /* already on map */ }
-    @FXML private void onNavHistory()    { /* navigate */ }
-    @FXML private void onNavPayments()   { /* navigate */ }
+    @FXML private void onNavHistory()    { Navigator.navigateTo("/ui/views/ride_history.fxml"); }
+    @FXML private void onNavPayments()   { Navigator.navigateTo("/ui/views/payments.fxml"); }
     @FXML private void onNavPromotions() { /* navigate */ }
     @FXML private void onNavSettings()   { /* navigate */ }
     @FXML private void onSupport()       { /* open support */ }

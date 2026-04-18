@@ -153,10 +153,10 @@ public class MainController implements Initializable {
     @FXML private void onClearPhone() { tfPassengerPhone.clear(); }
     @FXML private void onBookNow() { /* scroll to booking panel */ }
     @FXML private void onNavMap() { /* already on map */ }
-    @FXML private void onNavHistory() { /* navigate to history */ }
-    @FXML private void onNavPayments() { /* navigate to payments */ }
-    @FXML private void onNavPromotions() { /* navigate to promotions */ }
-    @FXML private void onNavSettings() { /* navigate to settings */ }
+    @FXML private void onNavHistory() { Navigator.navigateTo("/ui/views/ride_history.fxml"); }
+    @FXML private void onNavPayments() { Navigator.navigateTo("/ui/views/payments.fxml"); }
+    @FXML private void onNavPromotions() { Navigator.navigateTo("/ui/views/promotions.fxml"); }
+    @FXML private void onNavSettings() { Navigator.navigateTo("/ui/views/settings.fxml"); }
     @FXML private void onSupport() { /* open support */ }
     @FXML private void onSignOut() {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
