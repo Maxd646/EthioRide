@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/../../client-passenger">
+      <sourceFolder url="file://$MODULE_DIR$/../../client-passenger/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../client-passenger/src/main/resources" type="java-resource" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="shared" />
+    <orderEntry type="module-library">
+      <library name="JavaFX">
+        <CLASSES>
+          <root url="file://$PROJECT_DIR$/lib/javafx-controls.jar" />
+          <root url="file://$PROJECT_DIR$/lib/javafx-fxml.jar" />
+          <root url="file://$PROJECT_DIR$/lib/javafx-graphics.jar" />
+          <root url="file://$PROJECT_DIR$/lib/javafx-base.jar" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="library" name="lib" level="project" />
+  </component>
+</module>

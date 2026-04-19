@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="AdminDashboard" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="com.ethioride.admin.Main" />
+    <module name="admin-dashboard" />
+    <shortenClasspath name="NONE" />
+    <option name="VM_PARAMETERS" value="--module-path &quot;C:\javafx-sdk-17.0.17\lib&quot; --add-modules javafx.controls,javafx.fxml" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
