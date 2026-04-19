@@ -1,25 +1,23 @@
 package com.ethioride.passenger;
 
-import com.ethioride.passenger.ui.navigation.Navigator;
-import com.ethioride.shared.utils.I18n;
+import com.ethioride.passenger.ui.LoginScreen;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
-import java.util.Locale;
-
+/**
+ * Entry point for the Passenger client.
+ * Pure JavaFX — no FXML.
+ */
 public class PassengerApp extends Application {
 
     @Override
-    public void start(Stage primaryStage) {
-        // Load i18n (default English; switch to Amharic via settings)
-        I18n.load("i18n/messages");
+    public void start(Stage stage) {
+        stage.setTitle("EthioRide — Passenger");
+        stage.setMinWidth(480);
+        stage.setMinHeight(640);
+        stage.setResizable(false);
 
-        primaryStage.setTitle("EthioRide — Passenger Suite");
-        primaryStage.setMinWidth(480);
-        primaryStage.setMinHeight(600);
-
-        Navigator.init(primaryStage);
-        Navigator.navigateTo("/ui/views/login.fxml");
+        new LoginScreen(stage).show();
     }
 
     public static void main(String[] args) {

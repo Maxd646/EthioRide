@@ -4,19 +4,13 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
- * Internationalization helper. Supports English and Amharic.
+ * Simple i18n helper — English only.
  */
 public class I18n {
     private static ResourceBundle bundle;
-    private static Locale currentLocale = Locale.ENGLISH;
-
-    public static void setLocale(Locale locale) {
-        currentLocale = locale;
-        bundle = null; // reset cache
-    }
 
     public static void load(String baseName) {
-        bundle = ResourceBundle.getBundle(baseName, currentLocale);
+        bundle = ResourceBundle.getBundle(baseName, Locale.ENGLISH);
     }
 
     public static String get(String key) {
@@ -26,9 +20,5 @@ public class I18n {
         } catch (Exception e) {
             return key;
         }
-    }
-
-    public static Locale getCurrentLocale() {
-        return currentLocale;
     }
 }
