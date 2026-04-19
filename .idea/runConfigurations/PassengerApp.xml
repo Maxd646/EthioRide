@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="PassengerApp" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="com.ethioride.passenger.PassengerApp" />
+    <option name="VM_PARAMETERS" value="--module-path &quot;$PROJECT_DIR$/lib&quot; --add-modules javafx.controls,javafx.fxml,javafx.graphics" />
+    <module name="client-passenger" />
+    <shortenClasspath name="NONE" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
