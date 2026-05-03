@@ -50,6 +50,27 @@ public class UserRepository {
         return null;
     }
 
+    /** SELECT all drivers (role = DRIVER). */
+    public java.util.List<UserDTO> findAllDrivers() throws Exception {
+        String sql = "SELECT id, full_name, phone, email, role, rating FROM users WHERE role = 'DRIVER'";
+        java.util.List<UserDTO> list = new java.util.ArrayList<>();
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                UserDTO u = new UserDTO();
+                u.setId(rs.getString("id"));
+                u.setFullName(rs.getString("full_name"));
+                u.setPhone(rs.getString("phone"));
+                u.setEmail(rs.getString("email"));
+                u.setRole(UserRole.valueOf(rs.getString("role")));
+                u.setRating(rs.getDouble("rating"));
+                list.add(u);
+            }
+        }
+        return list;
+    }
+
     /** SELECT — check if a phone number already exists. */
     public boolean phoneExists(String phone) throws Exception {
         String sql = "SELECT COUNT(*) FROM users WHERE phone = ?";

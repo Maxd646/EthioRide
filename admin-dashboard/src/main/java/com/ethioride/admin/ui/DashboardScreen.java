@@ -21,6 +21,10 @@ import java.time.format.DateTimeFormatter;
 
 public class DashboardScreen {
     private final Stage stage;
+    private Label cardDrivers;
+    private Label cardTrips;
+    private Label cardLoad;
+    private Label cardUptime;
     private VBox logContainer;
     private ScrollPane logScroll;
     private Timeline logTimer;
@@ -77,13 +81,17 @@ public class DashboardScreen {
         title.setFont(Font.font("Arial", FontWeight.BOLD, 24));
         title.setTextFill(Color.web("#f1f5f9"));
 
-        // Stat cards
+        // Stat cards — labels stored so they can be updated live
         HBox cards = new HBox(16);
+        cardDrivers = new Label("—");
+        cardTrips   = new Label("—");
+        cardLoad    = new Label("—");
+        cardUptime  = new Label("—");
         cards.getChildren().addAll(
-            statCard("Active Drivers", "1,284", "+12%", "#22c55e"),
-            statCard("Ongoing Trips",  "452",   "Peak Hour", "#f59e0b"),
-            statCard("Server Load",    "62%",   "PULSE: OK", "#3b82f6"),
-            statCard("Uptime",         "99.98%","24ms latency", "#a855f7")
+            statCard("Active Drivers", cardDrivers, "+0%",       "#22c55e"),
+            statCard("Ongoing Trips",  cardTrips,   "Peak Hour", "#f59e0b"),
+            statCard("Server Load",    cardLoad,     "PULSE: OK", "#3b82f6"),
+            statCard("Uptime",         cardUptime,   "latency",   "#a855f7")
         );
 
         // Live log
@@ -117,7 +125,14 @@ public class DashboardScreen {
     }
 
     private void startLogSimulator() {
-        AdminService.getInstance().setLogHandler(msg -> Platform.runLater(() -> appendLog(msg)));
+        AdminService svc = AdminService.getInstance();
+        svc.setLogHandler(msg -> Platform.runLater(() -> appendLog(msg)));
+        svc.setStatsHandler(stats -> Platform.runLater(() -> {
+            cardDrivers.setText(String.valueOf(stats.getActiveDrivers()));
+            cardTrips.setText(String.valueOf(stats.getOngoingTrips()));
+            cardLoad.setText(String.format("%.0f%%", stats.getServerLoad() * 100));
+            cardUptime.setText(String.format("%.2f%%", stats.getUptimePercent()));
+        }));
         String[] samples = {
             "[SOCKET_AUTH] Connection received from Client ID: 0029-Px",
             "[DRIVER_LOC] Driver 4442 updated coordinates to 9.0302, 38.7469",
@@ -150,15 +165,15 @@ public class DashboardScreen {
 
     private void stopLog() { if (logTimer != null) logTimer.stop(); }
 
-    private VBox statCard(String label, String value, String sub, String color) {
+    private VBox statCard(String label, Label valueLabel, String sub, String color) {
         VBox card = new VBox(6);
         card.setAlignment(Pos.CENTER_LEFT);
         card.setStyle("-fx-background-color:#0d1526;-fx-border-color:#1e3a5f;-fx-border-radius:12px;-fx-background-radius:12px;-fx-padding:16;");
         card.setPrefWidth(200);
         Label lbl = new Label(label); lbl.setTextFill(Color.web("#94a3b8")); lbl.setFont(Font.font("Arial", 11));
-        Label val = new Label(value); val.setTextFill(Color.web(color)); val.setFont(Font.font("Arial", FontWeight.BOLD, 22));
+        valueLabel.setTextFill(Color.web(color)); valueLabel.setFont(Font.font("Arial", FontWeight.BOLD, 22));
         Label s   = new Label(sub);   s.setTextFill(Color.web("#475569")); s.setFont(Font.font("Arial", 11));
-        card.getChildren().addAll(lbl, val, s);
+        card.getChildren().addAll(lbl, valueLabel, s);
         return card;
     }
 

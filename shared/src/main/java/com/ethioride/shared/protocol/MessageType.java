@@ -27,5 +27,13 @@ public enum MessageType {
 
     // Matchmaking
     MATCH_FOUND,
-    MATCH_NOTIFY_DRIVER
+    MATCH_NOTIFY_DRIVER,
+
+    // Admin
+    STATS_REQUEST,
+    STATS_RESPONSE,
+    DRIVERS_REQUEST,
+    DRIVERS_RESPONSE,
+    TRIPS_REQUEST,
+    TRIPS_RESPONSE
 }

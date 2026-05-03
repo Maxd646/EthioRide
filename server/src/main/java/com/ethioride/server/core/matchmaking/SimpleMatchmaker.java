@@ -1,8 +1,11 @@
 package com.ethioride.server.core.matchmaking;
 
+import com.ethioride.server.core.session.ClientRegistry;
 import com.ethioride.server.db.TripRepository;
 import com.ethioride.shared.dto.TripRequestDTO;
 import com.ethioride.shared.enums.TripStatus;
+import com.ethioride.shared.protocol.Message;
+import com.ethioride.shared.protocol.MessageType;
 
 import java.util.List;
 import java.util.Map;
@@ -67,6 +70,11 @@ public class SimpleMatchmaker {
         onlineDrivers.remove(driverId);
     }
 
+    /** Returns the number of currently online drivers. */
+    public int getOnlineDriverCount() {
+        return onlineDrivers.size();
+    }
+
     // ── Match cycle ───────────────────────────────────────────────────────────
 
     /**
@@ -100,7 +108,15 @@ public class SimpleMatchmaker {
                 System.out.printf("[Matchmaker] Matched trip %s → driver %s%n",
                         trip.getTripId(), driverId);
 
-                // TODO: notify the driver client via their socket (requires ClientHandler registry)
+                // Push MATCH_NOTIFY_DRIVER to the driver's live socket
+                trip.setDriverId(driverId);
+                boolean pushed = ClientRegistry.getInstance().push(
+                    driverId,
+                    new Message(MessageType.MATCH_NOTIFY_DRIVER, trip, "server")
+                );
+                if (!pushed) {
+                    System.err.println("[Matchmaker] Driver " + driverId + " not reachable — skipping push.");
+                }
             }
         } catch (Exception e) {
             System.err.println("[Matchmaker] Error during match cycle: " + e.getMessage());

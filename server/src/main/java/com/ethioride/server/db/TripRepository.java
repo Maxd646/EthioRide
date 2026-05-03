@@ -45,6 +45,29 @@ public class TripRepository {
      * SELECT trips for a specific passenger.
      * Uses ORDER BY created_at DESC — newest first.
      */
+    /** SELECT all trips ordered by newest first — for admin view. */
+    public List<TripRequestDTO> findAll() throws Exception {
+        String sql = "SELECT * FROM trips ORDER BY created_at DESC LIMIT 100";
+        List<TripRequestDTO> list = new ArrayList<>();
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                TripRequestDTO t = new TripRequestDTO();
+                t.setTripId(rs.getString("id"));
+                t.setPassengerId(rs.getString("passenger_id"));
+                t.setDriverId(rs.getString("driver_id"));
+                t.setPickupLocation(rs.getString("pickup_location"));
+                t.setDropoffLocation(rs.getString("dropoff_location"));
+                t.setFare(rs.getDouble("fare"));
+                t.setDistanceKm(rs.getDouble("distance_km"));
+                t.setStatus(TripStatus.valueOf(rs.getString("status")));
+                list.add(t);
+            }
+        }
+        return list;
+    }
+
     public List<TripRequestDTO> findByPassenger(String passengerId) throws Exception {
         String sql = "SELECT * FROM trips WHERE passenger_id = ? ORDER BY created_at DESC";
         List<TripRequestDTO> list = new ArrayList<>();
