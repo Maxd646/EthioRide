@@ -24,56 +24,42 @@ public class UserRepository {
      * Returns UserDTO if found, null otherwise.
      */
     public UserDTO findByPhoneAndPassword(String phone, String password) throws Exception {
-        // Step 3: Connect
-        Connection conn = DBConnection.getConnection();
-
-        // Step 4: Create a PreparedStatement (safer than Statement — prevents SQL injection)
         String sql = "SELECT id, full_name, phone, email, role, rating " +
                      "FROM users WHERE phone = ? AND password_hash = ?";
-        PreparedStatement stmt = conn.prepareStatement(sql);
 
-        // Step 5: Set parameters and execute
-        stmt.setString(1, phone);
-        stmt.setString(2, hashPassword(password));
-        ResultSet rs = stmt.executeQuery();
+        // Try-with-resources: Connection, PreparedStatement, and ResultSet all auto-closed
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-        UserDTO user = null;
-        if (rs.next()) {
-            // Process the ResultSet — map each column to the DTO
-            user = new UserDTO();
-            user.setId(rs.getString("id"));
-            user.setFullName(rs.getString("full_name"));
-            user.setPhone(rs.getString("phone"));
-            user.setEmail(rs.getString("email"));
-            user.setRole(UserRole.valueOf(rs.getString("role")));
-            user.setRating(rs.getDouble("rating"));
+            stmt.setString(1, phone);
+            stmt.setString(2, hashPassword(password)); // hash on server side
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    UserDTO user = new UserDTO();
+                    user.setId(rs.getString("id"));
+                    user.setFullName(rs.getString("full_name"));
+                    user.setPhone(rs.getString("phone"));
+                    user.setEmail(rs.getString("email"));
+                    user.setRole(UserRole.valueOf(rs.getString("role")));
+                    user.setRating(rs.getDouble("rating"));
+                    return user;
+                }
+            }
         }
-
-        // Step 6: Close ResultSet and Statement
-        rs.close();
-        stmt.close();
-        // Step 7: Close Connection
-        conn.close();
-
-        return user;
+        return null;
     }
 
     /** SELECT — check if a phone number already exists. */
     public boolean phoneExists(String phone) throws Exception {
-        Connection conn = DBConnection.getConnection();
-
         String sql = "SELECT COUNT(*) FROM users WHERE phone = ?";
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.setString(1, phone);
-
-        ResultSet rs = stmt.executeQuery();
-        boolean exists = rs.next() && rs.getInt(1) > 0;
-
-        rs.close();
-        stmt.close();
-        conn.close();
-
-        return exists;
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, phone);
+            try (ResultSet rs = stmt.executeQuery()) {
+                return rs.next() && rs.getInt(1) > 0;
+            }
+        }
     }
 
     // ── CREATE ────────────────────────────────────────────────────────────────
@@ -83,28 +69,22 @@ public class UserRepository {
      * Returns the generated UUID.
      */
     public String save(UserDTO user, String password) throws Exception {
-        Connection conn = DBConnection.getConnection();
-
         String id  = java.util.UUID.randomUUID().toString();
         String sql = "INSERT INTO users (id, full_name, phone, email, role, password_hash, rating) " +
                      "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.setString(1, id);
-        stmt.setString(2, user.getFullName());
-        stmt.setString(3, user.getPhone());
-        stmt.setString(4, user.getEmail());
-        stmt.setString(5, user.getRole().name());
-        stmt.setString(6, hashPassword(password));
-        stmt.setDouble(7, 5.0);
-
-        // executeUpdate() returns the number of rows affected
-        int rowsAffected = stmt.executeUpdate();
-        System.out.println("[DB] User inserted, rows affected: " + rowsAffected);
-
-        stmt.close();
-        conn.close();
-
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, id);
+            stmt.setString(2, user.getFullName());
+            stmt.setString(3, user.getPhone());
+            stmt.setString(4, user.getEmail());
+            stmt.setString(5, user.getRole().name());
+            stmt.setString(6, hashPassword(password)); // hash on server side
+            stmt.setDouble(7, 5.0);
+            int rowsAffected = stmt.executeUpdate();
+            System.out.println("[DB] User inserted, rows affected: " + rowsAffected);
+        }
         return id;
     }
 
@@ -112,31 +92,25 @@ public class UserRepository {
 
     /** UPDATE — update a user's rating. */
     public void updateRating(String userId, double rating) throws Exception {
-        Connection conn = DBConnection.getConnection();
-
         String sql = "UPDATE users SET rating = ? WHERE id = ?";
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.setDouble(1, rating);
-        stmt.setString(2, userId);
-
-        stmt.executeUpdate();
-        stmt.close();
-        conn.close();
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setDouble(1, rating);
+            stmt.setString(2, userId);
+            stmt.executeUpdate();
+        }
     }
 
     // ── DELETE ────────────────────────────────────────────────────────────────
 
     /** DELETE — remove a user by ID. */
     public void delete(String userId) throws Exception {
-        Connection conn = DBConnection.getConnection();
-
         String sql = "DELETE FROM users WHERE id = ?";
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.setString(1, userId);
-
-        stmt.executeUpdate();
-        stmt.close();
-        conn.close();
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, userId);
+            stmt.executeUpdate();
+        }
     }
 
     // ── Helper ────────────────────────────────────────────────────────────────

@@ -56,11 +56,13 @@ public class MainScreen {
         Button btnHistory  = navBtn("🕐  Ride History");
         Button btnEarnings = navBtn("💰  Earnings");
         Button btnPayments = navBtn("💳  Payments");
+        Button btnFleet    = navBtn("🚘  Fleet");
         btnMap.setStyle(btnMap.getStyle() + "-fx-background-color:#1e3a5f;");
 
         btnHistory.setOnAction(e  -> new RideHistoryScreen(stage).show());
         btnEarnings.setOnAction(e -> new EarningsScreen(stage).show());
         btnPayments.setOnAction(e -> new PaymentsScreen(stage).show());
+        btnFleet.setOnAction(e    -> new FleetScreen(stage).show());
 
         Region spacer = new Region();
         VBox.setVgrow(spacer, Priority.ALWAYS);
@@ -76,7 +78,7 @@ public class MainScreen {
         Button btnSignOut = navBtn("↩  Sign Out");
         btnSignOut.setOnAction(e -> onSignOut());
 
-        sidebar.getChildren().addAll(logo, sub, btnMap, btnHistory, btnEarnings, btnPayments, spacer, lblName, btnSignOut);
+        sidebar.getChildren().addAll(logo, sub, btnMap, btnHistory, btnEarnings, btnPayments, btnFleet, spacer, lblName, btnSignOut);
         return sidebar;
     }
 

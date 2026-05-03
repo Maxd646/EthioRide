@@ -1,6 +1,7 @@
 package com.ethioride.server;
 
 import com.ethioride.server.config.ServerConfig;
+import com.ethioride.server.core.matchmaking.SimpleMatchmaker;
 import com.ethioride.server.db.DBConnection;
 import com.ethioride.shared.protocol.Message;
 import com.ethioride.shared.protocol.MessageType;
@@ -25,6 +26,7 @@ public class EthioRideServer {
 
     public void start() throws IOException {
         running = true;
+        SimpleMatchmaker.getInstance().start();
         Runtime.getRuntime().addShutdownHook(new Thread(this::stop));
 
         try (ServerSocket serverSocket = new ServerSocket(port)) {
@@ -42,6 +44,7 @@ public class EthioRideServer {
 
     public void stop() {
         running = false;
+        SimpleMatchmaker.getInstance().stop();
         threadPool.shutdown();
         System.out.println("[EthioRide] Server stopped.");
     }
@@ -80,11 +83,12 @@ public class EthioRideServer {
         private void handleMessage(Message msg, ObjectOutputStream out) throws IOException {
             // Route to appropriate subsystem based on message type
             switch (msg.getType()) {
-                case LOGIN_REQUEST    -> handleLogin(msg, out);
-                case REGISTER_REQUEST -> handleRegister(msg, out);
-                case TRIP_REQUEST     -> handleTripRequest(msg, out);
-                case HEARTBEAT        -> sendAck(out, msg.getSenderId());
-                default               -> System.out.println("[EthioRide] Unhandled: " + msg.getType());
+                case LOGIN_REQUEST      -> handleLogin(msg, out);
+                case REGISTER_REQUEST  -> handleRegister(msg, out);
+                case TRIP_REQUEST      -> handleTripRequest(msg, out);
+                case DRIVER_STATUS_UPDATE -> handleDriverStatus(msg, out);
+                case HEARTBEAT         -> sendAck(out, msg.getSenderId());
+                default                -> System.out.println("[EthioRide] Unhandled: " + msg.getType());
             }
         }
 
@@ -155,6 +159,22 @@ public class EthioRideServer {
 
         private void sendAck(ObjectOutputStream out, String clientId) throws IOException {
             out.writeObject(new Message(MessageType.ACK, "PONG", "server"));
+            out.flush();
+        }
+
+        /**
+         * Payload: "ONLINE" or "OFFLINE"
+         * Registers/deregisters the driver with the matchmaker.
+         */
+        private void handleDriverStatus(Message msg, ObjectOutputStream out) throws IOException {
+            String driverId = msg.getSenderId();
+            String status   = msg.getPayload().toString();
+            if ("ONLINE".equalsIgnoreCase(status)) {
+                com.ethioride.server.core.matchmaking.SimpleMatchmaker.getInstance().setDriverOnline(driverId);
+            } else {
+                com.ethioride.server.core.matchmaking.SimpleMatchmaker.getInstance().setDriverOffline(driverId);
+            }
+            out.writeObject(new Message(MessageType.ACK, status, "server"));
             out.flush();
         }
     }

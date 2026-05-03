@@ -23,5 +23,9 @@ public enum MessageType {
     // System
     HEARTBEAT,
     ERROR,
-    ACK
+    ACK,
+
+    // Matchmaking
+    MATCH_FOUND,
+    MATCH_NOTIFY_DRIVER
 }
