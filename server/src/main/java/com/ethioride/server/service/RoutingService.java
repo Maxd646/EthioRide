@@ -1,8 +1,6 @@
 package com.ethioride.server.service;
 
 import com.ethioride.server.logging.ServerLogger;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -10,6 +8,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Free routing service using OpenStreetMap + OSRM.
@@ -73,23 +73,15 @@ public class RoutingService {
                 destinationCoords[1], destinationCoords[0]); // lng,lat of destination
 
         String osrmResponse = httpGet(osrmUrl, false);
-        JSONObject osrmJson = new JSONObject(osrmResponse);
 
-        String osrmCode = osrmJson.getString("code");
+        String osrmCode = extractJsonString(osrmResponse, "code");
         if (!"Ok".equals(osrmCode)) {
             throw new Exception("OSRM routing failed: " + osrmCode);
         }
 
-        JSONArray routes = osrmJson.getJSONArray("routes");
-        if (routes.length() == 0) {
-            throw new Exception("OSRM returned no routes");
-        }
-
-        JSONObject route = routes.getJSONObject(0);
-
         // Step 4 — extract and convert (same math as the old Google service)
-        double distanceMeters  = route.getDouble("distance"); // metres
-        double durationSeconds = route.getDouble("duration"); // seconds
+        double distanceMeters  = extractJsonDouble(osrmResponse, "distance"); // metres
+        double durationSeconds = extractJsonDouble(osrmResponse, "duration"); // seconds
 
         double distanceKm      = distanceMeters  / 1000.0;
         double durationMinutes = durationSeconds / 60.0;
@@ -116,15 +108,13 @@ public class RoutingService {
         String url = String.format("%s?q=%s&format=json&limit=1", NOMINATIM_URL, encodedAddress);
 
         String responseBody = httpGet(url, true); // true = send User-Agent (required by Nominatim)
-        JSONArray results = new JSONArray(responseBody);
 
-        if (results.length() == 0) {
+        if (responseBody.trim().equals("[]")) {
             throw new Exception("Address not found: \"" + address + "\"");
         }
 
-        JSONObject place = results.getJSONObject(0);
-        double lat = place.getDouble("lat");
-        double lon = place.getDouble("lon");
+        double lat = extractJsonDouble(responseBody, "lat");
+        double lon = extractJsonDouble(responseBody, "lon");
 
         ServerLogger.getInstance().info("Routing geocoded \"" + address + "\" -> " + String.format("%.6f", lat) + ", " + String.format("%.6f", lon));
         return new double[]{lat, lon};
@@ -164,6 +154,24 @@ public class RoutingService {
         } finally {
             conn.disconnect();
         }
+    }
+
+    // ── Minimal JSON helpers (no external library needed) ────────────────────
+
+    /** Extracts the first occurrence of "key": number from a JSON string. */
+    private static double extractJsonDouble(String json, String key) throws Exception {
+        Pattern p = Pattern.compile("\"" + key + "\"\\s*:\\s*([\\d.eE+\\-]+)");
+        Matcher m = p.matcher(json);
+        if (!m.find()) throw new Exception("Key not found in JSON: " + key);
+        return Double.parseDouble(m.group(1));
+    }
+
+    /** Extracts the first occurrence of "key": "value" from a JSON string. */
+    private static String extractJsonString(String json, String key) throws Exception {
+        Pattern p = Pattern.compile("\"" + key + "\"\\s*:\\s*\"([^\"]+)\"");
+        Matcher m = p.matcher(json);
+        if (!m.find()) throw new Exception("Key not found in JSON: " + key);
+        return m.group(1);
     }
 
     // ── Result type ───────────────────────────────────────────────────────────

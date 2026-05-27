@@ -1,0 +1,255 @@
+[2026-05-27 22:14:47] [INFO ] === EthioRide Server started ===
+[2026-05-27 22:14:47] [INFO ] Matchmaker started — proximity matching every 5s.
+[2026-05-27 22:14:47] [INFO ] Server listening on port 9090
+[2026-05-27 22:14:49] [INFO ] DB driver registered. URL: jdbc:mysql://localhost:3306/ethioride?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+[2026-05-27 22:14:51] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:14:54] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:14:59] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:15:04] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:15:09] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:15:14] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:15:19] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:15:24] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:15:29] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:15:34] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:15:39] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:15:44] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:15:49] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:15:54] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:15:59] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:16:04] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:16:09] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:16:14] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:16:19] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:16:24] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:16:29] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:16:34] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:16:39] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:16:44] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:16:49] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:16:54] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:16:59] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:17:04] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:17:09] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:17:14] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:17:19] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:17:24] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:17:29] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:17:34] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:17:39] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:17:44] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:17:49] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:17:54] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:17:59] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:18:04] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:18:09] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:18:14] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:18:19] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:18:24] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:18:29] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:18:34] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:18:39] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:18:44] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:18:49] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:18:54] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:18:59] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:19:04] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:19:09] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:19:14] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:19:19] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:19:24] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:19:29] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:19:34] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:19:39] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:19:44] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:19:49] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:19:54] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:19:59] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:20:04] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:20:09] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:20:14] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:20:19] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:20:24] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:20:29] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:20:34] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:20:39] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:20:44] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:20:49] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:20:54] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:20:59] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:21:04] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:21:09] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:21:14] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:21:19] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:21:24] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:21:29] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:21:34] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:21:39] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:21:44] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:21:49] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:21:54] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:21:59] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:22:04] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:22:09] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:22:14] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:22:19] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:22:24] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:22:29] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:22:34] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:22:39] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:22:44] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:22:49] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:22:54] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:22:59] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:23:04] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:23:09] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:23:14] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:23:19] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:23:24] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:23:29] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:23:34] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:23:39] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:23:44] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:23:49] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:23:54] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:23:59] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:24:04] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:24:09] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:24:14] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:24:19] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:24:24] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:24:29] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:24:34] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 22:24:39] [ERROR] Matchmaker error during match cycle: Access denied for user 'root'@'localhost' (using password: YES)
+[2026-05-27 23:04:13] [INFO ] === EthioRide Server started ===
+[2026-05-27 23:04:13] [INFO ] Matchmaker started — proximity matching every 5s.
+[2026-05-27 23:04:13] [INFO ] Server listening on port 9090
+[2026-05-27 23:04:15] [INFO ] DB driver registered. URL: jdbc:mysql://localhost:3306/ethioride?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+[2026-05-27 23:05:45] [INFO ] Client connected: /127.0.0.1
+[2026-05-27 23:06:08] [INFO ] Client connected: /127.0.0.1
+[2026-05-27 23:06:08] [INFO ] Login: Daniel Gashaw (PASSENGER)
+[2026-05-27 23:06:08] [INFO ] Matchmaker driver OFFLINE: 94288ea5-4e0a-42b2-a7af-456334e8a27b
+[2026-05-27 23:06:08] [INFO ] Client disconnected: 94288ea5-4e0a-42b2-a7af-456334e8a27b
+[2026-05-27 23:06:08] [INFO ] Client connected: /127.0.0.1
+[2026-05-27 23:06:13] [INFO ] Client connected: /127.0.0.1
+[2026-05-27 23:06:13] [INFO ] Sent 0 trips to passenger 94288ea5-4e0a-42b2-a7af-456334e8a27b
+[2026-05-27 23:06:23] [INFO ] Client connected: /127.0.0.1
+[2026-05-27 23:06:23] [INFO ] Sent 0 trips to passenger 94288ea5-4e0a-42b2-a7af-456334e8a27b
+[2026-05-27 23:06:28] [INFO ] Client connected: /127.0.0.1
+[2026-05-27 23:06:28] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-27 23:06:28] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> Friendship Park
+[2026-05-27 23:06:29] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-27 23:06:34] [INFO ] Client connected: /127.0.0.1
+[2026-05-27 23:06:34] [INFO ] Calculating price for PREMIUM trip (OSM/OSRM)
+[2026-05-27 23:06:34] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> Friendship Park
+[2026-05-27 23:06:35] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-27 23:06:35] [INFO ] Client connected: /127.0.0.1
+[2026-05-27 23:06:35] [INFO ] Calculating price for ELITE trip (OSM/OSRM)
+[2026-05-27 23:06:35] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> Friendship Park
+[2026-05-27 23:06:36] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-27 23:06:38] [INFO ] Client connected: /127.0.0.1
+[2026-05-27 23:06:38] [INFO ] Sent 0 trips to passenger 94288ea5-4e0a-42b2-a7af-456334e8a27b
+[2026-05-27 23:06:41] [INFO ] Client connected: /127.0.0.1
+[2026-05-27 23:06:41] [INFO ] Sent 0 trips to passenger 94288ea5-4e0a-42b2-a7af-456334e8a27b
+[2026-05-27 23:06:52] [INFO ] Client connected: /127.0.0.1
+[2026-05-27 23:06:52] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-27 23:06:52] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> add
+[2026-05-27 23:06:53] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-27 23:06:54] [INFO ] Client connected: /127.0.0.1
+[2026-05-27 23:06:54] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-27 23:06:54] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> addis ababa
+[2026-05-27 23:06:54] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-27 23:06:56] [INFO ] Client connected: /127.0.0.1
+[2026-05-27 23:06:56] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-27 23:06:56] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> addis ababa
+[2026-05-27 23:06:56] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-27 23:07:00] [INFO ] Client connected: /127.0.0.1
+[2026-05-27 23:07:00] [INFO ] Calculating price for PREMIUM trip (OSM/OSRM)
+[2026-05-27 23:07:00] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> addis ababa
+[2026-05-27 23:07:01] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-27 23:07:01] [INFO ] Client connected: /127.0.0.1
+[2026-05-27 23:07:01] [INFO ] Calculating price for ELITE trip (OSM/OSRM)
+[2026-05-27 23:07:01] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> addis ababa
+[2026-05-27 23:07:01] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-27 23:07:13] [INFO ] Client connected: /127.0.0.1
+[2026-05-27 23:07:13] [INFO ] Sent 0 trips to passenger 94288ea5-4e0a-42b2-a7af-456334e8a27b
+[2026-05-27 23:07:29] [INFO ] Client connected: /127.0.0.1
+[2026-05-27 23:07:29] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-27 23:07:29] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> ada
+[2026-05-27 23:07:29] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-27 23:07:29] [INFO ] Client connected: /127.0.0.1
+[2026-05-27 23:07:29] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-27 23:07:29] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> adama
+[2026-05-27 23:07:30] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-27 23:07:40] [INFO ] Client connected: /127.0.0.1
+[2026-05-27 23:07:40] [INFO ] Calculating price for PREMIUM trip (OSM/OSRM)
+[2026-05-27 23:07:40] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> adama
+[2026-05-27 23:07:41] [INFO ] Client connected: /127.0.0.1
+[2026-05-27 23:07:41] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-27 23:07:41] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> adama
+[2026-05-27 23:07:41] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-27 23:07:42] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-27 23:07:44] [INFO ] Client connected: /127.0.0.1
+[2026-05-27 23:07:44] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-27 23:07:44] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> Kazanchis Square
+[2026-05-27 23:07:44] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-27 23:07:46] [INFO ] Client connected: /127.0.0.1
+[2026-05-27 23:07:46] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-27 23:07:46] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> Garnet Avenue
+[2026-05-27 23:07:46] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-27 23:07:48] [INFO ] Client connected: /127.0.0.1
+[2026-05-27 23:07:48] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-27 23:07:48] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> Friendship Park
+[2026-05-27 23:07:48] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-27 23:07:49] [INFO ] Client connected: /127.0.0.1
+[2026-05-27 23:07:49] [INFO ] Sent 0 trips to passenger 94288ea5-4e0a-42b2-a7af-456334e8a27b
+[2026-05-27 23:07:59] [INFO ] Client connected: /127.0.0.1
+[2026-05-27 23:07:59] [INFO ] Sent 0 trips to passenger 94288ea5-4e0a-42b2-a7af-456334e8a27b
+[2026-05-27 23:28:18] [INFO ] Client connected: /127.0.0.1
+[2026-05-27 23:28:18] [INFO ] Sent 0 trips to passenger 94288ea5-4e0a-42b2-a7af-456334e8a27b
+[2026-05-27 23:30:51] [INFO ] Client connected: /127.0.0.1
+[2026-05-27 23:30:51] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-27 23:30:51] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> a
+[2026-05-27 23:30:52] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-27 23:30:52] [INFO ] Client connected: /127.0.0.1
+[2026-05-27 23:30:52] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-27 23:30:52] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> ada
+[2026-05-27 23:30:52] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-27 23:30:53] [INFO ] Client connected: /127.0.0.1
+[2026-05-27 23:30:53] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-27 23:30:53] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> adama
+[2026-05-27 23:30:53] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-27 23:31:03] [INFO ] Client connected: /127.0.0.1
+[2026-05-27 23:31:03] [INFO ] Calculating price for PREMIUM trip (OSM/OSRM)
+[2026-05-27 23:31:03] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> adama
+[2026-05-27 23:31:04] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-27 23:31:04] [INFO ] Client connected: /127.0.0.1
+[2026-05-27 23:31:04] [INFO ] Sent 0 trips to passenger 94288ea5-4e0a-42b2-a7af-456334e8a27b
+[2026-05-27 23:31:12] [INFO ] Client connected: /127.0.0.1
+[2026-05-27 23:31:12] [INFO ] Sent 0 trips to passenger 94288ea5-4e0a-42b2-a7af-456334e8a27b
+[2026-05-27 23:31:13] [INFO ] Client connected: /127.0.0.1
+[2026-05-27 23:31:13] [INFO ] Sent 0 trips to passenger 94288ea5-4e0a-42b2-a7af-456334e8a27b
+[2026-05-27 23:36:20] [INFO ] Client connected: /127.0.0.1
+[2026-05-27 23:36:20] [INFO ] Sent 0 trips to passenger 94288ea5-4e0a-42b2-a7af-456334e8a27b
+[2026-05-27 23:36:23] [INFO ] Client connected: /127.0.0.1
+[2026-05-27 23:36:23] [INFO ] Sent 0 trips to passenger 94288ea5-4e0a-42b2-a7af-456334e8a27b
+[2026-05-27 23:36:29] [INFO ] Client connected: /127.0.0.1
+[2026-05-27 23:36:29] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-27 23:36:29] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> Kazanchis Square
+[2026-05-27 23:36:30] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-27 23:36:33] [INFO ] Client connected: /127.0.0.1
+[2026-05-27 23:36:33] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-27 23:36:33] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> Kazanchis Square
+[2026-05-27 23:36:34] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-27 23:36:40] [INFO ] Client connected: /127.0.0.1
+[2026-05-27 23:36:40] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-27 23:36:40] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> Kazanchis Square
+[2026-05-27 23:36:41] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-27 23:36:41] [INFO ] Client connected: /127.0.0.1
+[2026-05-27 23:36:41] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-27 23:36:41] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> Friendship Park
+[2026-05-27 23:36:41] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-27 23:36:42] [INFO ] Client connected: /127.0.0.1
+[2026-05-27 23:36:42] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-27 23:36:42] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> Garnet Avenue
+[2026-05-27 23:36:42] [ERROR] Price estimate error: Key not found in JSON: lat

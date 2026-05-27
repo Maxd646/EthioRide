@@ -165,6 +165,17 @@ public class AdminService {
             MessageType.PRICING_RULES_UPDATE_RESPONSE, msg -> callback.accept(msg.getPayload().toString()));
     }
 
+    /** Requests a full financial report from the server. */
+    public void requestFinancialReport(Consumer<java.util.Map<String, Object>> callback) {
+        sendRequest(MessageType.FINANCIAL_REPORT_REQUEST, null,
+            MessageType.FINANCIAL_REPORT_RESPONSE, msg -> {
+                @SuppressWarnings("unchecked")
+                java.util.Map<String, Object> report =
+                    (java.util.Map<String, Object>) msg.getPayload();
+                callback.accept(report);
+            });
+    }
+
     /**
      * Generic request-response helper.
      * Registers a one-shot handler in the pending map keyed by the expected

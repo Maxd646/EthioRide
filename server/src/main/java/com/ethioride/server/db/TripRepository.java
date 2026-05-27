@@ -217,6 +217,57 @@ public class TripRepository {
     }
 
     /**
+     * Financial report: revenue breakdown by category and by day (last 30 days).
+     * Returns a serializable Map with keys:
+     *   "byCategory" -> Map<String, Double>  (ECONOMY/PREMIUM/ELITE -> net revenue)
+     *   "byDay"      -> Map<String, Double>  (date string -> revenue)
+     *   "commission" -> Double               (total platform commission)
+     *   "grossRevenue" -> Double
+     *   "netRevenue"   -> Double
+     */
+    public java.util.Map<String, Object> getFinancialReport() throws Exception {
+        Connection conn = DBConnection.getConnection();
+
+        // Revenue by category
+        String catSql = "SELECT category, SUM(fare) AS total FROM trips " +
+                        "WHERE status = 'COMPLETED' GROUP BY category";
+        PreparedStatement catStmt = conn.prepareStatement(catSql);
+        ResultSet catRs = catStmt.executeQuery();
+        java.util.Map<String, Double> byCategory = new java.util.LinkedHashMap<>();
+        double grossRevenue = 0;
+        while (catRs.next()) {
+            double amt = catRs.getDouble("total");
+            byCategory.put(catRs.getString("category"), amt);
+            grossRevenue += amt;
+        }
+        catRs.close(); catStmt.close();
+
+        // Revenue by day (last 30 days)
+        String daySql = "SELECT DATE(created_at) AS day, SUM(fare) AS total FROM trips " +
+                        "WHERE status = 'COMPLETED' AND created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY) " +
+                        "GROUP BY DATE(created_at) ORDER BY day ASC";
+        PreparedStatement dayStmt = conn.prepareStatement(daySql);
+        ResultSet dayRs = dayStmt.executeQuery();
+        java.util.Map<String, Double> byDay = new java.util.LinkedHashMap<>();
+        while (dayRs.next()) {
+            byDay.put(dayRs.getString("day"), dayRs.getDouble("total"));
+        }
+        dayRs.close(); dayStmt.close();
+        conn.close();
+
+        double commission = grossRevenue * 0.15;
+        double netRevenue = grossRevenue - commission;
+
+        java.util.Map<String, Object> report = new java.util.HashMap<>();
+        report.put("byCategory",   (java.io.Serializable) byCategory);
+        report.put("byDay",        (java.io.Serializable) byDay);
+        report.put("grossRevenue", grossRevenue);
+        report.put("commission",   commission);
+        report.put("netRevenue",   netRevenue);
+        return report;
+    }
+
+    /**
      * SELECT aggregate stats for admin dashboard.
      * Returns: [totalTrips, completedTrips, cancelledTrips, totalRevenue]
      */

@@ -116,6 +116,7 @@ public class EthioRideServer {
                 case PRICE_ESTIMATE_REQUEST      -> handlePriceEstimate(msg, out);
                 case PRICING_RULES_REQUEST       -> handlePricingRulesGet(msg, out);
                 case PRICING_RULES_UPDATE        -> handlePricingRulesUpdate(msg, out);
+                case FINANCIAL_REPORT_REQUEST    -> handleFinancialReport(msg, out);
                 case HEARTBEAT                   -> sendAck(out, msg.getSenderId());
                 default -> LOG.warn("Unhandled message type: " + msg.getType());
             }
@@ -667,6 +668,20 @@ public class EthioRideServer {
             } catch (Exception e) {
                 LOG.error("Price estimate error: " + e.getMessage());
                 out.writeObject(new Message(MessageType.ERROR, "Price calculation failed: " + e.getMessage(), "server"));
+                out.flush();
+            }
+        }
+
+        private void handleFinancialReport(Message msg, ObjectOutputStream out) throws IOException {
+            try {
+                java.util.Map<String, Object> report =
+                    new com.ethioride.server.db.TripRepository().getFinancialReport();
+                out.writeObject(new Message(MessageType.FINANCIAL_REPORT_RESPONSE,
+                    (java.io.Serializable) report, "server"));
+                out.flush();
+            } catch (Exception e) {
+                LOG.error("Financial report error: " + e.getMessage());
+                out.writeObject(new Message(MessageType.ERROR, "Failed to generate report", "server"));
                 out.flush();
             }
         }
