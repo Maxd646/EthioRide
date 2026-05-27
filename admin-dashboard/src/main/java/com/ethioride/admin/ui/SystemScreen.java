@@ -54,7 +54,7 @@ public class SystemScreen {
         btnPricing.setOnAction(e -> new PricingScreen(stage).show());
         Region sp = new Region(); VBox.setVgrow(sp, Priority.ALWAYS);
         Button btnOut = navBtn("↩  Sign Out");
-        btnOut.setOnAction(e -> { stopLog(); AdminService.getInstance().disconnect(); AdminSession.getInstance().logout(); new LoginScreen(stage).show(); });
+        btnOut.setOnAction(e -> { AdminService.getInstance().disconnect(); AdminSession.getInstance().logout(); new LoginScreen(stage).show(); });
         s.getChildren().addAll(logo, btnDash, btnDrivers, btnTrips, btnUsers, btnPricing, btnSystem, sp, btnOut);
         return s;
     }
@@ -152,7 +152,7 @@ public class SystemScreen {
         logScroll.setVvalue(1.0);
     }
 
-    private void stopLog() { if (logTimer != null) logTimer.stop(); }
+    // No log timer in SystemScreen — nothing to stop on navigation.
 
     private VBox metricCard(String label, String value, String color, double progress) {
         VBox card = new VBox(8);
