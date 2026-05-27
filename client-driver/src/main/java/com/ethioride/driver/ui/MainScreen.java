@@ -136,15 +136,30 @@ public class MainScreen {
             sendStatusUpdate(online);
         });
 
+        // ── Restore persisted online/offline state on navigation back ─────────
+        // DriverSessionState holds the real state; the new ToggleButton starts
+        // unselected by default, so we sync it here without sending a server update.
+        boolean wasOnline = DriverSessionState.getInstance().isOnline();
+        toggleOnline.setSelected(wasOnline);
+        if (wasOnline) {
+            toggleOnline.setText("ONLINE ●");
+            toggleOnline.setStyle("-fx-background-color:#166534;-fx-text-fill:#22c55e;" +
+                    "-fx-background-radius:8px;-fx-padding:10px;-fx-cursor:hand;");
+        }
+
+        // ── Shift earnings ────────────────────────────────────────────────────
         Label lblEarningsTitle = new Label("Shift Earnings");
         lblEarningsTitle.setTextFill(Color.web("#94a3b8"));
         lblEarningsTitle.setFont(Font.font("Arial", 12));
 
-        lblShiftEarnings = new Label("ETB 0");
+        double savedEarnings = DriverSessionState.getInstance().getShiftEarnings();
+        lblShiftEarnings = new Label(savedEarnings > 0
+                ? String.format("ETB %.0f", savedEarnings) : "ETB 0");
         lblShiftEarnings.setFont(Font.font("Arial", FontWeight.BOLD, 22));
         lblShiftEarnings.setTextFill(Color.web("#22c55e"));
 
-        earningsProgress = new ProgressBar(0);
+        earningsProgress = new ProgressBar(savedEarnings > 0
+                ? Math.min(savedEarnings / 5000.0, 1.0) : 0);
         earningsProgress.setMaxWidth(Double.MAX_VALUE);
         earningsProgress.setPrefHeight(6);
 
