@@ -25,6 +25,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -220,7 +221,7 @@ public class MainScreen {
             "-fx-background-radius: 10px; -fx-padding: 14px; -fx-cursor: hand;");
         btnRequest.setOnAction(e -> onRequestRide());
 
-        HBox quickRow = buildQuickLocations();
+        javafx.scene.layout.FlowPane quickRow = buildQuickLocations();
 
         panel.getChildren().addAll(lblTitle, lblSub,
             lblPickupLbl, tfPickup, lblLocationHint,
@@ -358,24 +359,51 @@ public class MainScreen {
         schedulePriceEstimate();
     }
 
-    private HBox buildQuickLocations() {
-        HBox row = new HBox(24);
+    private javafx.scene.layout.FlowPane buildQuickLocations() {
+        javafx.scene.layout.FlowPane row = new javafx.scene.layout.FlowPane(16, 10);
         row.setAlignment(Pos.CENTER_LEFT);
-        row.getChildren().addAll(
-            quickLocation("🏠", "Home",      "Garnet Avenue"),
-            quickLocation("💼", "Work",      "Kazanchis Square"),
-            quickLocation("⭐", "Favorites", "Friendship Park")
-        );
+
+        List<SessionState.SavedLocation> locs = SessionState.getInstance().getSavedLocations();
+        if (locs.isEmpty()) {
+            Label hint = new Label("No saved locations — add them in ⚙ Settings");
+            hint.setTextFill(Color.web("#475569"));
+            hint.setFont(Font.font("Arial", 11));
+            hint.setStyle("-fx-cursor:hand;");
+            hint.setOnMouseClicked(e -> new SettingsScreen(stage).show());
+            row.getChildren().add(hint);
+        } else {
+            for (SessionState.SavedLocation loc : locs) {
+                row.getChildren().add(quickLocation(loc.getName(), loc.getAddress()));
+            }
+        }
         return row;
     }
 
-    private VBox quickLocation(String icon, String name, String addr) {
-        Label ico  = new Label(icon); ico.setFont(Font.font("Arial", 20));
-        Label lbl  = new Label(name); lbl.setTextFill(Color.web("#f1f5f9")); lbl.setFont(Font.font("Arial", FontWeight.BOLD, 12));
-        Label addr2 = new Label(addr); addr2.setTextFill(Color.web("#475569")); addr2.setFont(Font.font("Arial", 10));
-        VBox box = new VBox(4, ico, lbl, addr2);
+    private VBox quickLocation(String name, String addr) {
+        // Pick an icon based on common names, fallback to ⭐
+        String icon = switch (name.toLowerCase()) {
+            case "home"      -> "🏠";
+            case "work"      -> "💼";
+            case "school"    -> "🏫";
+            case "gym"       -> "🏋";
+            case "hospital"  -> "🏥";
+            case "airport"   -> "✈";
+            default          -> "⭐";
+        };
+        Label ico   = new Label(icon);
+        ico.setFont(Font.font("Arial", 20));
+        Label lbl   = new Label(name);
+        lbl.setTextFill(Color.web("#f1f5f9"));
+        lbl.setFont(Font.font("Arial", FontWeight.BOLD, 11));
+        lbl.setMaxWidth(80);
+        Label addr2 = new Label(addr);
+        addr2.setTextFill(Color.web("#475569"));
+        addr2.setFont(Font.font("Arial", 10));
+        addr2.setMaxWidth(80);
+        addr2.setWrapText(true);
+        VBox box = new VBox(3, ico, lbl, addr2);
         box.setAlignment(Pos.CENTER);
-        box.setStyle("-fx-cursor: hand;");
+        box.setStyle("-fx-cursor:hand;");
         box.setOnMouseClicked(e -> { tfDestination.setText(addr); schedulePriceEstimate(); });
         return box;
     }
@@ -645,7 +673,7 @@ public class MainScreen {
                         conn.send(new Message(MessageType.TRIP_CANCELLED, tripId, passengerId));
                     }
                 } catch (Exception ex) {
-                    System.err.println("[Passenger] Cancel send failed: " + ex.getMessage());
+                    // cancel send failed — ignore silently
                 }
             }, "trip-cancel");
             t.setDaemon(true);
