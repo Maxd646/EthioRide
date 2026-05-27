@@ -4,6 +4,7 @@ import com.ethioride.passenger.network.ServerConnection;
 import com.ethioride.passenger.state.SessionState;
 import com.ethioride.shared.constants.AppConstants;
 import com.ethioride.shared.dto.TripRequestDTO;
+import com.ethioride.shared.dto.PriceEstimateDTO;
 import com.ethioride.shared.enums.RideCategory;
 import com.ethioride.shared.protocol.Message;
 import com.ethioride.shared.protocol.MessageType;
@@ -31,6 +32,7 @@ public class MainScreen {
     private TextField     tfPickup;
     private TextField     tfDestination;
     private Label         lblStatus;
+    private Label         lblPriceEstimate;
     private Button        btnRequest;
     private RideCategory  selectedCategory = RideCategory.ECONOMY;
 
@@ -38,6 +40,9 @@ public class MainScreen {
     private Button btnEconomy;
     private Button btnPremium;
     private Button btnElite;
+
+    // Price estimation
+    private PriceEstimateDTO currentEstimate;
 
     public MainScreen(Stage stage) {
         this.stage = stage;
@@ -137,6 +142,7 @@ public class MainScreen {
 
         tfPickup = new TextField("Meskel Square, Addis Ababa");
         styleField(tfPickup);
+        tfPickup.textProperty().addListener((obs, oldVal, newVal) -> updatePriceEstimate());
 
         // Destination
         Label lblDest = new Label("Destination");
@@ -146,6 +152,7 @@ public class MainScreen {
         tfDestination = new TextField();
         tfDestination.setPromptText("Enter destination...");
         styleField(tfDestination);
+        tfDestination.textProperty().addListener((obs, oldVal, newVal) -> updatePriceEstimate());
 
         // Ride category tiles
         Label lblCat = new Label("Select Ride Type");
@@ -153,6 +160,13 @@ public class MainScreen {
         lblCat.setFont(Font.font("Arial", 12));
 
         HBox categoryRow = buildCategoryRow();
+
+        // Price estimate display
+        lblPriceEstimate = new Label("Enter destination for price estimate");
+        lblPriceEstimate.setFont(Font.font("Arial", FontWeight.BOLD, 16));
+        lblPriceEstimate.setTextFill(Color.web("#3b82f6"));
+        lblPriceEstimate.setStyle("-fx-background-color: #0d1526; -fx-padding: 12px; -fx-background-radius: 8px; -fx-border-color: #1e3a5f; -fx-border-radius: 8px;");
+        lblPriceEstimate.setMaxWidth(Double.MAX_VALUE);
 
         // Status label
         lblStatus = new Label();
@@ -182,6 +196,7 @@ public class MainScreen {
             lblPickup, tfPickup,
             lblDest, tfDestination,
             lblCat, categoryRow,
+            lblPriceEstimate,
             lblStatus,
             btnRequest,
             new Separator(),
@@ -220,6 +235,7 @@ public class MainScreen {
         btnPremium.setStyle(tilestyle(false));
         btnElite.setStyle(tilestyle(false));
         selected.setStyle(tilestyle(true));
+        updatePriceEstimate(); // Update price when category changes
     }
 
     private HBox buildQuickLocations() {
@@ -249,11 +265,81 @@ public class MainScreen {
         VBox box = new VBox(4, lblIcon, lblName, lblAddr);
         box.setAlignment(Pos.CENTER);
         box.setStyle("-fx-cursor: hand;");
-        box.setOnMouseClicked(e -> tfDestination.setText(addr));
+        box.setOnMouseClicked(e -> {
+            tfDestination.setText(addr);
+            updatePriceEstimate();
+        });
         return box;
     }
 
     // ── Actions ───────────────────────────────────────────────────────────────
+
+    private void updatePriceEstimate() {
+        String pickup = tfPickup.getText().trim();
+        String dest = tfDestination.getText().trim();
+
+        if (pickup.isEmpty() || dest.isEmpty()) {
+            lblPriceEstimate.setText("Enter destination for price estimate");
+            lblPriceEstimate.setTextFill(Color.web("#475569"));
+            return;
+        }
+
+        if (pickup.equals(dest)) {
+            lblPriceEstimate.setText("Pickup and destination cannot be the same");
+            lblPriceEstimate.setTextFill(Color.web("#ef4444"));
+            return;
+        }
+
+        lblPriceEstimate.setText("Calculating price...");
+        lblPriceEstimate.setTextFill(Color.web("#94a3b8"));
+
+        // Request price estimate from server in background
+        Thread t = new Thread(() -> {
+            try {
+                ServerConnection conn = new ServerConnection();
+                conn.connect();
+
+                // Send price estimate request: "origin|destination|category"
+                String requestPayload = pickup + "|" + dest + "|" + selectedCategory.name();
+                Message response = conn.sendAndReceive(
+                    new Message(MessageType.PRICE_ESTIMATE_REQUEST, requestPayload, "passenger")
+                );
+                conn.close();
+
+                Platform.runLater(() -> {
+                    if (response.getType() == MessageType.PRICE_ESTIMATE_RESPONSE) {
+                        currentEstimate = (PriceEstimateDTO) response.getPayload();
+                        updatePriceDisplay();
+                    } else if (response.getType() == MessageType.ERROR) {
+                        lblPriceEstimate.setText("Price estimation unavailable");
+                        lblPriceEstimate.setTextFill(Color.web("#ef4444"));
+                    }
+                });
+
+            } catch (Exception ex) {
+                Platform.runLater(() -> {
+                    lblPriceEstimate.setText("Price estimation unavailable (server offline)");
+                    lblPriceEstimate.setTextFill(Color.web("#ef4444"));
+                });
+            }
+        }, "price-estimate-thread");
+        t.setDaemon(true);
+        t.start();
+    }
+
+    private void updatePriceDisplay() {
+        if (currentEstimate == null) return;
+
+        String priceText = String.format(
+            "💰 ETB %.2f • %.1f km • ~%.0f min",
+            currentEstimate.getTotalFare(),
+            currentEstimate.getDistanceKm(),
+            currentEstimate.getDurationMinutes()
+        );
+
+        lblPriceEstimate.setText(priceText);
+        lblPriceEstimate.setTextFill(Color.web("#22c55e"));
+    }
 
     private void onRequestRide() {
         String pickup = tfPickup.getText().trim();

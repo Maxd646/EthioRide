@@ -1,6 +1,11 @@
 package com.ethioride.driver.ui;
 
+import com.ethioride.driver.network.NetworkClient;
 import com.ethioride.driver.state.DriverSessionState;
+import com.ethioride.shared.dto.TripRequestDTO;
+import com.ethioride.shared.enums.TripStatus;
+import com.ethioride.shared.protocol.MessageType;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -12,11 +17,13 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class RideHistoryScreen {
     private final Stage stage;
     private VBox tripList;
-    private List<String[]> allTrips;
+    private List<TripRequestDTO> allTrips;
+    private Label lblTotal, lblEarnings, lblRating;
 
     public RideHistoryScreen(Stage stage) { this.stage = stage; }
 
@@ -28,6 +35,7 @@ public class RideHistoryScreen {
         stage.setScene(new Scene(root, 900, 640));
         stage.setResizable(true);
         stage.show();
+        loadHistory();
     }
 
     private VBox buildSidebar() {
@@ -62,20 +70,34 @@ public class RideHistoryScreen {
         title.setFont(Font.font("Arial", FontWeight.BOLD, 24));
         title.setTextFill(Color.web("#f1f5f9"));
 
-        // Summary
+        // Summary cards
+        lblTotal    = new Label("...");
+        lblEarnings = new Label("...");
+        lblRating   = new Label(String.format("%.1f ★",
+            DriverSessionState.getInstance().getCurrentDriver().getRating()));
+
+        lblTotal.setFont(Font.font("Arial", FontWeight.BOLD, 20));
+        lblTotal.setTextFill(Color.web("#22c55e"));
+        lblEarnings.setFont(Font.font("Arial", FontWeight.BOLD, 20));
+        lblEarnings.setTextFill(Color.web("#3b82f6"));
+        lblRating.setFont(Font.font("Arial", FontWeight.BOLD, 20));
+        lblRating.setTextFill(Color.web("#f59e0b"));
+
         HBox summary = new HBox(16);
         summary.getChildren().addAll(
-            statCard("Trips Today", "4", "#22c55e"),
-            statCard("Earnings Today", "ETB 740", "#3b82f6"),
-            statCard("Avg Rating", "4.8 ★", "#f59e0b")
+            statCard("Total Trips",    lblTotal,    "#22c55e"),
+            statCard("Total Earnings", lblEarnings, "#3b82f6"),
+            statCard("Your Rating",    lblRating,   "#f59e0b")
         );
 
         // Search + filter
         HBox toolbar = new HBox(12);
         toolbar.setAlignment(Pos.CENTER_LEFT);
         TextField tfSearch = new TextField();
-        tfSearch.setPromptText("Search trips...");
-        tfSearch.setStyle("-fx-background-color:#0d1526;-fx-text-fill:#f1f5f9;-fx-prompt-text-fill:#475569;-fx-border-color:#1e3a5f;-fx-border-radius:8px;-fx-background-radius:8px;-fx-padding:8px 12px;");
+        tfSearch.setPromptText("Search by location...");
+        tfSearch.setStyle("-fx-background-color:#0d1526;-fx-text-fill:#f1f5f9;" +
+                          "-fx-prompt-text-fill:#475569;-fx-border-color:#1e3a5f;" +
+                          "-fx-border-radius:8px;-fx-background-radius:8px;-fx-padding:8px 12px;");
         HBox.setHgrow(tfSearch, Priority.ALWAYS);
         ComboBox<String> cbFilter = new ComboBox<>();
         cbFilter.getItems().addAll("All", "COMPLETED", "CANCELLED");
@@ -83,16 +105,7 @@ public class RideHistoryScreen {
         cbFilter.setStyle("-fx-background-color:#0d1526;-fx-text-fill:#f1f5f9;");
         toolbar.getChildren().addAll(tfSearch, cbFilter);
 
-        allTrips = List.of(
-            new String[]{"Apr 18, 2026  14:28", "Edna Mall, Bole",    "Sarbet",    "145.00", "COMPLETED", "Hanna T."},
-            new String[]{"Apr 18, 2026  12:10", "Meskel Square",       "Bole Airport", "320.00", "COMPLETED", "Yonas A."},
-            new String[]{"Apr 17, 2026  09:45", "Bole Medhanialem",    "Gerji",     "110.00", "CANCELLED", "Sara M."},
-            new String[]{"Apr 16, 2026  18:30", "Piassa",              "Kazanchis", "90.00",  "COMPLETED", "Biruk T."},
-            new String[]{"Apr 15, 2026  08:00", "CMC",                 "Megenagna", "75.00",  "COMPLETED", "Meron K."}
-        );
-
         tripList = new VBox(8);
-        renderTrips(allTrips);
 
         tfSearch.textProperty().addListener((o, ov, nv) -> filter(nv, cbFilter.getValue()));
         cbFilter.setOnAction(e -> filter(tfSearch.getText(), cbFilter.getValue()));
@@ -104,33 +117,79 @@ public class RideHistoryScreen {
         return sp;
     }
 
-    private void renderTrips(List<String[]> trips) {
+    private void loadHistory() {
+        String driverId = DriverSessionState.getInstance().getCurrentDriver().getId();
+        try {
+            NetworkClient.getInstance().connect();
+            NetworkClient.getInstance().sendRequest(
+                MessageType.DRIVER_TRIP_HISTORY_REQUEST, driverId,
+                MessageType.DRIVER_TRIP_HISTORY_RESPONSE, msg -> {
+                    @SuppressWarnings("unchecked")
+                    List<TripRequestDTO> trips = (List<TripRequestDTO>) msg.getPayload();
+                    allTrips = trips;
+
+                    long completed = trips.stream()
+                        .filter(t -> t.getStatus() == TripStatus.COMPLETED).count();
+                    double earnings = trips.stream()
+                        .filter(t -> t.getStatus() == TripStatus.COMPLETED)
+                        .mapToDouble(TripRequestDTO::getFare).sum();
+
+                    Platform.runLater(() -> {
+                        lblTotal.setText(String.valueOf(completed));
+                        lblEarnings.setText(String.format("ETB %.2f", earnings));
+                        renderTrips(trips);
+                    });
+                });
+        } catch (Exception e) {
+            Platform.runLater(() -> {
+                lblTotal.setText("N/A");
+                lblEarnings.setText("N/A");
+            });
+        }
+    }
+
+    private void renderTrips(List<TripRequestDTO> trips) {
         tripList.getChildren().clear();
-        for (String[] t : trips) {
+        if (trips.isEmpty()) {
+            Label empty = new Label("No trips yet.");
+            empty.setTextFill(Color.web("#475569"));
+            empty.setFont(Font.font("Arial", 13));
+            tripList.getChildren().add(empty);
+            return;
+        }
+        for (TripRequestDTO t : trips) {
+            boolean completed = t.getStatus() == TripStatus.COMPLETED;
             HBox card = new HBox(16);
             card.setStyle("-fx-background-color:#1a2235;-fx-background-radius:12px;-fx-padding:16;");
             card.setAlignment(Pos.CENTER_LEFT);
 
+            // Status icon
             StackPane icon = new StackPane();
-            icon.setStyle("-fx-background-color:#1e3a5f;-fx-background-radius:50%;-fx-min-width:44px;-fx-min-height:44px;");
-            Label ico = new Label("COMPLETED".equals(t[4]) ? "✓" : "✕");
-            ico.setStyle("COMPLETED".equals(t[4]) ? "-fx-text-fill:#22c55e;-fx-font-size:16px;-fx-font-weight:bold;" : "-fx-text-fill:#ef4444;-fx-font-size:16px;-fx-font-weight:bold;");
+            icon.setStyle("-fx-background-color:#1e3a5f;-fx-background-radius:50%;" +
+                          "-fx-min-width:44px;-fx-min-height:44px;");
+            Label ico = new Label(completed ? "✓" : "✕");
+            ico.setStyle((completed ? "-fx-text-fill:#22c55e;" : "-fx-text-fill:#ef4444;") +
+                         "-fx-font-size:16px;-fx-font-weight:bold;");
             icon.getChildren().add(ico);
 
+            // Route info
             VBox info = new VBox(4);
             HBox.setHgrow(info, Priority.ALWAYS);
-            Label route = new Label(t[1] + "  →  " + t[2]);
+            Label route = new Label(t.getPickupLocation() + "  →  " + t.getDropoffLocation());
             route.setStyle("-fx-text-fill:#f1f5f9;-fx-font-size:13px;-fx-font-weight:bold;");
-            Label meta = new Label(t[0] + "  •  Passenger: " + t[5]);
+            String passengerName = t.getPassengerPhone() != null ? t.getPassengerPhone() : "Passenger";
+            Label meta = new Label(String.format("%.1f km  •  %s", t.getDistanceKm(), passengerName));
             meta.setStyle("-fx-text-fill:#475569;-fx-font-size:11px;");
             info.getChildren().addAll(route, meta);
 
+            // Fare + status
             VBox right = new VBox(4);
             right.setAlignment(Pos.CENTER_RIGHT);
-            Label fare = new Label("ETB " + t[3]);
+            Label fare = new Label(String.format("ETB %.2f", t.getFare()));
             fare.setStyle("-fx-text-fill:#22c55e;-fx-font-size:14px;-fx-font-weight:bold;");
-            Label status = new Label(t[4]);
-            status.setStyle("COMPLETED".equals(t[4]) ? "-fx-text-fill:#22c55e;-fx-font-size:10px;" : "-fx-text-fill:#ef4444;-fx-font-size:10px;");
+            Label status = new Label(t.getStatus() != null ? t.getStatus().name() : "—");
+            status.setStyle((completed ? "-fx-text-fill:#22c55e;" : "-fx-text-fill:#ef4444;") +
+                            "-fx-font-size:10px;");
             right.getChildren().addAll(fare, status);
 
             card.getChildren().addAll(icon, info, right);
@@ -139,19 +198,25 @@ public class RideHistoryScreen {
     }
 
     private void filter(String q, String status) {
-        renderTrips(allTrips.stream()
-            .filter(t -> (q.isEmpty() || t[1].toLowerCase().contains(q.toLowerCase()) || t[2].toLowerCase().contains(q.toLowerCase()))
-                      && ("All".equals(status) || t[4].equals(status)))
-            .toList());
+        if (allTrips == null) return;
+        List<TripRequestDTO> filtered = allTrips.stream()
+            .filter(t -> (q.isEmpty() ||
+                t.getPickupLocation().toLowerCase().contains(q.toLowerCase()) ||
+                t.getDropoffLocation().toLowerCase().contains(q.toLowerCase()))
+                && ("All".equals(status) || (t.getStatus() != null && t.getStatus().name().equals(status))))
+            .collect(Collectors.toList());
+        renderTrips(filtered);
     }
 
-    private VBox statCard(String label, String value, String color) {
+    private VBox statCard(String label, Label valueLabel, String color) {
         VBox card = new VBox(4);
-        card.setStyle("-fx-background-color:#0d1526;-fx-border-color:#1e3a5f;-fx-border-radius:10px;-fx-background-radius:10px;-fx-padding:14;");
-        card.setPrefWidth(160);
-        Label lbl = new Label(label); lbl.setTextFill(Color.web("#94a3b8")); lbl.setFont(Font.font("Arial", 11));
-        Label val = new Label(value); val.setTextFill(Color.web(color)); val.setFont(Font.font("Arial", FontWeight.BOLD, 16));
-        card.getChildren().addAll(lbl, val);
+        card.setStyle("-fx-background-color:#0d1526;-fx-border-color:#1e3a5f;" +
+                      "-fx-border-radius:10px;-fx-background-radius:10px;-fx-padding:14;");
+        card.setPrefWidth(180);
+        Label lbl = new Label(label);
+        lbl.setTextFill(Color.web("#94a3b8"));
+        lbl.setFont(Font.font("Arial", 11));
+        card.getChildren().addAll(lbl, valueLabel);
         return card;
     }
 
@@ -159,7 +224,8 @@ public class RideHistoryScreen {
         Button btn = new Button(text);
         btn.setMaxWidth(Double.MAX_VALUE); btn.setAlignment(Pos.CENTER_LEFT);
         btn.setFont(Font.font("Arial", 13));
-        btn.setStyle("-fx-background-color:transparent;-fx-text-fill:#94a3b8;-fx-padding:10px 20px;-fx-cursor:hand;-fx-background-radius:6px;");
+        btn.setStyle("-fx-background-color:transparent;-fx-text-fill:#94a3b8;" +
+                     "-fx-padding:10px 20px;-fx-cursor:hand;-fx-background-radius:6px;");
         return btn;
     }
 }
