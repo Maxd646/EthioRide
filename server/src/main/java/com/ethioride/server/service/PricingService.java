@@ -9,13 +9,14 @@ import java.sql.ResultSet;
 
 /**
  * Service for calculating trip prices based on distance, duration, and category.
+ * Uses RoutingService (Nominatim + OSRM) for free distance/duration data.
  */
 public class PricingService {
     
-    private final GoogleMapsService mapsService;
+    private final RoutingService routingService;
     
     public PricingService() {
-        this.mapsService = new GoogleMapsService();
+        this.routingService = new RoutingService();
     }
     
     /**
@@ -28,10 +29,10 @@ public class PricingService {
      * @throws Exception if calculation fails
      */
     public PriceEstimate calculatePrice(String origin, String destination, TripCategory category) throws Exception {
-        System.out.println("[Pricing] Calculating price for " + category + " trip");
+        System.out.println("[Pricing] Calculating price for " + category + " trip (OSM/OSRM)");
         
-        // Get distance and duration from Google Maps
-        GoogleMapsService.DistanceResult distance = mapsService.calculateDistance(origin, destination);
+        // Get distance and duration from OpenStreetMap + OSRM (free, no API key)
+        RoutingService.DistanceResult distance = routingService.calculateDistance(origin, destination);
         
         // Get pricing rules from database
         PricingRules rules = getPricingRules(category);
