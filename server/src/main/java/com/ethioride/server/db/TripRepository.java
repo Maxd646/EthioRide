@@ -50,6 +50,76 @@ public class TripRepository {
     // ── READ ──────────────────────────────────────────────────────────────────
 
     /**
+     * SELECT all trips with passenger and driver names joined.
+     * Used by admin TripsScreen.
+     */
+    public List<TripRequestDTO> findAll() throws Exception {
+        Connection conn = DBConnection.getConnection();
+
+        String sql = "SELECT t.id, t.passenger_id, t.driver_id, t.pickup_location, " +
+                     "t.dropoff_location, t.category, t.fare, t.distance_km, t.status, " +
+                     "t.created_at, " +
+                     "p.full_name AS passenger_name, " +
+                     "d.full_name AS driver_name " +
+                     "FROM trips t " +
+                     "LEFT JOIN users p ON t.passenger_id = p.id " +
+                     "LEFT JOIN users d ON t.driver_id = d.id " +
+                     "ORDER BY t.created_at DESC";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        ResultSet rs = stmt.executeQuery();
+
+        List<TripRequestDTO> list = new ArrayList<>();
+        while (rs.next()) {
+            TripRequestDTO t = mapRow(rs);
+            // Store names in passengerPhone field temporarily (reused for display)
+            t.setPassengerPhone(rs.getString("passenger_name"));
+            // Store driver name via driverId field prefix trick — use a DTO extension instead
+            // We'll pass driver name as part of the DTO by overloading passengerPhone
+            // Format: "passengerName|driverName"
+            String driverName = rs.getString("driver_name");
+            t.setPassengerPhone(
+                (rs.getString("passenger_name") != null ? rs.getString("passenger_name") : "Unknown")
+                + "|" +
+                (driverName != null ? driverName : "—")
+            );
+            list.add(t);
+        }
+
+        rs.close();
+        stmt.close();
+        conn.close();
+        return list;
+    }
+
+    /**
+     * SELECT trips for a specific driver.
+     * Used by driver RideHistoryScreen.
+     */
+    public List<TripRequestDTO> findByDriver(String driverId) throws Exception {
+        Connection conn = DBConnection.getConnection();
+
+        String sql = "SELECT t.*, p.full_name AS passenger_name " +
+                     "FROM trips t " +
+                     "LEFT JOIN users p ON t.passenger_id = p.id " +
+                     "WHERE t.driver_id = ? ORDER BY t.created_at DESC";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setString(1, driverId);
+
+        ResultSet rs = stmt.executeQuery();
+        List<TripRequestDTO> list = new ArrayList<>();
+        while (rs.next()) {
+            TripRequestDTO t = mapRow(rs);
+            t.setPassengerPhone(rs.getString("passenger_name"));
+            list.add(t);
+        }
+
+        rs.close();
+        stmt.close();
+        conn.close();
+        return list;
+    }
+
+    /**
      * SELECT trips for a specific passenger.
      * Uses ORDER BY created_at DESC — newest first.
      */
@@ -62,25 +132,13 @@ public class TripRepository {
 
         ResultSet rs = stmt.executeQuery();
         List<TripRequestDTO> list = new ArrayList<>();
-
-        // Step 5: Process ResultSet — iterate rows
         while (rs.next()) {
-            TripRequestDTO t = new TripRequestDTO();
-            t.setTripId(rs.getString("id"));
-            t.setPassengerId(rs.getString("passenger_id"));
-            t.setDriverId(rs.getString("driver_id"));
-            t.setPickupLocation(rs.getString("pickup_location"));
-            t.setDropoffLocation(rs.getString("dropoff_location"));
-            t.setFare(rs.getDouble("fare"));
-            t.setDistanceKm(rs.getDouble("distance_km"));
-            t.setStatus(TripStatus.valueOf(rs.getString("status")));
-            list.add(t);
+            list.add(mapRow(rs));
         }
 
         rs.close();
         stmt.close();
         conn.close();
-
         return list;
     }
 
@@ -98,8 +156,55 @@ public class TripRepository {
         rs.close();
         stmt.close();
         conn.close();
-
         return count;
+    }
+
+    /**
+     * SELECT aggregate stats for admin dashboard.
+     * Returns: [totalTrips, completedTrips, cancelledTrips, totalRevenue]
+     */
+    public double[] getStats() throws Exception {
+        Connection conn = DBConnection.getConnection();
+
+        String sql = "SELECT " +
+                     "COUNT(*) AS total, " +
+                     "SUM(CASE WHEN status = 'COMPLETED' THEN 1 ELSE 0 END) AS completed, " +
+                     "SUM(CASE WHEN status = 'CANCELLED' THEN 1 ELSE 0 END) AS cancelled, " +
+                     "SUM(CASE WHEN status = 'COMPLETED' THEN fare ELSE 0 END) AS revenue " +
+                     "FROM trips";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        ResultSet rs = stmt.executeQuery();
+
+        double[] stats = {0, 0, 0, 0};
+        if (rs.next()) {
+            stats[0] = rs.getDouble("total");
+            stats[1] = rs.getDouble("completed");
+            stats[2] = rs.getDouble("cancelled");
+            stats[3] = rs.getDouble("revenue");
+        }
+
+        rs.close();
+        stmt.close();
+        conn.close();
+        return stats;
+    }
+
+    // ── Helper ────────────────────────────────────────────────────────────────
+
+    private TripRequestDTO mapRow(ResultSet rs) throws SQLException {
+        TripRequestDTO t = new TripRequestDTO();
+        t.setTripId(rs.getString("id"));
+        t.setPassengerId(rs.getString("passenger_id"));
+        t.setDriverId(rs.getString("driver_id"));
+        t.setPickupLocation(rs.getString("pickup_location"));
+        t.setDropoffLocation(rs.getString("dropoff_location"));
+        t.setFare(rs.getDouble("fare"));
+        t.setDistanceKm(rs.getDouble("distance_km"));
+        String cat = rs.getString("category");
+        if (cat != null) t.setCategory(RideCategory.valueOf(cat));
+        String status = rs.getString("status");
+        if (status != null) t.setStatus(TripStatus.valueOf(status));
+        return t;
     }
 
     // ── UPDATE ────────────────────────────────────────────────────────────────
