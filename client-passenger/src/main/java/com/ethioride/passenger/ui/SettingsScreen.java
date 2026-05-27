@@ -61,6 +61,7 @@ public class SettingsScreen {
         title.setFont(Font.font("Arial", FontWeight.BOLD, 24));
         title.setTextFill(Color.web("#f1f5f9"));
 
+<<<<<<< HEAD
         // ── Profile section ───────────────────────────────────────────────────
         content.getChildren().addAll(title, sectionLabel("Profile"), buildProfileCard());
 
@@ -80,18 +81,53 @@ public class SettingsScreen {
         content.getChildren().add(sectionLabel("Account"));
         Button btnSignOut = new Button("Sign Out");
         btnSignOut.setStyle("-fx-background-color:#ef4444;-fx-text-fill:white;-fx-background-radius:8px;-fx-padding:10 24;-fx-cursor:hand;-fx-font-size:13px;");
+=======
+        // Profile info (read-only)
+        SessionState session = SessionState.getInstance();
+        String name  = session.isLoggedIn() ? session.getCurrentUser().getFullName() : "—";
+        String phone = session.isLoggedIn() ? session.getCurrentUser().getPhone()    : "—";
+        String email = session.isLoggedIn() && session.getCurrentUser().getEmail() != null
+                       ? session.getCurrentUser().getEmail() : "—";
+
+        VBox profileCard = new VBox(10);
+        profileCard.setStyle("-fx-background-color:#0d1526;-fx-border-color:#1e3a5f;" +
+            "-fx-border-radius:12px;-fx-background-radius:12px;-fx-padding:20;");
+
+        Label lblProfile = new Label("Profile");
+        lblProfile.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        lblProfile.setTextFill(Color.web("#f1f5f9"));
+
+        profileCard.getChildren().addAll(
+            lblProfile,
+            infoRow("Full Name", name),
+            infoRow("Phone",     phone),
+            infoRow("Email",     email)
+        );
+
+        // Sign out
+        Button btnSignOut = new Button("Sign Out");
+        btnSignOut.setMaxWidth(Double.MAX_VALUE);
+        btnSignOut.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        btnSignOut.setStyle("-fx-background-color:#ef4444;-fx-text-fill:white;" +
+            "-fx-background-radius:10px;-fx-padding:12px;-fx-cursor:hand;");
+>>>>>>> 5c7ce678c376c6c1a7c38009039c1be076b03285
         btnSignOut.setOnAction(e -> {
             SessionState.getInstance().clear();
             new LoginScreen(stage).show();
         });
         content.getChildren().add(btnSignOut);
 
+<<<<<<< HEAD
+=======
+        content.getChildren().addAll(title, profileCard, btnSignOut);
+>>>>>>> 5c7ce678c376c6c1a7c38009039c1be076b03285
         ScrollPane sp = new ScrollPane(content);
         sp.setFitToWidth(true);
         sp.setStyle("-fx-background-color:#0a0e1a;-fx-background:#0a0e1a;");
         return sp;
     }
 
+<<<<<<< HEAD
     private VBox buildProfileCard() {
         UserDTO user = SessionState.getInstance().getCurrentUser();
         String name  = user != null ? user.getFullName() : "Guest";
@@ -144,6 +180,22 @@ public class SettingsScreen {
         return lbl;
     }
 
+=======
+    private HBox infoRow(String label, String value) {
+        HBox row = new HBox(12);
+        row.setAlignment(Pos.CENTER_LEFT);
+        Label lbl = new Label(label + ":");
+        lbl.setTextFill(Color.web("#475569"));
+        lbl.setFont(Font.font("Arial", 12));
+        lbl.setMinWidth(80);
+        Label val = new Label(value);
+        val.setTextFill(Color.web("#f1f5f9"));
+        val.setFont(Font.font("Arial", 13));
+        row.getChildren().addAll(lbl, val);
+        return row;
+    }
+
+>>>>>>> 5c7ce678c376c6c1a7c38009039c1be076b03285
     private Button navBtn(String text) {
         Button btn = new Button(text);
         btn.setMaxWidth(Double.MAX_VALUE); btn.setAlignment(Pos.CENTER_LEFT);

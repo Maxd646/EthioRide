@@ -80,11 +80,18 @@ public class LoginScreen {
 
         Thread t = new Thread(() -> {
             try {
-                NetworkClient.getInstance().connect();
-                Message resp = NetworkClient.getInstance().sendAndReceive(
-                    new Message(MessageType.LOGIN_REQUEST, phone + ":" + password, "driver"));
+                NetworkClient nc = NetworkClient.getInstance();
+                nc.connect(); // starts the receive loop
+
+                // Use sendAndWait — the receive loop delivers the response safely
+                Message resp = nc.sendAndWait(
+                    new Message(MessageType.LOGIN_REQUEST, phone + ":" + password, "driver"),
+                    MessageType.LOGIN_RESPONSE,
+                    5000
+                );
+
                 Platform.runLater(() -> {
-                    if (resp.getType() == MessageType.LOGIN_RESPONSE && resp.getPayload() instanceof UserDTO user) {
+                    if (resp != null && resp.getPayload() instanceof UserDTO user) {
                         DriverSessionState.getInstance().setCurrentDriver(user);
                         new MainScreen(stage).show();
                     } else {

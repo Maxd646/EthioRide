@@ -5,6 +5,8 @@ import com.ethioride.shared.enums.TripStatus;
 import java.io.Serializable;
 
 public class TripRequestDTO implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private String tripId;
     private String passengerId;
     private String driverId;
@@ -19,6 +21,9 @@ public class TripRequestDTO implements Serializable {
     private double distanceKm;
     private TripStatus status;
     private String passengerPhone;
+    private String createdAt;  // ISO timestamp from DB created_at column
+    private String passengerName; // display name — populated by JOIN queries
+    private String driverName;    // display name — populated by JOIN queries
 
     public TripRequestDTO() {}
 
@@ -51,4 +56,10 @@ public class TripRequestDTO implements Serializable {
     public void setStatus(TripStatus status) { this.status = status; }
     public String getPassengerPhone() { return passengerPhone; }
     public void setPassengerPhone(String passengerPhone) { this.passengerPhone = passengerPhone; }
+    public String getCreatedAt() { return createdAt; }
+    public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
+    public String getPassengerName() { return passengerName; }
+    public void setPassengerName(String passengerName) { this.passengerName = passengerName; }
+    public String getDriverName() { return driverName; }
+    public void setDriverName(String driverName) { this.driverName = driverName; }
 }

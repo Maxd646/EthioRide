@@ -1,7 +1,7 @@
 package com.ethioride.server.service;
 
 import com.ethioride.server.db.DBConnection;
-import com.ethioride.shared.enums.TripCategory;
+import com.ethioride.shared.enums.RideCategory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,13 +9,14 @@ import java.sql.ResultSet;
 
 /**
  * Service for calculating trip prices based on distance, duration, and category.
+ * Uses RoutingService (Nominatim + OSRM) for free distance/duration data.
  */
 public class PricingService {
     
-    private final GoogleMapsService mapsService;
+    private final RoutingService routingService;
     
     public PricingService() {
-        this.mapsService = new GoogleMapsService();
+        this.routingService = new RoutingService();
     }
     
     /**
@@ -27,11 +28,11 @@ public class PricingService {
      * @return PriceEstimate with breakdown
      * @throws Exception if calculation fails
      */
-    public PriceEstimate calculatePrice(String origin, String destination, TripCategory category) throws Exception {
-        System.out.println("[Pricing] Calculating price for " + category + " trip");
+    public PriceEstimate calculatePrice(String origin, String destination, RideCategory category) throws Exception {
+        System.out.println("[Pricing] Calculating price for " + category + " trip (OSM/OSRM)");
         
-        // Get distance and duration from Google Maps
-        GoogleMapsService.DistanceResult distance = mapsService.calculateDistance(origin, destination);
+        // Get distance and duration from OpenStreetMap + OSRM (free, no API key)
+        RoutingService.DistanceResult distance = routingService.calculateDistance(origin, destination);
         
         // Get pricing rules from database
         PricingRules rules = getPricingRules(category);
@@ -59,14 +60,16 @@ public class PricingService {
             timeFare,
             bookingFee,
             total,
-            category
+            category,
+            distance.getOriginLat(), distance.getOriginLng(),
+            distance.getDestLat(),   distance.getDestLng()
         );
     }
     
     /**
      * Get pricing rules for a specific category from database.
      */
-    private PricingRules getPricingRules(TripCategory category) throws Exception {
+    private PricingRules getPricingRules(RideCategory category) throws Exception {
         Connection conn = DBConnection.getConnection();
         
         String sql = "SELECT base_fare, per_km_rate, per_minute_rate, minimum_fare, booking_fee " +
@@ -130,29 +133,43 @@ public class PricingService {
         private final double timeFare;
         private final double bookingFee;
         private final double totalFare;
-        private final TripCategory category;
-        
+        private final RideCategory category;
+        private final double originLat;
+        private final double originLng;
+        private final double destLat;
+        private final double destLng;
+
         public PriceEstimate(double distanceKm, double durationMinutes, double baseFare,
                            double distanceFare, double timeFare, double bookingFee,
-                           double totalFare, TripCategory category) {
-            this.distanceKm = distanceKm;
+                           double totalFare, RideCategory category,
+                           double originLat, double originLng,
+                           double destLat,   double destLng) {
+            this.distanceKm    = distanceKm;
             this.durationMinutes = durationMinutes;
-            this.baseFare = baseFare;
-            this.distanceFare = distanceFare;
-            this.timeFare = timeFare;
-            this.bookingFee = bookingFee;
-            this.totalFare = totalFare;
-            this.category = category;
+            this.baseFare      = baseFare;
+            this.distanceFare  = distanceFare;
+            this.timeFare      = timeFare;
+            this.bookingFee    = bookingFee;
+            this.totalFare     = totalFare;
+            this.category      = category;
+            this.originLat     = originLat;
+            this.originLng     = originLng;
+            this.destLat       = destLat;
+            this.destLng       = destLng;
         }
         
-        public double getDistanceKm() { return distanceKm; }
+        public double getDistanceKm()      { return distanceKm; }
         public double getDurationMinutes() { return durationMinutes; }
-        public double getBaseFare() { return baseFare; }
-        public double getDistanceFare() { return distanceFare; }
-        public double getTimeFare() { return timeFare; }
-        public double getBookingFee() { return bookingFee; }
-        public double getTotalFare() { return totalFare; }
-        public TripCategory getCategory() { return category; }
+        public double getBaseFare()        { return baseFare; }
+        public double getDistanceFare()    { return distanceFare; }
+        public double getTimeFare()        { return timeFare; }
+        public double getBookingFee()      { return bookingFee; }
+        public double getTotalFare()       { return totalFare; }
+        public RideCategory getCategory()  { return category; }
+        public double getOriginLat()       { return originLat; }
+        public double getOriginLng()       { return originLng; }
+        public double getDestLat()         { return destLat; }
+        public double getDestLng()         { return destLng; }
         
         @Override
         public String toString() {

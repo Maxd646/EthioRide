@@ -23,21 +23,25 @@ public class TripRepository {
 
         // Step 4: PreparedStatement — INSERT
         String sql = "INSERT INTO trips (id, passenger_id, driver_id, pickup_location, " +
-                     "dropoff_location, category, fare, distance_km, status) " +
-                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                     "dropoff_location, pickup_lat, pickup_lng, dropoff_lat, dropoff_lng, " +
+                     "category, fare, distance_km, status) " +
+                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement stmt = conn.prepareStatement(sql);
 
-        // Step 5: Set parameters
         stmt.setString(1, trip.getTripId());
         stmt.setString(2, trip.getPassengerId());
-        stmt.setString(3, trip.getDriverId());   // may be null initially
+        stmt.setString(3, trip.getDriverId());
         stmt.setString(4, trip.getPickupLocation());
         stmt.setString(5, trip.getDropoffLocation());
-        stmt.setString(6, trip.getCategory() != null
+        stmt.setDouble(6, trip.getPickupLat());
+        stmt.setDouble(7, trip.getPickupLng());
+        stmt.setDouble(8, trip.getDropoffLat());
+        stmt.setDouble(9, trip.getDropoffLng());
+        stmt.setString(10, trip.getCategory() != null
                           ? trip.getCategory().name() : RideCategory.ECONOMY.name());
-        stmt.setDouble(7, trip.getFare());
-        stmt.setDouble(8, trip.getDistanceKm());
-        stmt.setString(9, TripStatus.PENDING.name());
+        stmt.setDouble(11, trip.getFare());
+        stmt.setDouble(12, trip.getDistanceKm());
+        stmt.setString(13, TripStatus.PENDING.name());
 
         int rows = stmt.executeUpdate();
         System.out.println("[DB] Trip saved, rows affected: " + rows);
@@ -71,17 +75,11 @@ public class TripRepository {
         List<TripRequestDTO> list = new ArrayList<>();
         while (rs.next()) {
             TripRequestDTO t = mapRow(rs);
-            // Store names in passengerPhone field temporarily (reused for display)
-            t.setPassengerPhone(rs.getString("passenger_name"));
-            // Store driver name via driverId field prefix trick — use a DTO extension instead
-            // We'll pass driver name as part of the DTO by overloading passengerPhone
-            // Format: "passengerName|driverName"
-            String driverName = rs.getString("driver_name");
-            t.setPassengerPhone(
-                (rs.getString("passenger_name") != null ? rs.getString("passenger_name") : "Unknown")
-                + "|" +
-                (driverName != null ? driverName : "—")
-            );
+            // Use dedicated display fields — no more passengerPhone abuse
+            String passengerName = rs.getString("passenger_name");
+            String driverName    = rs.getString("driver_name");
+            t.setPassengerName(passengerName != null ? passengerName : "Unknown");
+            t.setDriverName(driverName != null ? driverName : "—");
             list.add(t);
         }
 
@@ -109,7 +107,7 @@ public class TripRepository {
         List<TripRequestDTO> list = new ArrayList<>();
         while (rs.next()) {
             TripRequestDTO t = mapRow(rs);
-            t.setPassengerPhone(rs.getString("passenger_name"));
+            t.setPassengerName(rs.getString("passenger_name")); // proper field
             list.add(t);
         }
 
@@ -131,6 +129,64 @@ public class TripRepository {
         stmt.setString(1, passengerId);
 
         ResultSet rs = stmt.executeQuery();
+        List<TripRequestDTO> list = new ArrayList<>();
+        while (rs.next()) {
+            list.add(mapRow(rs));
+        }
+
+        rs.close();
+        stmt.close();
+        conn.close();
+        return list;
+    }
+
+    /**
+     * SELECT a single trip by ID.
+     * Used by server lifecycle handlers to look up passenger/driver IDs.
+     */
+    public TripRequestDTO findById(String tripId) throws Exception {
+        Connection conn = DBConnection.getConnection();
+
+        String sql = "SELECT * FROM trips WHERE id = ?";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setString(1, tripId);
+
+        ResultSet rs = stmt.executeQuery();
+        TripRequestDTO trip = rs.next() ? mapRow(rs) : null;
+
+        rs.close();
+        stmt.close();
+        conn.close();
+        return trip;
+    }
+
+    /**
+     * UPDATE — clear the driver assignment on a trip (used when driver declines).
+     * Resets driver_id to NULL so the matchmaker can assign a different driver.
+     */
+    public void clearDriver(String tripId) throws Exception {
+        Connection conn = DBConnection.getConnection();
+
+        String sql = "UPDATE trips SET driver_id = NULL, status = 'PENDING' WHERE id = ?";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setString(1, tripId);
+
+        stmt.executeUpdate();
+        stmt.close();
+        conn.close();
+    }
+
+    /**
+     * SELECT all PENDING trips ordered by creation time (oldest first).
+     * Used by SimpleMatchmaker to find trips waiting for a driver.
+     */
+    public List<TripRequestDTO> findPending() throws Exception {
+        Connection conn = DBConnection.getConnection();
+
+        String sql = "SELECT * FROM trips WHERE status = 'PENDING' ORDER BY created_at ASC";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        ResultSet rs = stmt.executeQuery();
+
         List<TripRequestDTO> list = new ArrayList<>();
         while (rs.next()) {
             list.add(mapRow(rs));
@@ -198,12 +254,19 @@ public class TripRepository {
         t.setDriverId(rs.getString("driver_id"));
         t.setPickupLocation(rs.getString("pickup_location"));
         t.setDropoffLocation(rs.getString("dropoff_location"));
+        t.setPickupLat(rs.getDouble("pickup_lat"));
+        t.setPickupLng(rs.getDouble("pickup_lng"));
+        t.setDropoffLat(rs.getDouble("dropoff_lat"));
+        t.setDropoffLng(rs.getDouble("dropoff_lng"));
         t.setFare(rs.getDouble("fare"));
         t.setDistanceKm(rs.getDouble("distance_km"));
         String cat = rs.getString("category");
         if (cat != null) t.setCategory(RideCategory.valueOf(cat));
         String status = rs.getString("status");
         if (status != null) t.setStatus(TripStatus.valueOf(status));
+        java.sql.Timestamp ts = rs.getTimestamp("created_at");
+        if (ts != null) t.setCreatedAt(
+            new java.text.SimpleDateFormat("MMM dd, yyyy  HH:mm").format(ts));
         return t;
     }
 

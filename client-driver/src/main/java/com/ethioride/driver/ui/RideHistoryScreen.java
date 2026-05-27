@@ -118,34 +118,42 @@ public class RideHistoryScreen {
     }
 
     private void loadHistory() {
-        String driverId = DriverSessionState.getInstance().getCurrentDriver().getId();
-        try {
-            NetworkClient.getInstance().connect();
-            NetworkClient.getInstance().sendRequest(
-                MessageType.DRIVER_TRIP_HISTORY_REQUEST, driverId,
-                MessageType.DRIVER_TRIP_HISTORY_RESPONSE, msg -> {
-                    @SuppressWarnings("unchecked")
-                    List<TripRequestDTO> trips = (List<TripRequestDTO>) msg.getPayload();
-                    allTrips = trips;
+        if (DriverSessionState.getInstance().getCurrentDriver() == null) return;
+        final String driverId = DriverSessionState.getInstance().getCurrentDriver().getId();
 
-                    long completed = trips.stream()
-                        .filter(t -> t.getStatus() == TripStatus.COMPLETED).count();
-                    double earnings = trips.stream()
-                        .filter(t -> t.getStatus() == TripStatus.COMPLETED)
-                        .mapToDouble(TripRequestDTO::getFare).sum();
+        // Network I/O must never run on the JavaFX Application Thread
+        Thread t = new Thread(() -> {
+            try {
+                NetworkClient nc = NetworkClient.getInstance();
+                if (!nc.isConnected()) nc.connect();
+                nc.sendRequest(
+                    MessageType.DRIVER_TRIP_HISTORY_REQUEST, driverId,
+                    MessageType.DRIVER_TRIP_HISTORY_RESPONSE, msg -> {
+                        @SuppressWarnings("unchecked")
+                        List<TripRequestDTO> trips = (List<TripRequestDTO>) msg.getPayload();
+                        allTrips = trips;
 
-                    Platform.runLater(() -> {
-                        lblTotal.setText(String.valueOf(completed));
-                        lblEarnings.setText(String.format("ETB %.2f", earnings));
-                        renderTrips(trips);
+                        long completed = trips.stream()
+                            .filter(t2 -> t2.getStatus() == TripStatus.COMPLETED).count();
+                        double earnings = trips.stream()
+                            .filter(t2 -> t2.getStatus() == TripStatus.COMPLETED)
+                            .mapToDouble(TripRequestDTO::getFare).sum();
+
+                        Platform.runLater(() -> {
+                            lblTotal.setText(String.valueOf(completed));
+                            lblEarnings.setText(String.format("ETB %.2f", earnings));
+                            renderTrips(trips);
+                        });
                     });
+            } catch (Exception e) {
+                Platform.runLater(() -> {
+                    lblTotal.setText("N/A");
+                    lblEarnings.setText("N/A");
                 });
-        } catch (Exception e) {
-            Platform.runLater(() -> {
-                lblTotal.setText("N/A");
-                lblEarnings.setText("N/A");
-            });
-        }
+            }
+        }, "driver-history-load");
+        t.setDaemon(true);
+        t.start();
     }
 
     private void renderTrips(List<TripRequestDTO> trips) {
@@ -177,7 +185,7 @@ public class RideHistoryScreen {
             HBox.setHgrow(info, Priority.ALWAYS);
             Label route = new Label(t.getPickupLocation() + "  →  " + t.getDropoffLocation());
             route.setStyle("-fx-text-fill:#f1f5f9;-fx-font-size:13px;-fx-font-weight:bold;");
-            String passengerName = t.getPassengerPhone() != null ? t.getPassengerPhone() : "Passenger";
+            String passengerName = t.getPassengerName() != null ? t.getPassengerName() : "Passenger";
             Label meta = new Label(String.format("%.1f km  •  %s", t.getDistanceKm(), passengerName));
             meta.setStyle("-fx-text-fill:#475569;-fx-font-size:11px;");
             info.getChildren().addAll(route, meta);

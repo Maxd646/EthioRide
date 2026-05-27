@@ -63,11 +63,13 @@ public class DashboardScreen {
         Button btnDrivers = navBtn("🚗  Drivers");
         Button btnTrips   = navBtn("🗺  Trips");
         Button btnUsers   = navBtn("👥  Users");
+        Button btnPricing = navBtn("💰  Pricing");
         Button btnSystem  = navBtn("🖥  System");
         btnDash.setStyle(btnDash.getStyle() + "-fx-background-color:#1e3a5f;");
         btnDrivers.setOnAction(e -> { stopLog(); new DriversScreen(stage).show(); });
         btnTrips.setOnAction(e   -> { stopLog(); new TripsScreen(stage).show(); });
         btnUsers.setOnAction(e   -> { stopLog(); new UsersScreen(stage).show(); });
+        btnPricing.setOnAction(e -> { stopLog(); new PricingScreen(stage).show(); });
         btnSystem.setOnAction(e  -> { stopLog(); new SystemScreen(stage).show(); });
         Region sp = new Region(); VBox.setVgrow(sp, Priority.ALWAYS);
         Label lblUser = new Label("👤 " + AdminSession.getInstance().getUsername());
@@ -81,7 +83,7 @@ public class DashboardScreen {
             AdminSession.getInstance().logout();
             new LoginScreen(stage).show();
         });
-        s.getChildren().addAll(logo, sub, btnDash, btnDrivers, btnTrips, btnUsers, btnSystem, sp, lblUser, btnOut);
+        s.getChildren().addAll(logo, sub, btnDash, btnDrivers, btnTrips, btnUsers, btnPricing, btnSystem, sp, lblUser, btnOut);
         return s;
     }
 
@@ -157,24 +159,9 @@ public class DashboardScreen {
     }
 
     private void startLogSimulator() {
+        // Wire real server messages to the log — no fake cycling entries
         AdminService.getInstance().setLogHandler(msg -> Platform.runLater(() -> appendLog(msg)));
-        String[] samples = {
-            "[SOCKET_AUTH] Connection received from Client ID: 0029-Px",
-            "[DRIVER_LOC] Driver updated coordinates to 9.0302, 38.7469",
-            "[TRIP_ACCEPTED] Driver accepted new trip request",
-            "[HEARTBEAT] Server pulse OK — 24ms",
-            "[SUCCESS] Cache handshake verified."
-        };
-        final int[] idx = {0};
-        logTimer = new Timeline(new KeyFrame(Duration.seconds(3), e -> {
-            if (!paused) {
-                String entry = "[" + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "] "
-                    + samples[idx[0]++ % samples.length];
-                appendLog(entry);
-            }
-        }));
-        logTimer.setCycleCount(Timeline.INDEFINITE);
-        logTimer.play();
+        appendLog("[System] Dashboard log started — waiting for server events...");
     }
 
     private void appendLog(String text) {

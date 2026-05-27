@@ -19,6 +19,32 @@ public class UserRepository {
 
     // ── READ ──────────────────────────────────────────────────────────────────
 
+    /** SELECT — find a single user by ID. Used by server lifecycle handlers. */
+    public UserDTO findById(String userId) throws Exception {
+        Connection conn = DBConnection.getConnection();
+
+        String sql = "SELECT id, full_name, phone, email, role, rating FROM users WHERE id = ?";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setString(1, userId);
+        ResultSet rs = stmt.executeQuery();
+
+        UserDTO user = null;
+        if (rs.next()) {
+            user = new UserDTO();
+            user.setId(rs.getString("id"));
+            user.setFullName(rs.getString("full_name"));
+            user.setPhone(rs.getString("phone"));
+            user.setEmail(rs.getString("email"));
+            user.setRole(UserRole.valueOf(rs.getString("role")));
+            user.setRating(rs.getDouble("rating"));
+        }
+
+        rs.close();
+        stmt.close();
+        conn.close();
+        return user;
+    }
+
     /**
      * SELECT — get all users from the database.
      * Returns a list of all UserDTO objects.
@@ -57,39 +83,13 @@ public class UserRepository {
     public UserDTO findByPhoneAndPassword(String phoneOrEmail, String password) throws Exception {
         Connection conn = DBConnection.getConnection();
 
-        String computedHash = hashPassword(password);
-        System.out.printf("[UserRepository] Login attempt — input: '%s', hash: '%s'%n",
-            phoneOrEmail, computedHash);
-
-        // Debug: check what's actually in the DB for this user
-        try {
-            PreparedStatement debugStmt = conn.prepareStatement(
-                "SELECT email, phone, password_hash FROM users WHERE email = ? OR phone = ?");
-            debugStmt.setString(1, phoneOrEmail);
-            debugStmt.setString(2, phoneOrEmail);
-            ResultSet debugRs = debugStmt.executeQuery();
-            if (debugRs.next()) {
-                System.out.printf("[UserRepository] DB row found — email: '%s', phone: '%s', stored_hash: '%s'%n",
-                    debugRs.getString("email"), debugRs.getString("phone"),
-                    debugRs.getString("password_hash"));
-                System.out.printf("[UserRepository] Hash match: %b%n",
-                    computedHash.equals(debugRs.getString("password_hash")));
-            } else {
-                System.out.println("[UserRepository] No user found in DB for: " + phoneOrEmail);
-            }
-            debugRs.close();
-            debugStmt.close();
-        } catch (Exception debugEx) {
-            System.err.println("[UserRepository] Debug query failed: " + debugEx.getMessage());
-        }
-
         String sql = "SELECT id, full_name, phone, email, role, rating " +
                      "FROM users WHERE (phone = ? OR email = ?) AND password_hash = ?";
         PreparedStatement stmt = conn.prepareStatement(sql);
 
         stmt.setString(1, phoneOrEmail);
         stmt.setString(2, phoneOrEmail);
-        stmt.setString(3, computedHash);
+        stmt.setString(3, hashPassword(password));
 
         ResultSet rs = stmt.executeQuery();
 

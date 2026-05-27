@@ -1,19 +1,8 @@
 -- EthioRide Pricing & Location Schema
 -- Run this after the main schema.sql
+-- NOTE: pricing_rules is defined and seeded in schema.sql — do NOT redefine it here.
 
 USE ethioride;
-
--- Pricing rules for different vehicle categories
-CREATE TABLE IF NOT EXISTS pricing_rules (
-    id               VARCHAR(36)  PRIMARY KEY,
-    category         ENUM('ECONOMY','PREMIUM','ELITE') NOT NULL,
-    base_fare        DOUBLE       NOT NULL DEFAULT 50.0,
-    per_km_rate      DOUBLE       NOT NULL DEFAULT 15.0,
-    per_minute_rate  DOUBLE       NOT NULL DEFAULT 2.0,
-    minimum_fare     DOUBLE       NOT NULL DEFAULT 30.0,
-    booking_fee      DOUBLE       NOT NULL DEFAULT 10.0,
-    created_at       TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
-);
 
 -- Driver earnings/wallet
 CREATE TABLE IF NOT EXISTS driver_earnings (
@@ -41,18 +30,7 @@ CREATE TABLE IF NOT EXISTS locations (
     created_at       TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
 );
 
--- Insert default pricing rules
-INSERT INTO pricing_rules (id, category, base_fare, per_km_rate, per_minute_rate, minimum_fare, booking_fee)
-VALUES 
-    ('pricing-economy', 'ECONOMY', 50.0, 15.0, 2.0, 30.0, 10.0),
-    ('pricing-premium', 'PREMIUM', 80.0, 25.0, 3.0, 50.0, 15.0),
-    ('pricing-elite',   'ELITE',   120.0, 40.0, 5.0, 80.0, 20.0)
-ON DUPLICATE KEY UPDATE
-    base_fare = VALUES(base_fare),
-    per_km_rate = VALUES(per_km_rate),
-    per_minute_rate = VALUES(per_minute_rate),
-    minimum_fare = VALUES(minimum_fare),
-    booking_fee = VALUES(booking_fee);
+-- pricing_rules seed data is in schema.sql — no duplicate INSERT here.
 
 -- Insert some popular locations in Addis Ababa
 INSERT INTO locations (id, name, address, latitude, longitude, type) VALUES
@@ -69,11 +47,6 @@ ON DUPLICATE KEY UPDATE
     address = VALUES(address),
     latitude = VALUES(latitude),
     longitude = VALUES(longitude);
-
--- Display pricing rules
-SELECT 'Pricing Rules Created:' AS message;
-SELECT category, base_fare, per_km_rate, per_minute_rate, minimum_fare, booking_fee 
-FROM pricing_rules;
 
 -- Display locations
 SELECT 'Popular Locations Added:' AS message;

@@ -137,13 +137,13 @@ public class RegisterScreen {
 
                 ServerConnection conn = new ServerConnection();
                 conn.connect();
-                Message response = conn.sendAndReceive(
-                    new Message(MessageType.REGISTER_REQUEST, payload, "passenger")
-                );
+                Message response = conn.sendAndWait(
+                    new Message(MessageType.REGISTER_REQUEST, payload, "passenger"),
+                    MessageType.REGISTER_RESPONSE, 8000);
                 conn.close();
 
                 Platform.runLater(() -> {
-                    if (response.getType() == MessageType.REGISTER_RESPONSE
+                    if (response != null && response.getType() == MessageType.REGISTER_RESPONSE
                             && "OK".equals(response.getPayload())) {
                         showSuccess();
                     } else {

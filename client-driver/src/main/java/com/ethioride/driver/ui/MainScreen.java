@@ -43,6 +43,7 @@ public class MainScreen {
         stage.setResizable(true);
         stage.show();
         startPushListener();
+        startLocationUpdater();
     }
 
     // ── Sidebar ───────────────────────────────────────────────────────────────
@@ -135,15 +136,30 @@ public class MainScreen {
             sendStatusUpdate(online);
         });
 
+        // ── Restore persisted online/offline state on navigation back ─────────
+        // DriverSessionState holds the real state; the new ToggleButton starts
+        // unselected by default, so we sync it here without sending a server update.
+        boolean wasOnline = DriverSessionState.getInstance().isOnline();
+        toggleOnline.setSelected(wasOnline);
+        if (wasOnline) {
+            toggleOnline.setText("ONLINE ●");
+            toggleOnline.setStyle("-fx-background-color:#166534;-fx-text-fill:#22c55e;" +
+                    "-fx-background-radius:8px;-fx-padding:10px;-fx-cursor:hand;");
+        }
+
+        // ── Shift earnings ────────────────────────────────────────────────────
         Label lblEarningsTitle = new Label("Shift Earnings");
         lblEarningsTitle.setTextFill(Color.web("#94a3b8"));
         lblEarningsTitle.setFont(Font.font("Arial", 12));
 
-        lblShiftEarnings = new Label("ETB 0");
+        double savedEarnings = DriverSessionState.getInstance().getShiftEarnings();
+        lblShiftEarnings = new Label(savedEarnings > 0
+                ? String.format("ETB %.0f", savedEarnings) : "ETB 0");
         lblShiftEarnings.setFont(Font.font("Arial", FontWeight.BOLD, 22));
         lblShiftEarnings.setTextFill(Color.web("#22c55e"));
 
-        earningsProgress = new ProgressBar(0);
+        earningsProgress = new ProgressBar(savedEarnings > 0
+                ? Math.min(savedEarnings / 5000.0, 1.0) : 0);
         earningsProgress.setMaxWidth(Double.MAX_VALUE);
         earningsProgress.setPrefHeight(6);
 
@@ -193,7 +209,7 @@ public class MainScreen {
         btnDecline.setFont(Font.font("Arial", FontWeight.BOLD, 14));
         btnDecline.setStyle("-fx-background-color:#ef4444;-fx-text-fill:white;" +
                 "-fx-background-radius:8px;-fx-padding:12 24;-fx-cursor:hand;");
-        btnDecline.setOnAction(e -> dismissRequest());
+        btnDecline.setOnAction(e -> dismissRequest(true));
 
         buttons.getChildren().addAll(btnAccept, btnDecline);
         card.getChildren().addAll(lblCountdown, lblTitle, lblOverlayFare,
@@ -207,14 +223,52 @@ public class MainScreen {
     /**
      * Registers a push handler on the persistent NetworkClient connection.
      * When the server sends MATCH_NOTIFY_DRIVER, the trip popup is shown.
+     * Also connects to the server so push messages can be received.
      */
     private void startPushListener() {
-        NetworkClient.getInstance().setPushHandler(msg -> {
-            if (msg.getType() == MessageType.MATCH_NOTIFY_DRIVER
-                    && msg.getPayload() instanceof TripRequestDTO trip) {
-                Platform.runLater(() -> showTripRequest(trip));
+        Thread t = new Thread(() -> {
+            try {
+                NetworkClient nc = NetworkClient.getInstance();
+                if (!nc.isConnected()) nc.connect();
+                nc.setPushHandler(msg -> {
+                    switch (msg.getType()) {
+                        case MATCH_NOTIFY_DRIVER -> {
+                            if (msg.getPayload() instanceof TripRequestDTO trip) {
+                                Platform.runLater(() -> showTripRequest(trip));
+                            }
+                        }
+                        case TRIP_CANCELLED -> {
+                            // Passenger cancelled while driver had the trip
+                            Platform.runLater(() -> onTripCancelledByPassenger());
+                        }
+                        default -> {} // ignore other push messages
+                    }
+                });
+            } catch (Exception ex) {
+                System.err.println("[Driver] Could not connect for push listener: " + ex.getMessage());
             }
-        });
+        }, "driver-push-connect");
+        t.setDaemon(true);
+        t.start();
+    }
+
+    /** Called when the server pushes TRIP_CANCELLED (passenger cancelled). */
+    private void onTripCancelledByPassenger() {
+        // Remove any active trip card from the center StackPane
+        if (stage.getScene() != null &&
+                stage.getScene().getRoot() instanceof BorderPane bp &&
+                bp.getCenter() instanceof StackPane sp) {
+            sp.getChildren().removeIf(n -> n instanceof VBox v &&
+                    v.getStyle().contains("#22c55e") && v != requestOverlay);
+        }
+        // Make driver available again
+        DriverSessionState.getInstance().setOnline(true);
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION,
+                "The passenger has cancelled the trip.", ButtonType.OK);
+        alert.setTitle("Trip Cancelled");
+        alert.setHeaderText("Trip Cancelled by Passenger");
+        alert.showAndWait();
     }
 
     private void showTripRequest(TripRequestDTO trip) {
@@ -235,7 +289,7 @@ public class MainScreen {
         countdownTimer = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
             seconds[0]--;
             lblCountdown.setText(seconds[0] + "s");
-            if (seconds[0] <= 0) dismissRequest();
+            if (seconds[0] <= 0) dismissRequest(true);
         }));
         countdownTimer.setCycleCount(11);
         countdownTimer.play();
@@ -244,8 +298,8 @@ public class MainScreen {
     // ── Actions ───────────────────────────────────────────────────────────────
 
     private void sendStatusUpdate(boolean online) {
-        String driverId = DriverSessionState.getInstance().getCurrentDriver() != null
-            ? DriverSessionState.getInstance().getCurrentDriver().getId() : "unknown";
+        if (DriverSessionState.getInstance().getCurrentDriver() == null) return;
+        final String driverId = DriverSessionState.getInstance().getCurrentDriver().getId();
         Thread t = new Thread(() -> {
             try {
                 NetworkClient nc = NetworkClient.getInstance();
@@ -261,19 +315,233 @@ public class MainScreen {
         t.start();
     }
 
+    /**
+     * Sends the driver's GPS location to the server every 15 seconds while online.
+     * The server uses this to sort drivers by proximity to the passenger's pickup.
+     *
+     * In a real app this would use the device GPS. Here we simulate a location
+     * near Addis Ababa with a small random offset so multiple drivers appear
+     * at different positions during testing.
+     */
+    private void startLocationUpdater() {
+        if (DriverSessionState.getInstance().getCurrentDriver() == null) return;
+        final String driverId = DriverSessionState.getInstance().getCurrentDriver().getId();
+
+        // Simulate a location near Addis Ababa center (9.0320, 38.7469)
+        // with a small random offset per driver so they appear at different spots
+        double baseLat = 9.0320 + (Math.random() - 0.5) * 0.05;
+        double baseLng = 38.7469 + (Math.random() - 0.5) * 0.05;
+
+        java.util.concurrent.ScheduledExecutorService locScheduler =
+            java.util.concurrent.Executors.newSingleThreadScheduledExecutor(r -> {
+                Thread t = new Thread(r, "driver-location-updater");
+                t.setDaemon(true);
+                return t;
+            });
+
+        locScheduler.scheduleAtFixedRate(() -> {
+            if (!DriverSessionState.getInstance().isOnline()) return;
+            try {
+                NetworkClient nc = NetworkClient.getInstance();
+                if (!nc.isConnected()) return;
+                // Small drift each cycle to simulate movement
+                double lat = baseLat + (Math.random() - 0.5) * 0.002;
+                double lng = baseLng + (Math.random() - 0.5) * 0.002;
+                nc.send(new Message(MessageType.DRIVER_LOCATION_UPDATE,
+                        String.format("%.6f,%.6f", lat, lng), driverId));
+            } catch (Exception ex) {
+                System.err.println("[Driver] Location update failed: " + ex.getMessage());
+            }
+        }, 5, 15, java.util.concurrent.TimeUnit.SECONDS);
+    }
+
     private void onAccept() {
         if (countdownTimer != null) countdownTimer.stop();
-        if (pendingTrip != null) {
-            DriverSessionState.getInstance().addEarnings(pendingTrip.getFare());
+        if (pendingTrip == null) return;
+        // Guard: must have a valid driver session
+        if (DriverSessionState.getInstance().getCurrentDriver() == null) {
+            dismissRequest(false);
+            return;
+        }
+
+        final TripRequestDTO trip = pendingTrip;
+        final String driverId = DriverSessionState.getInstance().getCurrentDriver().getId();
+
+        // Send TRIP_ACCEPTED to server — server updates DB and notifies passenger
+        Thread t = new Thread(() -> {
+            try {
+                NetworkClient nc = NetworkClient.getInstance();
+                if (!nc.isConnected()) nc.connect();
+                nc.send(new Message(MessageType.TRIP_ACCEPTED, trip.getTripId(), driverId));
+            } catch (Exception ex) {
+                System.err.println("[Driver] Accept send failed: " + ex.getMessage());
+            }
+        }, "trip-accept");
+        t.setDaemon(true);
+        t.start();
+
+        // NOTE: earnings are added when the trip is COMPLETED, not when accepted
+        dismissRequest(false);
+        showActiveTrip(trip, driverId);
+    }
+
+    /**
+     * Shows the active trip panel with STARTED and COMPLETED buttons.
+     * Replaces the request overlay after the driver accepts.
+     * Full lifecycle: Accepted → Picked Up → In Progress → Completed.
+     */
+    private void showActiveTrip(TripRequestDTO trip, String driverId) {
+        VBox card = new VBox(14);
+        card.setAlignment(Pos.CENTER_LEFT);
+        card.setMaxWidth(300);
+        card.setStyle("-fx-background-color:#0d1526;-fx-border-color:#22c55e;" +
+                "-fx-border-radius:14px;-fx-background-radius:14px;-fx-padding:20;");
+
+        // ── Status badge ──────────────────────────────────────────────────────
+        Label lblStatus = new Label("● Accepted — Heading to pickup");
+        lblStatus.setFont(Font.font("Arial", FontWeight.BOLD, 12));
+        lblStatus.setTextFill(Color.web("#22c55e"));
+        lblStatus.setWrapText(true);
+
+        // ── Trip details ──────────────────────────────────────────────────────
+        Label lblTitle = new Label("Active Trip");
+        lblTitle.setFont(Font.font("Arial", FontWeight.BOLD, 15));
+        lblTitle.setTextFill(Color.web("#f1f5f9"));
+
+        Label lblPickup = new Label("📍 " + trip.getPickupLocation());
+        lblPickup.setTextFill(Color.web("#f1f5f9"));
+        lblPickup.setFont(Font.font("Arial", 12));
+        lblPickup.setWrapText(true);
+
+        Label lblDropoff = new Label("🏁 " + trip.getDropoffLocation());
+        lblDropoff.setTextFill(Color.web("#94a3b8"));
+        lblDropoff.setFont(Font.font("Arial", 12));
+        lblDropoff.setWrapText(true);
+
+        Label lblDist = new Label(String.format("📏 %.1f km", trip.getDistanceKm()));
+        lblDist.setTextFill(Color.web("#475569"));
+        lblDist.setFont(Font.font("Arial", 11));
+
+        Label lblFare = new Label(String.format("ETB %.2f", trip.getFare()));
+        lblFare.setFont(Font.font("Arial", FontWeight.BOLD, 20));
+        lblFare.setTextFill(Color.web("#22c55e"));
+
+        Separator sep = new Separator();
+        sep.setStyle("-fx-background-color:#1e3a5f;");
+
+        // ── Action buttons ────────────────────────────────────────────────────
+        Button btnPickedUp = new Button("✔  Picked Up Passenger");
+        btnPickedUp.setMaxWidth(Double.MAX_VALUE);
+        btnPickedUp.setFont(Font.font("Arial", FontWeight.BOLD, 13));
+        btnPickedUp.setStyle("-fx-background-color:#f59e0b;-fx-text-fill:#0a0e1a;" +
+                "-fx-background-radius:8px;-fx-padding:10;-fx-cursor:hand;");
+
+        Button btnComplete = new Button("🏁  Complete Trip");
+        btnComplete.setMaxWidth(Double.MAX_VALUE);
+        btnComplete.setFont(Font.font("Arial", FontWeight.BOLD, 13));
+        btnComplete.setStyle("-fx-background-color:#22c55e;-fx-text-fill:white;" +
+                "-fx-background-radius:8px;-fx-padding:10;-fx-cursor:hand;");
+        btnComplete.setDisable(true); // only enabled after passenger is picked up
+
+        // ── Picked Up ─────────────────────────────────────────────────────────
+        btnPickedUp.setOnAction(e -> {
+            btnPickedUp.setDisable(true);
+            btnComplete.setDisable(false);
+            lblStatus.setText("● In Progress — Trip underway");
+            lblStatus.setTextFill(Color.web("#f59e0b"));
+            lblTitle.setText("Trip In Progress");
+
+            Thread ts = new Thread(() -> {
+                try {
+                    NetworkClient.getInstance().send(
+                        new Message(MessageType.TRIP_STARTED, trip.getTripId(), driverId));
+                } catch (Exception ex) {
+                    System.err.println("[Driver] Trip started send failed: " + ex.getMessage());
+                }
+            }, "trip-started");
+            ts.setDaemon(true);
+            ts.start();
+        });
+
+        // ── Complete ──────────────────────────────────────────────────────────
+        btnComplete.setOnAction(e -> {
+            // Update shift earnings display
+            DriverSessionState.getInstance().addEarnings(trip.getFare());
             double earnings = DriverSessionState.getInstance().getShiftEarnings();
             lblShiftEarnings.setText(String.format("ETB %.0f", earnings));
             earningsProgress.setProgress(Math.min(earnings / 5000.0, 1.0));
-        }
-        dismissRequest();
+
+            // Send TRIP_COMPLETED to server
+            Thread tc = new Thread(() -> {
+                try {
+                    NetworkClient.getInstance().send(
+                        new Message(MessageType.TRIP_COMPLETED, trip.getTripId(), driverId));
+                } catch (Exception ex) {
+                    System.err.println("[Driver] Trip completed send failed: " + ex.getMessage());
+                }
+            }, "trip-completed");
+            tc.setDaemon(true);
+            tc.start();
+
+            // Replace card content with a completion summary
+            card.getChildren().clear();
+            Label lblDone = new Label("✅  Trip Completed");
+            lblDone.setFont(Font.font("Arial", FontWeight.BOLD, 16));
+            lblDone.setTextFill(Color.web("#22c55e"));
+
+            Label lblEarned = new Label("You earned  " + String.format("ETB %.2f", trip.getFare()));
+            lblEarned.setFont(Font.font("Arial", 13));
+            lblEarned.setTextFill(Color.web("#f1f5f9"));
+
+            Label lblShift = new Label(String.format("Shift total: ETB %.0f", earnings));
+            lblShift.setFont(Font.font("Arial", 11));
+            lblShift.setTextFill(Color.web("#475569"));
+
+            Button btnDismiss = new Button("Dismiss");
+            btnDismiss.setMaxWidth(Double.MAX_VALUE);
+            btnDismiss.setStyle("-fx-background-color:#1e3a5f;-fx-text-fill:#f1f5f9;" +
+                    "-fx-background-radius:8px;-fx-padding:8;-fx-cursor:hand;");
+            btnDismiss.setOnAction(ev -> {
+                if (card.getParent() instanceof StackPane sp) sp.getChildren().remove(card);
+            });
+
+            card.getChildren().addAll(lblDone, lblEarned, lblShift, btnDismiss);
+            card.setStyle("-fx-background-color:#0d1526;-fx-border-color:#22c55e;" +
+                    "-fx-border-radius:14px;-fx-background-radius:14px;-fx-padding:20;");
+        });
+
+        card.getChildren().addAll(lblStatus, lblTitle, lblPickup, lblDropoff, lblDist, lblFare, sep, btnPickedUp, btnComplete);
+
+        // Add to the center StackPane
+        Platform.runLater(() -> {
+            if (stage.getScene().getRoot() instanceof BorderPane bp &&
+                    bp.getCenter() instanceof StackPane sp) {
+                StackPane.setAlignment(card, Pos.BOTTOM_LEFT);
+                StackPane.setMargin(card, new Insets(0, 0, 20, 20));
+                sp.getChildren().add(card);
+            }
+        });
     }
 
-    private void dismissRequest() {
+    private void dismissRequest(boolean sendDecline) {
         if (countdownTimer != null) countdownTimer.stop();
+        if (sendDecline && pendingTrip != null
+                && DriverSessionState.getInstance().getCurrentDriver() != null) {
+            final String tripId   = pendingTrip.getTripId();
+            final String driverId = DriverSessionState.getInstance().getCurrentDriver().getId();
+            Thread t = new Thread(() -> {
+                try {
+                    NetworkClient nc = NetworkClient.getInstance();
+                    if (nc.isConnected()) {
+                        nc.send(new Message(MessageType.TRIP_DECLINED, tripId, driverId));
+                    }
+                } catch (Exception ex) {
+                    System.err.println("[Driver] Decline send failed: " + ex.getMessage());
+                }
+            }, "trip-decline");
+            t.setDaemon(true);
+            t.start();
+        }
         pendingTrip = null;
         requestOverlay.setVisible(false);
         requestOverlay.setManaged(false);

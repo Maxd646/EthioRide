@@ -11,8 +11,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
-import java.util.List;
-
 public class PromotionsScreen {
     private final Stage stage;
 
@@ -53,64 +51,27 @@ public class PromotionsScreen {
         return s;
     }
 
-    private ScrollPane buildContent() {
-        VBox content = new VBox(16);
-        content.setPadding(new Insets(30));
+    private VBox buildContent() {
+        VBox content = new VBox(24);
+        content.setPadding(new Insets(40));
+        content.setAlignment(Pos.TOP_CENTER);
         content.setStyle("-fx-background-color:#0a0e1a;");
 
         Label title = new Label("Promotions");
         title.setFont(Font.font("Arial", FontWeight.BOLD, 24));
         title.setTextFill(Color.web("#f1f5f9"));
 
-        // Promo code input
-        HBox codeRow = new HBox(12);
-        codeRow.setAlignment(Pos.CENTER_LEFT);
-        TextField tfCode = new TextField();
-        tfCode.setPromptText("Enter promo code...");
-        tfCode.setStyle("-fx-background-color:#0d1526;-fx-text-fill:#f1f5f9;-fx-prompt-text-fill:#475569;-fx-border-color:#1e3a5f;-fx-border-radius:8px;-fx-background-radius:8px;-fx-padding:10px 14px;");
-        HBox.setHgrow(tfCode, Priority.ALWAYS);
-        Button btnApply = new Button("Apply");
-        btnApply.setStyle("-fx-background-color:#3b82f6;-fx-text-fill:white;-fx-background-radius:8px;-fx-padding:10 20;-fx-cursor:hand;");
-        btnApply.setOnAction(e -> {
-            if (!tfCode.getText().trim().isEmpty()) {
-                Alert a = new Alert(Alert.AlertType.INFORMATION, "Discount applied on your next ride.", ButtonType.OK);
-                a.setTitle("Promo Applied"); a.setHeaderText("Code: " + tfCode.getText().trim()); a.showAndWait();
-            }
-        });
-        codeRow.getChildren().addAll(tfCode, btnApply);
+        Label icon = new Label("🏷");
+        icon.setFont(Font.font("Arial", 48));
 
-        // Promo cards
-        VBox promoList = new VBox(12);
-        for (String[] p : List.of(
-            new String[]{"🎉", "WELCOME20",  "20% off your first 3 rides",      "Expires Apr 30, 2026", "#22c55e"},
-            new String[]{"⚡", "PEAKHOUR",   "ETB 50 off during peak hours",     "Expires Apr 25, 2026", "#f59e0b"},
-            new String[]{"🎁", "REFER50",    "ETB 50 for each friend you refer", "No expiry",            "#3b82f6"},
-            new String[]{"🏷", "WEEKEND15",  "15% off all weekend rides",        "Expires Apr 27, 2026", "#a855f7"}
-        )) {
-            HBox card = new HBox(16);
-            card.setAlignment(Pos.CENTER_LEFT);
-            card.setStyle("-fx-background-color:#1a2235;-fx-background-radius:12px;-fx-padding:16;-fx-border-color:" + p[4] + ";-fx-border-width:0 0 0 4px;-fx-border-radius:0 12 12 0;");
-            StackPane icon = new StackPane();
-            icon.setStyle("-fx-background-color:#111827;-fx-background-radius:10px;-fx-min-width:48px;-fx-min-height:48px;");
-            Label ico = new Label(p[0]); ico.setStyle("-fx-font-size:22px;");
-            icon.getChildren().add(ico);
-            VBox info = new VBox(4); HBox.setHgrow(info, Priority.ALWAYS);
-            Label code = new Label(p[1]); code.setStyle("-fx-text-fill:" + p[4] + ";-fx-font-size:14px;-fx-font-weight:bold;");
-            Label desc = new Label(p[2]); desc.setStyle("-fx-text-fill:#f1f5f9;-fx-font-size:13px;");
-            Label exp  = new Label(p[3]); exp.setStyle("-fx-text-fill:#475569;-fx-font-size:11px;");
-            info.getChildren().addAll(code, desc, exp);
-            Button use = new Button("Use");
-            use.setStyle("-fx-background-color:" + p[4] + ";-fx-text-fill:white;-fx-font-size:12px;-fx-font-weight:bold;-fx-padding:8 16;-fx-background-radius:8px;-fx-cursor:hand;");
-            use.setOnAction(e -> tfCode.setText(p[1]));
-            card.getChildren().addAll(icon, info, use);
-            promoList.getChildren().add(card);
-        }
+        Label msg = new Label("No active promotions right now.\nCheck back later for discounts and offers.");
+        msg.setTextFill(Color.web("#475569"));
+        msg.setFont(Font.font("Arial", 14));
+        msg.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
+        msg.setWrapText(true);
 
-        content.getChildren().addAll(title, codeRow, promoList);
-        ScrollPane sp = new ScrollPane(content);
-        sp.setFitToWidth(true);
-        sp.setStyle("-fx-background-color:#0a0e1a;-fx-background:#0a0e1a;");
-        return sp;
+        content.getChildren().addAll(title, icon, msg);
+        return content;
     }
 
     private Button navBtn(String text) {

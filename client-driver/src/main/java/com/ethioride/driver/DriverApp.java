@@ -10,6 +10,7 @@ public class DriverApp extends Application {
         stage.setTitle("EthioRide — Driver");
         stage.setMinWidth(480);
         stage.setMinHeight(640);
+        // Login screen is fixed-size; MainScreen will set resizable(true) when it opens
         stage.setResizable(false);
         new LoginScreen(stage).show();
     }

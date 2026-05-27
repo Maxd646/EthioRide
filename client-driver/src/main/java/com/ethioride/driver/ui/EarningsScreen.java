@@ -104,33 +104,47 @@ public class EarningsScreen {
 
     @SuppressWarnings("unchecked")
     private void loadEarnings() {
-        String driverId = DriverSessionState.getInstance().getCurrentDriver().getId();
-        try {
-            NetworkClient.getInstance().connect();
-            NetworkClient.getInstance().sendRequest(
-                MessageType.DRIVER_EARNINGS_REQUEST, driverId,
-                MessageType.DRIVER_EARNINGS_RESPONSE, msg -> {
-                    java.util.Map<String, Object> data =
-                        (java.util.Map<String, Object>) msg.getPayload();
-                    double total    = (double) data.get("total");
-                    int    count    = (int)    data.get("tripCount");
-                    List<TripRequestDTO> trips = (List<TripRequestDTO>) data.get("trips");
-                    double avg = count > 0 ? total / count : 0;
-
-                    Platform.runLater(() -> {
-                        lblTotal.setText(String.format("ETB %.2f", total));
-                        lblTrips.setText(String.valueOf(count));
-                        lblAvg.setText(String.format("ETB %.2f", avg));
-                        renderTrips(trips);
-                    });
-                });
-        } catch (Exception e) {
+        // Null check — guard against session being cleared
+        if (DriverSessionState.getInstance().getCurrentDriver() == null) {
             Platform.runLater(() -> {
-                lblTotal.setText("N/A");
-                lblTrips.setText("N/A");
-                lblAvg.setText("N/A");
+                lblTotal.setText("N/A"); lblTrips.setText("N/A"); lblAvg.setText("N/A");
             });
+            return;
         }
+        final String driverId = DriverSessionState.getInstance().getCurrentDriver().getId();
+
+        // Run entirely on background thread — connect() opens a TCP socket
+        // and must never block the JavaFX thread
+        Thread t = new Thread(() -> {
+            try {
+                NetworkClient nc = NetworkClient.getInstance();
+                if (!nc.isConnected()) nc.connect();
+                nc.sendRequest(
+                    MessageType.DRIVER_EARNINGS_REQUEST, driverId,
+                    MessageType.DRIVER_EARNINGS_RESPONSE, msg -> {
+                        java.util.Map<String, Object> data =
+                            (java.util.Map<String, Object>) msg.getPayload();
+                        double total = (double) data.get("total");
+                        int    count = (int)    data.get("tripCount");
+                        @SuppressWarnings("unchecked")
+                        List<TripRequestDTO> trips = (List<TripRequestDTO>) data.get("trips");
+                        double avg = count > 0 ? total / count : 0;
+
+                        Platform.runLater(() -> {
+                            lblTotal.setText(String.format("ETB %.2f", total));
+                            lblTrips.setText(String.valueOf(count));
+                            lblAvg.setText(String.format("ETB %.2f", avg));
+                            renderTrips(trips);
+                        });
+                    });
+            } catch (Exception e) {
+                Platform.runLater(() -> {
+                    lblTotal.setText("N/A"); lblTrips.setText("N/A"); lblAvg.setText("N/A");
+                });
+            }
+        }, "earnings-load");
+        t.setDaemon(true);
+        t.start();
     }
 
     private void renderTrips(List<TripRequestDTO> trips) {

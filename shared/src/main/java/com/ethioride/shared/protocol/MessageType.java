@@ -6,7 +6,6 @@ public enum MessageType {
     LOGIN_RESPONSE,
     REGISTER_REQUEST,
     REGISTER_RESPONSE,
-    LOGOUT,
 
     // Trip lifecycle
     TRIP_REQUEST,
@@ -40,6 +39,10 @@ public enum MessageType {
     DRIVER_EARNINGS_REQUEST,
     DRIVER_EARNINGS_RESPONSE,
 
+    // Passenger - Trip History
+    PASSENGER_TRIP_HISTORY_REQUEST,
+    PASSENGER_TRIP_HISTORY_RESPONSE,
+
     // Pricing
     PRICE_ESTIMATE_REQUEST,
     PRICE_ESTIMATE_RESPONSE,
@@ -48,20 +51,11 @@ public enum MessageType {
     PRICING_RULES_UPDATE,
     PRICING_RULES_UPDATE_RESPONSE,
 
+    // Matchmaking
+    MATCH_NOTIFY_DRIVER,
+
     // System
     HEARTBEAT,
     ERROR,
-    ACK,
-
-    // Matchmaking
-    MATCH_FOUND,
-    MATCH_NOTIFY_DRIVER,
-
-    // Admin
-    STATS_REQUEST,
-    STATS_RESPONSE,
-    DRIVERS_REQUEST,
-    DRIVERS_RESPONSE,
-    TRIPS_REQUEST,
-    TRIPS_RESPONSE
+    ACK
 }

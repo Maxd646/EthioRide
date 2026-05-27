@@ -12,18 +12,22 @@ import java.util.function.Consumer;
  * Connects to the EthioRide server and streams live system events.
  */
 public class AdminSocketClient {
-    private static AdminSocketClient instance;
+    private static volatile AdminSocketClient instance;
 
     private Socket socket;
     private ObjectOutputStream out;
     private ObjectInputStream in;
-    private Consumer<Message> messageHandler;
+    private volatile Consumer<Message> messageHandler;
     private volatile boolean connected;
 
     private AdminSocketClient() {}
 
     public static AdminSocketClient getInstance() {
-        if (instance == null) instance = new AdminSocketClient();
+        if (instance == null) {
+            synchronized (AdminSocketClient.class) {
+                if (instance == null) instance = new AdminSocketClient();
+            }
+        }
         return instance;
     }
 

@@ -6,14 +6,18 @@ import com.ethioride.shared.dto.UserDTO;
  * Holds the current logged-in user session (singleton).
  */
 public class SessionState {
-    private static SessionState instance;
-    private UserDTO currentUser;
-    private String authToken;
+    private static volatile SessionState instance;
+    private volatile UserDTO currentUser;
+    private volatile String authToken;
 
     private SessionState() {}
 
     public static SessionState getInstance() {
-        if (instance == null) instance = new SessionState();
+        if (instance == null) {
+            synchronized (SessionState.class) {
+                if (instance == null) instance = new SessionState();
+            }
+        }
         return instance;
     }
 

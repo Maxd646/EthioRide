@@ -104,21 +104,15 @@ public class TripsScreen {
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         VBox.setVgrow(table, Priority.ALWAYS);
 
-        // Passenger name is stored in passengerPhone field as "passengerName|driverName"
+        // Passenger name from dedicated field
         TableColumn<TripRequestDTO, String> colPassenger = new TableColumn<>("Passenger");
-        colPassenger.setCellValueFactory(d -> {
-            String raw = d.getValue().getPassengerPhone();
-            String name = raw != null && raw.contains("|") ? raw.split("\\|")[0] : "Unknown";
-            return new SimpleStringProperty(name);
-        });
+        colPassenger.setCellValueFactory(d -> new SimpleStringProperty(
+            d.getValue().getPassengerName() != null ? d.getValue().getPassengerName() : "Unknown"));
         colPassenger.setCellFactory(c -> styledCell("#f1f5f9"));
 
         TableColumn<TripRequestDTO, String> colDriver = new TableColumn<>("Driver");
-        colDriver.setCellValueFactory(d -> {
-            String raw = d.getValue().getPassengerPhone();
-            String name = raw != null && raw.contains("|") ? raw.split("\\|")[1] : "—";
-            return new SimpleStringProperty(name);
-        });
+        colDriver.setCellValueFactory(d -> new SimpleStringProperty(
+            d.getValue().getDriverName() != null ? d.getValue().getDriverName() : "—"));
         colDriver.setCellFactory(c -> styledCell("#f1f5f9"));
 
         TableColumn<TripRequestDTO, String> colPickup = new TableColumn<>("Pickup");
