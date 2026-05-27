@@ -428,6 +428,11 @@ public class MainScreen {
         String pickup = tfPickup.getText().trim();
         String dest   = tfDestination.getText().trim();
 
+        // Must be logged in — "guest" would violate the DB foreign key on passenger_id
+        if (!SessionState.getInstance().isLoggedIn()) {
+            showInfo("Login Required", "Please log in before requesting a ride.");
+            return;
+        }
         if (pickup.isEmpty() || dest.isEmpty()) {
             showInfo("Missing Info", "Please enter pickup and destination.");
             return;
@@ -453,8 +458,7 @@ public class MainScreen {
             try {
                 TripRequestDTO trip = new TripRequestDTO();
                 trip.setTripId(tripId);
-                trip.setPassengerId(SessionState.getInstance().isLoggedIn()
-                    ? SessionState.getInstance().getCurrentUser().getId() : "guest");
+                trip.setPassengerId(SessionState.getInstance().getCurrentUser().getId());
                 trip.setPickupLocation(pickup);
                 trip.setDropoffLocation(dest);
                 trip.setCategory(selectedCategory);
@@ -580,7 +584,8 @@ public class MainScreen {
         confirm.showAndWait().ifPresent(btn -> {
             if (btn == ButtonType.OK) {
                 String passengerId = SessionState.getInstance().isLoggedIn()
-                    ? SessionState.getInstance().getCurrentUser().getId() : "guest";
+                    ? SessionState.getInstance().getCurrentUser().getId()
+                    : activeTripId; // fallback — trip ID used as sender if session lost
                 Thread t = new Thread(() -> {
                     try {
                         ServerConnection conn = ServerConnection.getPersistent();

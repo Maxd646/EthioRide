@@ -42,8 +42,8 @@ public class ServerConnection {
     private Socket             socket;
     private ObjectOutputStream out;
     private ObjectInputStream  in;
-    private Consumer<Message>  messageHandler; // one-shot request/response
-    private Consumer<Message>  pushHandler;    // persistent push listener
+    private volatile Consumer<Message>  messageHandler; // one-shot request/response
+    private volatile Consumer<Message>  pushHandler;    // persistent push listener
     private volatile boolean   connected;
 
     public ServerConnection() {}

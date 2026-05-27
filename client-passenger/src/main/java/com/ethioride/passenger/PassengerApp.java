@@ -15,6 +15,7 @@ public class PassengerApp extends Application {
         stage.setTitle("EthioRide — Passenger");
         stage.setMinWidth(480);
         stage.setMinHeight(640);
+        // Login/Register screens are fixed-size; MainScreen sets resizable(true) when it opens
         stage.setResizable(false);
 
         new LoginScreen(stage).show();
