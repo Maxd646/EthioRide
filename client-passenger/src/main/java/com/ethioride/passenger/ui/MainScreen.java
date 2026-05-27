@@ -22,39 +22,50 @@ import javafx.stage.Stage;
 import java.util.UUID;
 
 /**
- * Main passenger screen — pure JavaFX, no FXML.
- * Allows booking a ride and sends TripRequestDTO to the server.
+ * Main passenger screen.
+ *
+ * States:
+ *  BOOKING      — user enters pickup/destination, sees price estimate
+ *  SEARCHING    — trip sent, waiting for a driver to be matched
+ *  DRIVER_FOUND — driver accepted, shows driver info + Cancel button
+ *  IN_PROGRESS  — driver picked up passenger, trip underway
+ *  COMPLETED    — trip done, shows final fare + rate button
  */
 public class MainScreen {
 
+    private enum TripState { BOOKING, SEARCHING, DRIVER_FOUND, IN_PROGRESS, COMPLETED }
+
     private final Stage stage;
 
+    // Booking panel widgets
     private TextField     tfPickup;
     private TextField     tfDestination;
-    private Label         lblStatus;
     private Label         lblPriceEstimate;
     private Button        btnRequest;
     private RideCategory  selectedCategory = RideCategory.ECONOMY;
-
-    // Category buttons
-    private Button btnEconomy;
-    private Button btnPremium;
-    private Button btnElite;
-
-    // Price estimation
+    private Button        btnEconomy, btnPremium, btnElite;
     private PriceEstimateDTO currentEstimate;
 
-    public MainScreen(Stage stage) {
-        this.stage = stage;
-    }
+    // Trip status panel (shown after booking)
+    private VBox          tripStatusPanel;
+    private Label         lblTripStatus;
+    private Label         lblDriverName;
+    private Label         lblDriverPhone;
+    private Label         lblDriverRating;
+    private Label         lblFinalFare;
+    private Button        btnCancelTrip;
+
+    // Active trip
+    private String        activeTripId;
+    private TripState     tripState = TripState.BOOKING;
+
+    public MainScreen(Stage stage) { this.stage = stage; }
 
     public void show() {
         BorderPane root = new BorderPane();
         root.setStyle("-fx-background-color: #0a0e1a;");
-
         root.setLeft(buildSidebar());
-        root.setCenter(buildBookingPanel());
-
+        root.setCenter(buildMainPanel());
         stage.setScene(new Scene(root, 900, 640));
         stage.setResizable(true);
         stage.show();
@@ -67,7 +78,6 @@ public class MainScreen {
         sidebar.setPrefWidth(200);
         sidebar.setStyle("-fx-background-color: #0d1526; -fx-border-color: #1e3a5f; -fx-border-width: 0 1 0 0;");
 
-        // Logo
         Label logo = new Label("🚕 EthioRide");
         logo.setFont(Font.font("Arial", FontWeight.BOLD, 18));
         logo.setTextFill(Color.web("#3b82f6"));
@@ -78,25 +88,22 @@ public class MainScreen {
         sub.setTextFill(Color.web("#475569"));
         sub.setPadding(new Insets(0, 20, 20, 20));
 
-        // Nav buttons
         Button btnMap      = navButton("🗺  Map");
         Button btnHistory  = navButton("🕐  Ride History");
         Button btnPayments = navButton("💳  Payments");
         Button btnSettings = navButton("⚙  Settings");
-
         btnMap.setStyle(btnMap.getStyle() + "-fx-background-color: #1e3a5f;");
 
-        btnHistory.setOnAction(e -> showInfo("Ride History", "Your past trips will appear here."));
-        btnPayments.setOnAction(e -> showInfo("Payments", "Payment methods and history."));
-        btnSettings.setOnAction(e -> showInfo("Settings", "App settings."));
+        btnHistory.setOnAction(e -> new RideHistoryScreen(stage).show());
+        btnPayments.setOnAction(e -> new PaymentsScreen(stage).show());
+        btnSettings.setOnAction(e -> showInfo("Settings", "App settings coming soon."));
 
         Region spacer = new Region();
         VBox.setVgrow(spacer, Priority.ALWAYS);
 
-        // User info
         SessionState session = SessionState.getInstance();
         String name  = session.isLoggedIn() ? session.getCurrentUser().getFullName() : "Guest";
-        String phone = session.isLoggedIn() ? session.getCurrentUser().getPhone() : "";
+        String phone = session.isLoggedIn() ? session.getCurrentUser().getPhone()    : "";
 
         Label lblName  = new Label("👤 " + name);
         lblName.setTextFill(Color.web("#f1f5f9"));
@@ -111,13 +118,23 @@ public class MainScreen {
         Button btnSignOut = navButton("↩  Sign Out");
         btnSignOut.setOnAction(e -> onSignOut());
 
-        sidebar.getChildren().addAll(
-            logo, sub,
-            btnMap, btnHistory, btnPayments, btnSettings,
-            spacer,
-            lblName, lblPhone, btnSignOut
-        );
+        sidebar.getChildren().addAll(logo, sub, btnMap, btnHistory, btnPayments, btnSettings,
+            spacer, lblName, lblPhone, btnSignOut);
         return sidebar;
+    }
+
+    // ── Main panel (booking + trip status stacked) ────────────────────────────
+
+    private StackPane buildMainPanel() {
+        StackPane stack = new StackPane();
+
+        VBox bookingPanel = buildBookingPanel();
+        tripStatusPanel   = buildTripStatusPanel();
+        tripStatusPanel.setVisible(false);
+        tripStatusPanel.setManaged(false);
+
+        stack.getChildren().addAll(bookingPanel, tripStatusPanel);
+        return stack;
     }
 
     // ── Booking Panel ─────────────────────────────────────────────────────────
@@ -131,93 +148,135 @@ public class MainScreen {
         lblTitle.setFont(Font.font("Arial", FontWeight.BOLD, 26));
         lblTitle.setTextFill(Color.web("#f1f5f9"));
 
-        Label lblAmharic = new Label("Your ride, your way.");
-        lblAmharic.setFont(Font.font("Arial", 13));
-        lblAmharic.setTextFill(Color.web("#475569"));
+        Label lblSub = new Label("Your ride, your way.");
+        lblSub.setFont(Font.font("Arial", 13));
+        lblSub.setTextFill(Color.web("#475569"));
 
-        // Pickup
-        Label lblPickup = new Label("Pickup Location");
-        lblPickup.setTextFill(Color.web("#94a3b8"));
-        lblPickup.setFont(Font.font("Arial", 12));
+        Label lblPickupLbl = new Label("Pickup Location");
+        lblPickupLbl.setTextFill(Color.web("#94a3b8"));
+        lblPickupLbl.setFont(Font.font("Arial", 12));
 
         tfPickup = new TextField("Meskel Square, Addis Ababa");
         styleField(tfPickup);
-        tfPickup.textProperty().addListener((obs, oldVal, newVal) -> updatePriceEstimate());
+        tfPickup.textProperty().addListener((o, ov, nv) -> updatePriceEstimate());
 
-        // Destination
-        Label lblDest = new Label("Destination");
-        lblDest.setTextFill(Color.web("#94a3b8"));
-        lblDest.setFont(Font.font("Arial", 12));
+        Label lblDestLbl = new Label("Destination");
+        lblDestLbl.setTextFill(Color.web("#94a3b8"));
+        lblDestLbl.setFont(Font.font("Arial", 12));
 
         tfDestination = new TextField();
         tfDestination.setPromptText("Enter destination...");
         styleField(tfDestination);
-        tfDestination.textProperty().addListener((obs, oldVal, newVal) -> updatePriceEstimate());
+        tfDestination.textProperty().addListener((o, ov, nv) -> updatePriceEstimate());
 
-        // Ride category tiles
         Label lblCat = new Label("Select Ride Type");
         lblCat.setTextFill(Color.web("#94a3b8"));
         lblCat.setFont(Font.font("Arial", 12));
 
         HBox categoryRow = buildCategoryRow();
 
-        // Price estimate display
         lblPriceEstimate = new Label("Enter destination for price estimate");
         lblPriceEstimate.setFont(Font.font("Arial", FontWeight.BOLD, 16));
         lblPriceEstimate.setTextFill(Color.web("#3b82f6"));
-        lblPriceEstimate.setStyle("-fx-background-color: #0d1526; -fx-padding: 12px; -fx-background-radius: 8px; -fx-border-color: #1e3a5f; -fx-border-radius: 8px;");
+        lblPriceEstimate.setStyle("-fx-background-color: #0d1526; -fx-padding: 12px; " +
+            "-fx-background-radius: 8px; -fx-border-color: #1e3a5f; -fx-border-radius: 8px;");
         lblPriceEstimate.setMaxWidth(Double.MAX_VALUE);
 
-        // Status label
-        lblStatus = new Label();
-        lblStatus.setFont(Font.font("Arial", 13));
-        lblStatus.setTextFill(Color.web("#22c55e"));
-        lblStatus.setVisible(false);
-        lblStatus.setManaged(false);
-
-        // Request button
         btnRequest = new Button("Request Ride");
         btnRequest.setMaxWidth(Double.MAX_VALUE);
         btnRequest.setFont(Font.font("Arial", FontWeight.BOLD, 15));
-        btnRequest.setStyle(
-            "-fx-background-color: #3b82f6;" +
-            "-fx-text-fill: white;" +
-            "-fx-background-radius: 10px;" +
-            "-fx-padding: 14px;" +
-            "-fx-cursor: hand;"
-        );
+        btnRequest.setStyle("-fx-background-color: #3b82f6; -fx-text-fill: white; " +
+            "-fx-background-radius: 10px; -fx-padding: 14px; -fx-cursor: hand;");
         btnRequest.setOnAction(e -> onRequestRide());
 
-        // Quick locations
         HBox quickRow = buildQuickLocations();
 
-        panel.getChildren().addAll(
-            lblTitle, lblAmharic,
-            lblPickup, tfPickup,
-            lblDest, tfDestination,
-            lblCat, categoryRow,
-            lblPriceEstimate,
-            lblStatus,
-            btnRequest,
-            new Separator(),
-            quickRow
-        );
+        panel.getChildren().addAll(lblTitle, lblSub,
+            lblPickupLbl, tfPickup, lblDestLbl, tfDestination,
+            lblCat, categoryRow, lblPriceEstimate, btnRequest,
+            new Separator(), quickRow);
         return panel;
     }
+
+    // ── Trip Status Panel ─────────────────────────────────────────────────────
+
+    private VBox buildTripStatusPanel() {
+        VBox panel = new VBox(20);
+        panel.setPadding(new Insets(40));
+        panel.setStyle("-fx-background-color: #0a0e1a;");
+        panel.setAlignment(Pos.TOP_CENTER);
+
+        lblTripStatus = new Label("Looking for a driver...");
+        lblTripStatus.setFont(Font.font("Arial", FontWeight.BOLD, 22));
+        lblTripStatus.setTextFill(Color.web("#f1f5f9"));
+
+        // Driver info card (hidden until driver found)
+        VBox driverCard = new VBox(10);
+        driverCard.setStyle("-fx-background-color: #0d1526; -fx-border-color: #22c55e; " +
+            "-fx-border-radius: 14px; -fx-background-radius: 14px; -fx-padding: 20;");
+        driverCard.setMaxWidth(400);
+
+        Label lblDriverTitle = new Label("Your Driver");
+        lblDriverTitle.setTextFill(Color.web("#94a3b8"));
+        lblDriverTitle.setFont(Font.font("Arial", 12));
+
+        lblDriverName = new Label("—");
+        lblDriverName.setFont(Font.font("Arial", FontWeight.BOLD, 18));
+        lblDriverName.setTextFill(Color.web("#f1f5f9"));
+
+        lblDriverPhone = new Label("—");
+        lblDriverPhone.setTextFill(Color.web("#94a3b8"));
+        lblDriverPhone.setFont(Font.font("Arial", 13));
+
+        lblDriverRating = new Label("★ —");
+        lblDriverRating.setTextFill(Color.web("#f59e0b"));
+        lblDriverRating.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+
+        driverCard.getChildren().addAll(lblDriverTitle, lblDriverName, lblDriverPhone, lblDriverRating);
+
+        // Final fare (shown on completion)
+        lblFinalFare = new Label();
+        lblFinalFare.setFont(Font.font("Arial", FontWeight.BOLD, 28));
+        lblFinalFare.setTextFill(Color.web("#22c55e"));
+        lblFinalFare.setVisible(false);
+        lblFinalFare.setManaged(false);
+
+        // Cancel button
+        btnCancelTrip = new Button("Cancel Trip");
+        btnCancelTrip.setMaxWidth(400);
+        btnCancelTrip.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        btnCancelTrip.setStyle("-fx-background-color: #ef4444; -fx-text-fill: white; " +
+            "-fx-background-radius: 10px; -fx-padding: 12px; -fx-cursor: hand;");
+        btnCancelTrip.setOnAction(e -> onCancelTrip());
+
+        // "Book another" button (shown after completion)
+        Button btnBookAnother = new Button("Book Another Ride");
+        btnBookAnother.setMaxWidth(400);
+        btnBookAnother.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        btnBookAnother.setStyle("-fx-background-color: #3b82f6; -fx-text-fill: white; " +
+            "-fx-background-radius: 10px; -fx-padding: 12px; -fx-cursor: hand;");
+        btnBookAnother.setVisible(false);
+        btnBookAnother.setManaged(false);
+        btnBookAnother.setOnAction(e -> resetToBooking(driverCard, btnBookAnother));
+
+        panel.getChildren().addAll(lblTripStatus, driverCard, lblFinalFare, btnCancelTrip, btnBookAnother);
+
+        // Store refs for state transitions
+        panel.setUserData(new Object[]{driverCard, btnBookAnother});
+        return panel;
+    }
+
+    // ── Category row ──────────────────────────────────────────────────────────
 
     private HBox buildCategoryRow() {
         btnEconomy = categoryButton("🚗", "ECONOMY", "ETB " + (int) AppConstants.ECONOMY_BASE_FARE);
         btnPremium = categoryButton("🚐", "PREMIUM", "ETB " + (int) AppConstants.PREMIUM_BASE_FARE);
         btnElite   = categoryButton("🚙", "ELITE",   "ETB " + (int) AppConstants.ELITE_BASE_FARE);
-
         selectCategory(btnEconomy, RideCategory.ECONOMY);
-
         btnEconomy.setOnAction(e -> selectCategory(btnEconomy, RideCategory.ECONOMY));
         btnPremium.setOnAction(e -> selectCategory(btnPremium, RideCategory.PREMIUM));
         btnElite.setOnAction(e   -> selectCategory(btnElite,   RideCategory.ELITE));
-
-        HBox row = new HBox(12, btnEconomy, btnPremium, btnElite);
-        return row;
+        return new HBox(12, btnEconomy, btnPremium, btnElite);
     }
 
     private Button categoryButton(String icon, String name, String fare) {
@@ -235,87 +294,75 @@ public class MainScreen {
         btnPremium.setStyle(tilestyle(false));
         btnElite.setStyle(tilestyle(false));
         selected.setStyle(tilestyle(true));
-        updatePriceEstimate(); // Update price when category changes
+        updatePriceEstimate();
     }
 
     private HBox buildQuickLocations() {
         HBox row = new HBox(24);
         row.setAlignment(Pos.CENTER_LEFT);
-
         row.getChildren().addAll(
-            quickLocation("🏠", "Home", "Garnet Avenue"),
-            quickLocation("💼", "Work", "Kazanchis Square"),
+            quickLocation("🏠", "Home",      "Garnet Avenue"),
+            quickLocation("💼", "Work",      "Kazanchis Square"),
             quickLocation("⭐", "Favorites", "Friendship Park")
         );
         return row;
     }
 
     private VBox quickLocation(String icon, String name, String addr) {
-        Label lblIcon = new Label(icon);
-        lblIcon.setFont(Font.font("Arial", 20));
-
-        Label lblName = new Label(name);
-        lblName.setTextFill(Color.web("#f1f5f9"));
-        lblName.setFont(Font.font("Arial", FontWeight.BOLD, 12));
-
-        Label lblAddr = new Label(addr);
-        lblAddr.setTextFill(Color.web("#475569"));
-        lblAddr.setFont(Font.font("Arial", 10));
-
-        VBox box = new VBox(4, lblIcon, lblName, lblAddr);
+        Label ico  = new Label(icon); ico.setFont(Font.font("Arial", 20));
+        Label lbl  = new Label(name); lbl.setTextFill(Color.web("#f1f5f9")); lbl.setFont(Font.font("Arial", FontWeight.BOLD, 12));
+        Label addr2 = new Label(addr); addr2.setTextFill(Color.web("#475569")); addr2.setFont(Font.font("Arial", 10));
+        VBox box = new VBox(4, ico, lbl, addr2);
         box.setAlignment(Pos.CENTER);
         box.setStyle("-fx-cursor: hand;");
-        box.setOnMouseClicked(e -> {
-            tfDestination.setText(addr);
-            updatePriceEstimate();
-        });
+        box.setOnMouseClicked(e -> { tfDestination.setText(addr); updatePriceEstimate(); });
         return box;
     }
 
-    // ── Actions ───────────────────────────────────────────────────────────────
+    // ── Price estimate ────────────────────────────────────────────────────────
 
     private void updatePriceEstimate() {
         String pickup = tfPickup.getText().trim();
-        String dest = tfDestination.getText().trim();
+        String dest   = tfDestination.getText().trim();
 
         if (pickup.isEmpty() || dest.isEmpty()) {
             lblPriceEstimate.setText("Enter destination for price estimate");
             lblPriceEstimate.setTextFill(Color.web("#475569"));
+            currentEstimate = null;
             return;
         }
-
         if (pickup.equals(dest)) {
             lblPriceEstimate.setText("Pickup and destination cannot be the same");
             lblPriceEstimate.setTextFill(Color.web("#ef4444"));
+            currentEstimate = null;
             return;
         }
 
         lblPriceEstimate.setText("Calculating price...");
         lblPriceEstimate.setTextFill(Color.web("#94a3b8"));
 
-        // Request price estimate from server in background
         Thread t = new Thread(() -> {
             try {
                 ServerConnection conn = new ServerConnection();
                 conn.connect();
-
-                // Send price estimate request: "origin|destination|category"
-                String requestPayload = pickup + "|" + dest + "|" + selectedCategory.name();
                 Message response = conn.sendAndReceive(
-                    new Message(MessageType.PRICE_ESTIMATE_REQUEST, requestPayload, "passenger")
-                );
+                    new Message(MessageType.PRICE_ESTIMATE_REQUEST,
+                        pickup + "|" + dest + "|" + selectedCategory.name(), "passenger"));
                 conn.close();
 
                 Platform.runLater(() -> {
                     if (response.getType() == MessageType.PRICE_ESTIMATE_RESPONSE) {
                         currentEstimate = (PriceEstimateDTO) response.getPayload();
-                        updatePriceDisplay();
-                    } else if (response.getType() == MessageType.ERROR) {
+                        lblPriceEstimate.setText(String.format("💰 ETB %.2f  •  %.1f km  •  ~%.0f min",
+                            currentEstimate.getTotalFare(),
+                            currentEstimate.getDistanceKm(),
+                            currentEstimate.getDurationMinutes()));
+                        lblPriceEstimate.setTextFill(Color.web("#22c55e"));
+                    } else {
                         lblPriceEstimate.setText("Price estimation unavailable");
                         lblPriceEstimate.setTextFill(Color.web("#ef4444"));
                     }
                 });
-
             } catch (Exception ex) {
                 Platform.runLater(() -> {
                     lblPriceEstimate.setText("Price estimation unavailable (server offline)");
@@ -327,72 +374,63 @@ public class MainScreen {
         t.start();
     }
 
-    private void updatePriceDisplay() {
-        if (currentEstimate == null) return;
-
-        String priceText = String.format(
-            "💰 ETB %.2f • %.1f km • ~%.0f min",
-            currentEstimate.getTotalFare(),
-            currentEstimate.getDistanceKm(),
-            currentEstimate.getDurationMinutes()
-        );
-
-        lblPriceEstimate.setText(priceText);
-        lblPriceEstimate.setTextFill(Color.web("#22c55e"));
-    }
+    // ── Request ride ──────────────────────────────────────────────────────────
 
     private void onRequestRide() {
         String pickup = tfPickup.getText().trim();
         String dest   = tfDestination.getText().trim();
 
         if (pickup.isEmpty() || dest.isEmpty()) {
-            showStatus("Please enter pickup and destination.", false);
+            showInfo("Missing Info", "Please enter pickup and destination.");
             return;
         }
-
-        // Require a price estimate before booking so fare and distance are real
         if (currentEstimate == null) {
-            showStatus("Please wait for price estimate to load.", false);
+            showInfo("Price Loading", "Please wait for the price estimate to load.");
             return;
         }
 
         btnRequest.setDisable(true);
-        btnRequest.setText("Finding driver...");
+        btnRequest.setText("Sending request...");
 
-        // Capture estimate values on the FX thread before handing off to background thread
-        final double fare        = currentEstimate.getTotalFare();
-        final double distanceKm  = currentEstimate.getDistanceKm();
+        final double fare       = currentEstimate.getTotalFare();
+        final double distanceKm = currentEstimate.getDistanceKm();
+        final String tripId     = UUID.randomUUID().toString();
+        activeTripId = tripId;
 
         Thread t = new Thread(() -> {
             try {
                 TripRequestDTO trip = new TripRequestDTO();
-                trip.setTripId(UUID.randomUUID().toString());
+                trip.setTripId(tripId);
                 trip.setPassengerId(SessionState.getInstance().isLoggedIn()
                     ? SessionState.getInstance().getCurrentUser().getId() : "guest");
                 trip.setPickupLocation(pickup);
                 trip.setDropoffLocation(dest);
                 trip.setCategory(selectedCategory);
-                trip.setFare(fare);           // real fare from Google Maps + pricing rules
-                trip.setDistanceKm(distanceKm); // real distance from Google Maps
+                trip.setFare(fare);
+                trip.setDistanceKm(distanceKm);
 
-                ServerConnection conn = new ServerConnection();
-                conn.connect();
-                Message response = conn.sendAndReceive(
-                    new Message(MessageType.TRIP_REQUEST, trip, trip.getPassengerId())
-                );
-                conn.close();
+                // Use the persistent connection so the server can push back to us
+                ServerConnection conn = ServerConnection.getPersistent();
+                if (!conn.isConnected()) conn.connect();
+
+                // Register passenger socket with server via login-less trip request
+                // (server registers the socket on TRIP_REQUEST if not already registered)
+                conn.send(new Message(MessageType.TRIP_REQUEST, trip, trip.getPassengerId()));
+
+                // Start listening for push messages (TRIP_ACCEPTED, TRIP_STARTED, etc.)
+                conn.startListening(this::handleServerPush);
 
                 Platform.runLater(() -> {
-                    showStatus("Ride requested! Looking for a driver near you...", true);
                     btnRequest.setDisable(false);
                     btnRequest.setText("Request Ride");
+                    switchToTripStatus("🔍  Looking for a driver near you...", false);
                 });
 
             } catch (Exception ex) {
                 Platform.runLater(() -> {
-                    showStatus("Cannot reach server. Is it running?", false);
                     btnRequest.setDisable(false);
                     btnRequest.setText("Request Ride");
+                    showInfo("Error", "Cannot reach server. Is it running?");
                 });
             }
         }, "trip-request-thread");
@@ -400,45 +438,180 @@ public class MainScreen {
         t.start();
     }
 
+    // ── Server push handler ───────────────────────────────────────────────────
+
+    /**
+     * Handles all server-pushed messages during an active trip.
+     */
+    private void handleServerPush(Message msg) {
+        Platform.runLater(() -> {
+            switch (msg.getType()) {
+
+                case TRIP_ACCEPTED -> {
+                    // Payload: "driverName|driverPhone|rating|tripId"
+                    String[] parts = msg.getPayload().toString().split("\\|", 4);
+                    String driverName   = parts.length > 0 ? parts[0] : "Your driver";
+                    String driverPhone  = parts.length > 1 ? parts[1] : "";
+                    String ratingStr    = parts.length > 2 ? parts[2] : "5.0";
+
+                    tripState = TripState.DRIVER_FOUND;
+                    lblTripStatus.setText("✅  Driver is on the way!");
+                    lblTripStatus.setTextFill(Color.web("#22c55e"));
+                    lblDriverName.setText(driverName);
+                    lblDriverPhone.setText(driverPhone);
+                    lblDriverRating.setText("★ " + ratingStr);
+                    btnCancelTrip.setVisible(true);
+                    btnCancelTrip.setManaged(true);
+                }
+
+                case TRIP_STARTED -> {
+                    tripState = TripState.IN_PROGRESS;
+                    lblTripStatus.setText("🚗  Trip in progress...");
+                    lblTripStatus.setTextFill(Color.web("#f59e0b"));
+                    // Can still cancel while in progress (though unusual)
+                }
+
+                case TRIP_COMPLETED -> {
+                    // Payload: final fare as string
+                    String fareStr = msg.getPayload().toString();
+                    tripState = TripState.COMPLETED;
+                    lblTripStatus.setText("🎉  Trip completed!");
+                    lblTripStatus.setTextFill(Color.web("#22c55e"));
+                    lblFinalFare.setText("ETB " + fareStr);
+                    lblFinalFare.setVisible(true);
+                    lblFinalFare.setManaged(true);
+                    btnCancelTrip.setVisible(false);
+                    btnCancelTrip.setManaged(false);
+
+                    // Show "Book another" button
+                    Object[] userData = (Object[]) tripStatusPanel.getUserData();
+                    if (userData != null) {
+                        Button btnBookAnother = (Button) userData[1];
+                        btnBookAnother.setVisible(true);
+                        btnBookAnother.setManaged(true);
+                    }
+                    ServerConnection.getPersistent().stopListening();
+                }
+
+                case TRIP_CANCELLED -> {
+                    tripState = TripState.BOOKING;
+                    lblTripStatus.setText("❌  Trip was cancelled.");
+                    lblTripStatus.setTextFill(Color.web("#ef4444"));
+                    btnCancelTrip.setVisible(false);
+                    btnCancelTrip.setManaged(false);
+
+                    Object[] userData = (Object[]) tripStatusPanel.getUserData();
+                    if (userData != null) {
+                        Button btnBookAnother = (Button) userData[1];
+                        btnBookAnother.setVisible(true);
+                        btnBookAnother.setManaged(true);
+                    }
+                    ServerConnection.getPersistent().stopListening();
+                }
+
+                default -> {} // ignore other messages
+            }
+        });
+    }
+
+    // ── Trip actions ──────────────────────────────────────────────────────────
+
+    private void onCancelTrip() {
+        if (activeTripId == null) return;
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
+            "Cancel your current trip?", ButtonType.OK, ButtonType.CANCEL);
+        confirm.setTitle("Cancel Trip");
+        confirm.showAndWait().ifPresent(btn -> {
+            if (btn == ButtonType.OK) {
+                String passengerId = SessionState.getInstance().isLoggedIn()
+                    ? SessionState.getInstance().getCurrentUser().getId() : "guest";
+                Thread t = new Thread(() -> {
+                    try {
+                        ServerConnection conn = ServerConnection.getPersistent();
+                        if (conn.isConnected()) {
+                            conn.send(new Message(MessageType.TRIP_CANCELLED, activeTripId, passengerId));
+                        }
+                    } catch (Exception ex) {
+                        System.err.println("[Passenger] Cancel failed: " + ex.getMessage());
+                    }
+                }, "trip-cancel");
+                t.setDaemon(true);
+                t.start();
+            }
+        });
+    }
+
+    // ── UI state transitions ──────────────────────────────────────────────────
+
+    private void switchToTripStatus(String statusText, boolean showDriverCard) {
+        tripStatusPanel.setVisible(true);
+        tripStatusPanel.setManaged(true);
+        lblTripStatus.setText(statusText);
+        lblTripStatus.setTextFill(Color.web("#94a3b8"));
+        lblDriverName.setText("—");
+        lblDriverPhone.setText("—");
+        lblDriverRating.setText("★ —");
+        lblFinalFare.setVisible(false);
+        lblFinalFare.setManaged(false);
+        btnCancelTrip.setVisible(true);
+        btnCancelTrip.setManaged(true);
+
+        Object[] userData = (Object[]) tripStatusPanel.getUserData();
+        if (userData != null) {
+            VBox driverCard = (VBox) userData[0];
+            Button btnBookAnother = (Button) userData[1];
+            driverCard.setVisible(showDriverCard);
+            driverCard.setManaged(showDriverCard);
+            btnBookAnother.setVisible(false);
+            btnBookAnother.setManaged(false);
+        }
+    }
+
+    private void resetToBooking(VBox driverCard, Button btnBookAnother) {
+        activeTripId = null;
+        currentEstimate = null;
+        tripState = TripState.BOOKING;
+        ServerConnection.resetPersistent();
+
+        tripStatusPanel.setVisible(false);
+        tripStatusPanel.setManaged(false);
+        driverCard.setVisible(false);
+        driverCard.setManaged(false);
+        btnBookAnother.setVisible(false);
+        btnBookAnother.setManaged(false);
+
+        tfDestination.clear();
+        lblPriceEstimate.setText("Enter destination for price estimate");
+        lblPriceEstimate.setTextFill(Color.web("#475569"));
+    }
+
+    // ── Sign out ──────────────────────────────────────────────────────────────
+
     private void onSignOut() {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
             "Sign out of EthioRide?", ButtonType.OK, ButtonType.CANCEL);
         confirm.setTitle("Sign Out");
         confirm.showAndWait().ifPresent(btn -> {
             if (btn == ButtonType.OK) {
+                ServerConnection.resetPersistent();
                 SessionState.getInstance().clear();
                 new LoginScreen(stage).show();
             }
         });
     }
 
-    private void showStatus(String msg, boolean success) {
-        lblStatus.setText(msg);
-        lblStatus.setTextFill(success ? Color.web("#22c55e") : Color.web("#ef4444"));
-        lblStatus.setVisible(true);
-        lblStatus.setManaged(true);
-    }
+    // ── Helpers ───────────────────────────────────────────────────────────────
 
     private void showInfo(String title, String msg) {
         Alert a = new Alert(Alert.AlertType.INFORMATION, msg, ButtonType.OK);
-        a.setTitle(title);
-        a.setHeaderText(title);
-        a.showAndWait();
+        a.setTitle(title); a.setHeaderText(title); a.showAndWait();
     }
 
-    // ── Styles ────────────────────────────────────────────────────────────────
-
     private void styleField(TextField f) {
-        f.setStyle(
-            "-fx-background-color: #0d1526;" +
-            "-fx-text-fill: #f1f5f9;" +
-            "-fx-prompt-text-fill: #475569;" +
-            "-fx-border-color: #1e3a5f;" +
-            "-fx-border-radius: 8px;" +
-            "-fx-background-radius: 8px;" +
-            "-fx-padding: 10px 14px;" +
-            "-fx-font-size: 13px;"
-        );
+        f.setStyle("-fx-background-color: #0d1526; -fx-text-fill: #f1f5f9; " +
+            "-fx-prompt-text-fill: #475569; -fx-border-color: #1e3a5f; " +
+            "-fx-border-radius: 8px; -fx-background-radius: 8px; " +
+            "-fx-padding: 10px 14px; -fx-font-size: 13px;");
         f.setMaxWidth(Double.MAX_VALUE);
     }
 
@@ -447,22 +620,15 @@ public class MainScreen {
         btn.setMaxWidth(Double.MAX_VALUE);
         btn.setAlignment(Pos.CENTER_LEFT);
         btn.setFont(Font.font("Arial", 13));
-        btn.setStyle(
-            "-fx-background-color: transparent;" +
-            "-fx-text-fill: #94a3b8;" +
-            "-fx-padding: 10px 20px;" +
-            "-fx-cursor: hand;" +
-            "-fx-background-radius: 6px;"
-        );
+        btn.setStyle("-fx-background-color: transparent; -fx-text-fill: #94a3b8; " +
+            "-fx-padding: 10px 20px; -fx-cursor: hand; -fx-background-radius: 6px;");
         return btn;
     }
 
     private String tilestyle(boolean selected) {
         return "-fx-background-color: " + (selected ? "#1e3a5f" : "#0d1526") + ";" +
-               "-fx-text-fill: " + (selected ? "#f1f5f9" : "#94a3b8") + ";" +
-               "-fx-border-color: " + (selected ? "#3b82f6" : "#1e3a5f") + ";" +
-               "-fx-border-radius: 8px;" +
-               "-fx-background-radius: 8px;" +
-               "-fx-cursor: hand;";
+               "-fx-text-fill: "        + (selected ? "#f1f5f9" : "#94a3b8") + ";" +
+               "-fx-border-color: "     + (selected ? "#3b82f6" : "#1e3a5f") + ";" +
+               "-fx-border-radius: 8px; -fx-background-radius: 8px; -fx-cursor: hand;";
     }
 }

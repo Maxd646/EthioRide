@@ -19,6 +19,32 @@ public class UserRepository {
 
     // ── READ ──────────────────────────────────────────────────────────────────
 
+    /** SELECT — find a single user by ID. Used by server lifecycle handlers. */
+    public UserDTO findById(String userId) throws Exception {
+        Connection conn = DBConnection.getConnection();
+
+        String sql = "SELECT id, full_name, phone, email, role, rating FROM users WHERE id = ?";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setString(1, userId);
+        ResultSet rs = stmt.executeQuery();
+
+        UserDTO user = null;
+        if (rs.next()) {
+            user = new UserDTO();
+            user.setId(rs.getString("id"));
+            user.setFullName(rs.getString("full_name"));
+            user.setPhone(rs.getString("phone"));
+            user.setEmail(rs.getString("email"));
+            user.setRole(UserRole.valueOf(rs.getString("role")));
+            user.setRating(rs.getDouble("rating"));
+        }
+
+        rs.close();
+        stmt.close();
+        conn.close();
+        return user;
+    }
+
     /**
      * SELECT — get all users from the database.
      * Returns a list of all UserDTO objects.

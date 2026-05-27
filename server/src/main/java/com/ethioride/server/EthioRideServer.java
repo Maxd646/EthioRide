@@ -94,6 +94,11 @@ public class EthioRideServer {
                 case LOGIN_REQUEST               -> handleLogin(msg, out);
                 case REGISTER_REQUEST            -> handleRegister(msg, out);
                 case TRIP_REQUEST                -> handleTripRequest(msg, out);
+                case TRIP_ACCEPTED               -> handleTripAccepted(msg, out);
+                case TRIP_DECLINED               -> handleTripDeclined(msg, out);
+                case TRIP_STARTED               -> handleTripStarted(msg, out);
+                case TRIP_COMPLETED              -> handleTripCompleted(msg, out);
+                case TRIP_CANCELLED              -> handleTripCancelled(msg, out);
                 case DRIVER_STATUS_UPDATE        -> handleDriverStatusUpdate(msg, out);
                 case DRIVER_LOCATION_UPDATE      -> handleDriverLocationUpdate(msg, out);
                 case USER_LIST_REQUEST           -> handleUserList(msg, out);
@@ -222,6 +227,11 @@ public class EthioRideServer {
                 com.ethioride.shared.dto.TripRequestDTO trip =
                     (com.ethioride.shared.dto.TripRequestDTO) msg.getPayload();
                 new com.ethioride.server.db.TripRepository().save(trip);
+                // Register passenger socket so we can push TRIP_ACCEPTED later
+                if (registeredClientId == null && trip.getPassengerId() != null) {
+                    ClientRegistry.getInstance().register(trip.getPassengerId(), out);
+                    registeredClientId = trip.getPassengerId();
+                }
                 System.out.printf("[Server] Trip queued: %s -> %s%n",
                     trip.getPickupLocation(), trip.getDropoffLocation());
                 out.writeObject(new Message(MessageType.ACK, "QUEUED", "server"));
@@ -230,6 +240,184 @@ public class EthioRideServer {
                 System.err.println("[Server] Trip error: " + e.getMessage());
                 out.writeObject(new Message(MessageType.ERROR, "Trip failed", "server"));
                 out.flush();
+            }
+        }
+
+        /**
+         * TRIP_ACCEPTED — driver accepted the trip.
+         * Payload: tripId
+         * 1. Update DB status → ACCEPTED (already done by matchmaker, but confirm)
+         * 2. Push TRIP_ACCEPTED to the passenger with driver info
+         * 3. ACK back to driver
+         */
+        private void handleTripAccepted(Message msg, ObjectOutputStream out) throws IOException {
+            try {
+                String tripId   = msg.getPayload().toString();
+                String driverId = msg.getSenderId();
+
+                com.ethioride.server.db.TripRepository tripRepo = new com.ethioride.server.db.TripRepository();
+                tripRepo.updateStatus(tripId, com.ethioride.shared.enums.TripStatus.ACCEPTED);
+
+                // Get driver info to send to passenger
+                com.ethioride.shared.dto.UserDTO driver =
+                    new com.ethioride.server.db.UserRepository().findById(driverId);
+
+                // Find the passenger for this trip and push notification
+                com.ethioride.shared.dto.TripRequestDTO trip = tripRepo.findById(tripId);
+                if (trip != null && trip.getPassengerId() != null) {
+                    String driverName   = driver != null ? driver.getFullName() : "Your driver";
+                    String driverPhone  = driver != null ? driver.getPhone()    : "";
+                    double driverRating = driver != null ? driver.getRating()   : 5.0;
+
+                    // Payload to passenger: "driverName|driverPhone|rating|tripId"
+                    String passengerPayload = String.format("%s|%s|%.1f|%s",
+                        driverName, driverPhone, driverRating, tripId);
+
+                    ClientRegistry.getInstance().push(trip.getPassengerId(),
+                        new Message(MessageType.TRIP_ACCEPTED, passengerPayload, "server"));
+
+                    System.out.printf("[Server] Trip %s accepted by driver %s — notified passenger%n",
+                        tripId, driverId);
+                }
+
+                out.writeObject(new Message(MessageType.ACK, "ACCEPTED", "server"));
+                out.flush();
+            } catch (Exception e) {
+                System.err.println("[Server] Trip accept error: " + e.getMessage());
+                out.writeObject(new Message(MessageType.ERROR, "Accept failed", "server"));
+                out.flush();
+            }
+        }
+
+        /**
+         * TRIP_DECLINED — driver declined or timed out.
+         * Payload: tripId
+         * 1. Put trip back to PENDING so matchmaker tries next driver
+         * 2. Mark driver OFFLINE (they clearly don't want trips right now)
+         */
+        private void handleTripDeclined(Message msg, ObjectOutputStream out) throws IOException {
+            try {
+                String tripId   = msg.getPayload().toString();
+                String driverId = msg.getSenderId();
+
+                new com.ethioride.server.db.TripRepository()
+                    .updateStatus(tripId, com.ethioride.shared.enums.TripStatus.PENDING);
+
+                // Re-queue trip: clear driver assignment
+                new com.ethioride.server.db.TripRepository().clearDriver(tripId);
+
+                // Mark driver offline — they declined, don't spam them
+                SimpleMatchmaker.getInstance().setDriverOffline(driverId);
+
+                System.out.printf("[Server] Trip %s declined by driver %s — re-queued%n",
+                    tripId, driverId);
+
+                out.writeObject(new Message(MessageType.ACK, "DECLINED", "server"));
+                out.flush();
+            } catch (Exception e) {
+                System.err.println("[Server] Trip decline error: " + e.getMessage());
+            }
+        }
+
+        /**
+         * TRIP_STARTED — driver picked up the passenger, trip is now in progress.
+         * Payload: tripId
+         */
+        private void handleTripStarted(Message msg, ObjectOutputStream out) throws IOException {
+            try {
+                String tripId = msg.getPayload().toString();
+                new com.ethioride.server.db.TripRepository()
+                    .updateStatus(tripId, com.ethioride.shared.enums.TripStatus.IN_PROGRESS);
+
+                // Notify passenger
+                com.ethioride.shared.dto.TripRequestDTO trip =
+                    new com.ethioride.server.db.TripRepository().findById(tripId);
+                if (trip != null) {
+                    ClientRegistry.getInstance().push(trip.getPassengerId(),
+                        new Message(MessageType.TRIP_STARTED, tripId, "server"));
+                }
+
+                System.out.printf("[Server] Trip %s started (IN_PROGRESS)%n", tripId);
+                out.writeObject(new Message(MessageType.ACK, "STARTED", "server"));
+                out.flush();
+            } catch (Exception e) {
+                System.err.println("[Server] Trip start error: " + e.getMessage());
+            }
+        }
+
+        /**
+         * TRIP_COMPLETED — driver marked the trip as done.
+         * Payload: tripId
+         * 1. Update DB status → COMPLETED
+         * 2. Mark driver AVAILABLE again
+         * 3. Notify passenger with final fare
+         */
+        private void handleTripCompleted(Message msg, ObjectOutputStream out) throws IOException {
+            try {
+                String tripId   = msg.getPayload().toString();
+                String driverId = msg.getSenderId();
+
+                com.ethioride.server.db.TripRepository tripRepo =
+                    new com.ethioride.server.db.TripRepository();
+                tripRepo.updateStatus(tripId, com.ethioride.shared.enums.TripStatus.COMPLETED);
+
+                // Driver is free again
+                SimpleMatchmaker.getInstance().setDriverAvailable(driverId);
+
+                // Notify passenger
+                com.ethioride.shared.dto.TripRequestDTO trip = tripRepo.findById(tripId);
+                if (trip != null) {
+                    ClientRegistry.getInstance().push(trip.getPassengerId(),
+                        new Message(MessageType.TRIP_COMPLETED,
+                            String.format("%.2f", trip.getFare()), "server"));
+                }
+
+                System.out.printf("[Server] Trip %s COMPLETED — driver %s now available%n",
+                    tripId, driverId);
+                out.writeObject(new Message(MessageType.ACK, "COMPLETED", "server"));
+                out.flush();
+            } catch (Exception e) {
+                System.err.println("[Server] Trip complete error: " + e.getMessage());
+            }
+        }
+
+        /**
+         * TRIP_CANCELLED — passenger or driver cancelled.
+         * Payload: tripId
+         */
+        private void handleTripCancelled(Message msg, ObjectOutputStream out) throws IOException {
+            try {
+                String tripId   = msg.getPayload().toString();
+                String senderId = msg.getSenderId();
+
+                com.ethioride.server.db.TripRepository tripRepo =
+                    new com.ethioride.server.db.TripRepository();
+                com.ethioride.shared.dto.TripRequestDTO trip = tripRepo.findById(tripId);
+
+                tripRepo.updateStatus(tripId, com.ethioride.shared.enums.TripStatus.CANCELLED);
+
+                if (trip != null) {
+                    // If driver had the trip, free them up
+                    if (trip.getDriverId() != null) {
+                        SimpleMatchmaker.getInstance().setDriverAvailable(trip.getDriverId());
+                        // Notify the other party
+                        if (senderId.equals(trip.getPassengerId())) {
+                            // Passenger cancelled → notify driver
+                            ClientRegistry.getInstance().push(trip.getDriverId(),
+                                new Message(MessageType.TRIP_CANCELLED, tripId, "server"));
+                        } else {
+                            // Driver cancelled → notify passenger
+                            ClientRegistry.getInstance().push(trip.getPassengerId(),
+                                new Message(MessageType.TRIP_CANCELLED, tripId, "server"));
+                        }
+                    }
+                }
+
+                System.out.printf("[Server] Trip %s CANCELLED by %s%n", tripId, senderId);
+                out.writeObject(new Message(MessageType.ACK, "CANCELLED", "server"));
+                out.flush();
+            } catch (Exception e) {
+                System.err.println("[Server] Trip cancel error: " + e.getMessage());
             }
         }
 

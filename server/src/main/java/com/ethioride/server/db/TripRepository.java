@@ -143,6 +143,42 @@ public class TripRepository {
     }
 
     /**
+     * SELECT a single trip by ID.
+     * Used by server lifecycle handlers to look up passenger/driver IDs.
+     */
+    public TripRequestDTO findById(String tripId) throws Exception {
+        Connection conn = DBConnection.getConnection();
+
+        String sql = "SELECT * FROM trips WHERE id = ?";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setString(1, tripId);
+
+        ResultSet rs = stmt.executeQuery();
+        TripRequestDTO trip = rs.next() ? mapRow(rs) : null;
+
+        rs.close();
+        stmt.close();
+        conn.close();
+        return trip;
+    }
+
+    /**
+     * UPDATE — clear the driver assignment on a trip (used when driver declines).
+     * Resets driver_id to NULL so the matchmaker can assign a different driver.
+     */
+    public void clearDriver(String tripId) throws Exception {
+        Connection conn = DBConnection.getConnection();
+
+        String sql = "UPDATE trips SET driver_id = NULL, status = 'PENDING' WHERE id = ?";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setString(1, tripId);
+
+        stmt.executeUpdate();
+        stmt.close();
+        conn.close();
+    }
+
+    /**
      * SELECT all PENDING trips ordered by creation time (oldest first).
      * Used by SimpleMatchmaker to find trips waiting for a driver.
      */
