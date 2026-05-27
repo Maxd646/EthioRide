@@ -71,17 +71,11 @@ public class TripRepository {
         List<TripRequestDTO> list = new ArrayList<>();
         while (rs.next()) {
             TripRequestDTO t = mapRow(rs);
-            // Store names in passengerPhone field temporarily (reused for display)
-            t.setPassengerPhone(rs.getString("passenger_name"));
-            // Store driver name via driverId field prefix trick — use a DTO extension instead
-            // We'll pass driver name as part of the DTO by overloading passengerPhone
-            // Format: "passengerName|driverName"
-            String driverName = rs.getString("driver_name");
-            t.setPassengerPhone(
-                (rs.getString("passenger_name") != null ? rs.getString("passenger_name") : "Unknown")
-                + "|" +
-                (driverName != null ? driverName : "—")
-            );
+            // Use dedicated display fields — no more passengerPhone abuse
+            String passengerName = rs.getString("passenger_name");
+            String driverName    = rs.getString("driver_name");
+            t.setPassengerName(passengerName != null ? passengerName : "Unknown");
+            t.setDriverName(driverName != null ? driverName : "—");
             list.add(t);
         }
 

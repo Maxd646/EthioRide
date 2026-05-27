@@ -119,7 +119,7 @@ public class MainScreen {
 
         btnHistory.setOnAction(e -> new RideHistoryScreen(stage).show());
         btnPayments.setOnAction(e -> new PaymentsScreen(stage).show());
-        btnSettings.setOnAction(e -> showInfo("Settings", "App settings coming soon."));
+        btnSettings.setOnAction(e -> new SettingsScreen(stage).show());
 
         Region spacer = new Region();
         VBox.setVgrow(spacer, Priority.ALWAYS);

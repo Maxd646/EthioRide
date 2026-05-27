@@ -147,6 +147,9 @@ public class LoginScreen {
                         Object payload = response.getPayload();
                         if (payload instanceof UserDTO user) {
                             SessionState.getInstance().setCurrentUser(user);
+                            // Open the persistent connection immediately after login
+                            // so the server can push TRIP_ACCEPTED etc. to this socket.
+                            openPersistentConnection(user.getId(), phone, password);
                             new MainScreen(stage).show();
                         } else {
                             showError("Invalid phone or password.");
@@ -167,6 +170,26 @@ public class LoginScreen {
         }, "login-thread");
         loginThread.setDaemon(true);
         loginThread.start();
+    }
+
+    /**
+     * Opens the persistent connection after login so it's ready when the
+     * passenger books a trip. The server registers the socket in ClientRegistry
+     * when it receives the TRIP_REQUEST on this connection.
+     * We just pre-connect here to avoid the delay at booking time.
+     */
+    private void openPersistentConnection(String userId, String phone, String password) {
+        Thread t = new Thread(() -> {
+            try {
+                ServerConnection persistent = ServerConnection.getPersistent();
+                if (!persistent.isConnected()) persistent.connect();
+                // Connection is open and ready — server will register it on TRIP_REQUEST
+            } catch (Exception ex) {
+                System.err.println("[Passenger] Persistent connection failed: " + ex.getMessage());
+            }
+        }, "passenger-persistent-connect");
+        t.setDaemon(true);
+        t.start();
     }
 
     private void showError(String msg) {

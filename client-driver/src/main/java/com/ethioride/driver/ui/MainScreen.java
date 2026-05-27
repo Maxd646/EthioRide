@@ -334,13 +334,8 @@ public class MainScreen {
         t.setDaemon(true);
         t.start();
 
-        // Update local earnings display
-        DriverSessionState.getInstance().addEarnings(trip.getFare());
-        double earnings = DriverSessionState.getInstance().getShiftEarnings();
-        lblShiftEarnings.setText(String.format("ETB %.0f", earnings));
-        earningsProgress.setProgress(Math.min(earnings / 5000.0, 1.0));
-
-        dismissRequest(false); // false = don't send TRIP_DECLINED (we accepted)
+        // NOTE: earnings are added when the trip is COMPLETED, not when accepted
+        dismissRequest(false);
         showActiveTrip(trip, driverId);
     }
 
@@ -402,6 +397,12 @@ public class MainScreen {
         });
 
         btnCompleted.setOnAction(e -> {
+            // Add earnings now — trip is actually done
+            DriverSessionState.getInstance().addEarnings(trip.getFare());
+            double earnings = DriverSessionState.getInstance().getShiftEarnings();
+            lblShiftEarnings.setText(String.format("ETB %.0f", earnings));
+            earningsProgress.setProgress(Math.min(earnings / 5000.0, 1.0));
+
             Thread tc = new Thread(() -> {
                 try {
                     NetworkClient.getInstance().send(

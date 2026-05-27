@@ -197,7 +197,11 @@ public class RideHistoryScreen {
             Label route = new Label(t.getPickupLocation() + "  →  " + t.getDropoffLocation());
             route.setStyle("-fx-text-fill:#f1f5f9;-fx-font-size:13px;-fx-font-weight:bold;");
             String cat = t.getCategory() != null ? t.getCategory().name() : "ECONOMY";
-            Label meta = new Label(cat + "  •  " + String.format("%.1f km", t.getDistanceKm()));
+            String dateStr = t.getCreatedAt() != null ? t.getCreatedAt() : "";
+            String metaText = dateStr.isEmpty()
+                ? cat + "  •  " + String.format("%.1f km", t.getDistanceKm())
+                : dateStr + "  •  " + cat + "  •  " + String.format("%.1f km", t.getDistanceKm());
+            Label meta = new Label(metaText);
             meta.setStyle("-fx-text-fill:#475569;-fx-font-size:11px;");
             info.getChildren().addAll(route, meta);
 

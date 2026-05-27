@@ -20,6 +20,8 @@ public class TripRequestDTO implements Serializable {
     private TripStatus status;
     private String passengerPhone;
     private String createdAt;  // ISO timestamp from DB created_at column
+    private String passengerName; // display name — populated by JOIN queries
+    private String driverName;    // display name — populated by JOIN queries
 
     public TripRequestDTO() {}
 
@@ -54,4 +56,8 @@ public class TripRequestDTO implements Serializable {
     public void setPassengerPhone(String passengerPhone) { this.passengerPhone = passengerPhone; }
     public String getCreatedAt() { return createdAt; }
     public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
+    public String getPassengerName() { return passengerName; }
+    public void setPassengerName(String passengerName) { this.passengerName = passengerName; }
+    public String getDriverName() { return driverName; }
+    public void setDriverName(String driverName) { this.driverName = driverName; }
 }
