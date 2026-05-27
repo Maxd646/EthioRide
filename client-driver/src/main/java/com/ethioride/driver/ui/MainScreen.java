@@ -19,6 +19,10 @@ import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Driver main screen — shows live trip list.
@@ -47,6 +51,15 @@ public class MainScreen {
     private VBox         tripListContainer;
     private List<TripRequestDTO> trips = new ArrayList<>();
 
+    // Auto-poll scheduler — refreshes trip list every 5s while screen is open
+    private final ScheduledExecutorService poller =
+        Executors.newSingleThreadScheduledExecutor(r -> {
+            Thread t = new Thread(r, "driver-trip-poller");
+            t.setDaemon(true);
+            return t;
+        });
+    private ScheduledFuture<?> pollTask;
+
     public MainScreen(Stage stage) { this.stage = stage; }
 
     public void show() {
@@ -59,7 +72,18 @@ public class MainScreen {
         stage.show();
         startPushListener();
         startLocationUpdater();
-        loadTrips(); // load existing trips from server on open
+        loadTrips(); // immediate load on open
+        startAutoRefresh(); // poll every 5s to catch missed pushes
+    }
+
+    /** Polls the server every 5 seconds to catch any trips missed by the push listener. */
+    private void startAutoRefresh() {
+        if (pollTask != null && !pollTask.isDone()) pollTask.cancel(false);
+        pollTask = poller.scheduleAtFixedRate(() -> {
+            // Only poll while the scene is still showing this screen
+            if (stage.getScene() == null) { pollTask.cancel(false); return; }
+            loadTrips();
+        }, 5, 5, TimeUnit.SECONDS);
     }
 
     // ── Sidebar ───────────────────────────────────────────────────────────────
@@ -389,7 +413,7 @@ public class MainScreen {
 
     // ── Network ───────────────────────────────────────────────────────────────
 
-    /** Load existing trips from server on screen open. */
+    /** Load trips from server. Merges with local state to avoid overwriting in-progress actions. */
     private void loadTrips() {
         if (DriverSessionState.getInstance().getCurrentDriver() == null) return;
         final String driverId = DriverSessionState.getInstance().getCurrentDriver().getId();
@@ -404,7 +428,37 @@ public class MainScreen {
                         @SuppressWarnings("unchecked")
                         List<TripRequestDTO> loaded = (List<TripRequestDTO>) msg.getPayload();
                         Platform.runLater(() -> {
-                            trips = new java.util.ArrayList<>(loaded);
+                            // Merge: keep local status if driver has already acted on a trip
+                            // (e.g. driver clicked Accept but server still shows PENDING)
+                            for (TripRequestDTO incoming : loaded) {
+                                trips.stream()
+                                    .filter(local -> local.getTripId().equals(incoming.getTripId()))
+                                    .findFirst()
+                                    .ifPresentOrElse(
+                                        local -> {
+                                            // Only update from server if local status hasn't advanced
+                                            if (local.getStatus() == incoming.getStatus()) {
+                                                local.setPassengerName(incoming.getPassengerName());
+                                            }
+                                            // If local is more advanced (e.g. IN_PROGRESS vs server ACCEPTED),
+                                            // keep local — driver already acted
+                                        },
+                                        () -> trips.add(0, incoming) // new trip — add at top
+                                    );
+                            }
+                            // Remove trips that no longer exist on server
+                            trips.removeIf(local -> loaded.stream()
+                                .noneMatch(s -> s.getTripId().equals(local.getTripId())));
+
+                            // Update status label if there are active trips
+                            boolean hasActive = trips.stream().anyMatch(tr ->
+                                tr.getStatus() == TripStatus.PENDING ||
+                                tr.getStatus() == TripStatus.ACCEPTED ||
+                                tr.getStatus() == TripStatus.IN_PROGRESS);
+                            if (hasActive && lblDriverStatus != null) {
+                                lblDriverStatus.setText("⚡ You have active trips — see below");
+                                lblDriverStatus.setTextFill(Color.web("#f59e0b"));
+                            }
                             renderTrips();
                         });
                     });
