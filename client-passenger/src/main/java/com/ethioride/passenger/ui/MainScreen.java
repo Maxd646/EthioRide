@@ -79,6 +79,15 @@ public class MainScreen {
         });
     private ScheduledFuture<?> pendingEstimate;
 
+    // Trip status poller — polls every 5s while a trip is active to catch missed pushes
+    private final ScheduledExecutorService tripPoller =
+        Executors.newSingleThreadScheduledExecutor(r -> {
+            Thread t = new Thread(r, "passenger-trip-poller");
+            t.setDaemon(true);
+            return t;
+        });
+    private ScheduledFuture<?> tripPollTask;
+
     // Location suggestion label
     private Label lblLocationHint;
 
@@ -541,6 +550,7 @@ public class MainScreen {
                     btnRequest.setDisable(false);
                     btnRequest.setText("Request Ride");
                     switchToTripStatus("🔍  Looking for a driver near you...", false);
+                    startTripPoller(); // poll every 5s in case push is missed
                 });
 
             } catch (Exception ex) {
@@ -611,6 +621,7 @@ public class MainScreen {
                     btnCancelTrip.setManaged(false);
                     if (btnBookAnother != null) { btnBookAnother.setVisible(true); btnBookAnother.setManaged(true); }
                     ServerConnection.getPersistent().stopListening();
+                    stopTripPoller();
                 }
 
                 case TRIP_CANCELLED -> {
@@ -622,6 +633,7 @@ public class MainScreen {
                     btnCancelTrip.setManaged(false);
                     if (btnBookAnother != null) { btnBookAnother.setVisible(true); btnBookAnother.setManaged(true); }
                     ServerConnection.getPersistent().stopListening();
+                    stopTripPoller();
                 }
 
                 default -> {}
@@ -664,6 +676,7 @@ public class MainScreen {
             btnCancelTrip.setManaged(false);
             if (btnBookAnother != null) { btnBookAnother.setVisible(true); btnBookAnother.setManaged(true); }
             ServerConnection.getPersistent().stopListening();
+            stopTripPoller();
 
             // ── Send cancel to server in background ───────────────────────────
             Thread t = new Thread(() -> {
@@ -710,6 +723,7 @@ public class MainScreen {
         activeTripId    = null;
         currentEstimate = null;
         tripState       = TripState.BOOKING;
+        stopTripPoller();
         ServerConnection.resetPersistent();
 
         tripStatusPanel.setVisible(false);
@@ -854,6 +868,133 @@ public class MainScreen {
             return sb.toString();
         } finally {
             conn.disconnect();
+        }
+    }
+
+    // ── Trip status polling ───────────────────────────────────────────────────
+
+    /**
+     * Starts polling the server every 5 seconds for the current trip status.
+     * This catches TRIP_ACCEPTED / TRIP_STARTED / TRIP_COMPLETED pushes that
+     * were missed (e.g. passenger navigated away and back).
+     */
+    private void startTripPoller() {
+        stopTripPoller(); // cancel any existing poll
+        tripPollTask = tripPoller.scheduleAtFixedRate(this::pollTripStatus, 5, 5, TimeUnit.SECONDS);
+    }
+
+    private void stopTripPoller() {
+        if (tripPollTask != null && !tripPollTask.isDone()) {
+            tripPollTask.cancel(false);
+        }
+    }
+
+    /**
+     * Fetches the latest trip status from the server and updates the UI
+     * if the status has changed since the last known state.
+     */
+    private void pollTripStatus() {
+        if (activeTripId == null || tripState == TripState.BOOKING
+                || tripState == TripState.COMPLETED) return;
+        if (!SessionState.getInstance().isLoggedIn()) return;
+
+        final String passengerId = SessionState.getInstance().getCurrentUser().getId();
+
+        Thread t = new Thread(() -> {
+            try {
+                ServerConnection conn = new ServerConnection();
+                conn.connect();
+                Message response = conn.sendAndWait(
+                    new Message(MessageType.PASSENGER_TRIP_HISTORY_REQUEST, passengerId, passengerId),
+                    MessageType.PASSENGER_TRIP_HISTORY_RESPONSE, 8000);
+                conn.close();
+
+                if (response == null) return;
+
+                @SuppressWarnings("unchecked")
+                java.util.List<com.ethioride.shared.dto.TripRequestDTO> trips =
+                    (java.util.List<com.ethioride.shared.dto.TripRequestDTO>) response.getPayload();
+
+                // Find our active trip
+                trips.stream()
+                    .filter(tr -> tr.getTripId().equals(activeTripId))
+                    .findFirst()
+                    .ifPresent(tr -> Platform.runLater(() -> applyTripStatusFromPoll(tr)));
+
+            } catch (Exception ex) {
+                // poll failed — ignore silently, will retry next cycle
+            }
+        }, "passenger-trip-poll");
+        t.setDaemon(true);
+        t.start();
+    }
+
+    /**
+     * Applies a polled trip status to the UI — only updates if the status
+     * has actually changed from what the UI currently shows.
+     */
+    private void applyTripStatusFromPoll(com.ethioride.shared.dto.TripRequestDTO trip) {
+        Object[] ud = (Object[]) tripStatusPanel.getUserData();
+        VBox   driverCard     = ud != null ? (VBox)   ud[0] : null;
+        Button btnBookAnother = ud != null ? (Button) ud[1] : null;
+        VBox   fareCard       = ud != null ? (VBox)   ud[2] : null;
+        Label  lblDot         = ud != null ? (Label)  ud[3] : null;
+
+        switch (trip.getStatus()) {
+            case ACCEPTED -> {
+                if (tripState == TripState.SEARCHING) {
+                    // Driver accepted — we missed the push, reconstruct from DB data
+                    tripState = TripState.DRIVER_FOUND;
+                    setStatusBadge(lblDot, "✅  Driver Accepted — On the way to you", "#22c55e");
+                    // Driver name may be in the trip if the server JOIN populated it
+                    String driverName = trip.getDriverName() != null ? trip.getDriverName() : "Your driver";
+                    lblDriverName.setText(driverName);
+                    lblDriverPhone.setText("—");
+                    lblDriverRating.setText("★ —");
+                    if (driverCard != null) { driverCard.setVisible(true); driverCard.setManaged(true); }
+                    btnCancelTrip.setVisible(true);
+                    btnCancelTrip.setManaged(true);
+                }
+            }
+            case IN_PROGRESS -> {
+                if (tripState == TripState.SEARCHING || tripState == TripState.DRIVER_FOUND) {
+                    tripState = TripState.IN_PROGRESS;
+                    setStatusBadge(lblDot, "🚗  In Progress — Enjoy your ride!", "#f59e0b");
+                    if (driverCard != null) { driverCard.setVisible(true); driverCard.setManaged(true); }
+                    btnCancelTrip.setVisible(false);
+                    btnCancelTrip.setManaged(false);
+                }
+            }
+            case COMPLETED -> {
+                if (tripState != TripState.COMPLETED) {
+                    tripState = TripState.COMPLETED;
+                    setStatusBadge(lblDot, "🎉  Completed — Thank you for riding!", "#22c55e");
+                    if (driverCard != null) { driverCard.setVisible(false); driverCard.setManaged(false); }
+                    if (fareCard != null) {
+                        lblFinalFare.setText(String.format("ETB %.2f", trip.getFare()));
+                        fareCard.setVisible(true);
+                        fareCard.setManaged(true);
+                    }
+                    btnCancelTrip.setVisible(false);
+                    btnCancelTrip.setManaged(false);
+                    if (btnBookAnother != null) { btnBookAnother.setVisible(true); btnBookAnother.setManaged(true); }
+                    stopTripPoller();
+                    ServerConnection.getPersistent().stopListening();
+                }
+            }
+            case CANCELLED -> {
+                if (tripState != TripState.BOOKING) {
+                    tripState = TripState.BOOKING;
+                    setStatusBadge(lblDot, "❌  Trip was cancelled", "#ef4444");
+                    if (driverCard != null) { driverCard.setVisible(false); driverCard.setManaged(false); }
+                    btnCancelTrip.setVisible(false);
+                    btnCancelTrip.setManaged(false);
+                    if (btnBookAnother != null) { btnBookAnother.setVisible(true); btnBookAnother.setManaged(true); }
+                    stopTripPoller();
+                    ServerConnection.getPersistent().stopListening();
+                }
+            }
+            default -> {} // PENDING — still searching, no change
         }
     }
 
