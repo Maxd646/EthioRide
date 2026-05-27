@@ -262,6 +262,10 @@ public class TripRepository {
         if (cat != null) t.setCategory(RideCategory.valueOf(cat));
         String status = rs.getString("status");
         if (status != null) t.setStatus(TripStatus.valueOf(status));
+        // created_at — store as formatted string for display
+        java.sql.Timestamp ts = rs.getTimestamp("created_at");
+        if (ts != null) t.setCreatedAt(
+            new java.text.SimpleDateFormat("MMM dd, yyyy  HH:mm").format(ts));
         return t;
     }
 

@@ -1,7 +1,7 @@
 package com.ethioride.server.service;
 
 import com.ethioride.server.db.DBConnection;
-import com.ethioride.shared.enums.TripCategory;
+import com.ethioride.shared.enums.RideCategory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -28,7 +28,7 @@ public class PricingService {
      * @return PriceEstimate with breakdown
      * @throws Exception if calculation fails
      */
-    public PriceEstimate calculatePrice(String origin, String destination, TripCategory category) throws Exception {
+    public PriceEstimate calculatePrice(String origin, String destination, RideCategory category) throws Exception {
         System.out.println("[Pricing] Calculating price for " + category + " trip (OSM/OSRM)");
         
         // Get distance and duration from OpenStreetMap + OSRM (free, no API key)
@@ -67,7 +67,7 @@ public class PricingService {
     /**
      * Get pricing rules for a specific category from database.
      */
-    private PricingRules getPricingRules(TripCategory category) throws Exception {
+    private PricingRules getPricingRules(RideCategory category) throws Exception {
         Connection conn = DBConnection.getConnection();
         
         String sql = "SELECT base_fare, per_km_rate, per_minute_rate, minimum_fare, booking_fee " +
@@ -131,11 +131,11 @@ public class PricingService {
         private final double timeFare;
         private final double bookingFee;
         private final double totalFare;
-        private final TripCategory category;
-        
+        private final RideCategory category;
+
         public PriceEstimate(double distanceKm, double durationMinutes, double baseFare,
                            double distanceFare, double timeFare, double bookingFee,
-                           double totalFare, TripCategory category) {
+                           double totalFare, RideCategory category) {
             this.distanceKm = distanceKm;
             this.durationMinutes = durationMinutes;
             this.baseFare = baseFare;
@@ -153,7 +153,7 @@ public class PricingService {
         public double getTimeFare() { return timeFare; }
         public double getBookingFee() { return bookingFee; }
         public double getTotalFare() { return totalFare; }
-        public TripCategory getCategory() { return category; }
+        public RideCategory getCategory() { return category; }
         
         @Override
         public String toString() {

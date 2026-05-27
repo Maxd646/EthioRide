@@ -19,6 +19,7 @@ public class TripRequestDTO implements Serializable {
     private double distanceKm;
     private TripStatus status;
     private String passengerPhone;
+    private String createdAt;  // ISO timestamp from DB created_at column
 
     public TripRequestDTO() {}
 
@@ -51,4 +52,6 @@ public class TripRequestDTO implements Serializable {
     public void setStatus(TripStatus status) { this.status = status; }
     public String getPassengerPhone() { return passengerPhone; }
     public void setPassengerPhone(String passengerPhone) { this.passengerPhone = passengerPhone; }
+    public String getCreatedAt() { return createdAt; }
+    public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
 }

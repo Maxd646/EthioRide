@@ -19,7 +19,17 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Main passenger screen.
@@ -59,6 +69,18 @@ public class MainScreen {
     private String        activeTripId;
     private TripState     tripState = TripState.BOOKING;
 
+    // Debounce for price estimate — avoids hammering Nominatim on every keystroke
+    private final ScheduledExecutorService debouncer =
+        Executors.newSingleThreadScheduledExecutor(r -> {
+            Thread t = new Thread(r, "price-debouncer");
+            t.setDaemon(true);
+            return t;
+        });
+    private ScheduledFuture<?> pendingEstimate;
+
+    // Location suggestion label
+    private Label lblLocationHint;
+
     public MainScreen(Stage stage) { this.stage = stage; }
 
     public void show() {
@@ -69,6 +91,7 @@ public class MainScreen {
         stage.setScene(new Scene(root, 900, 640));
         stage.setResizable(true);
         stage.show();
+        detectAndSuggestLocation(); // auto-fill pickup from IP location
     }
 
     // ── Sidebar ───────────────────────────────────────────────────────────────
@@ -156,9 +179,17 @@ public class MainScreen {
         lblPickupLbl.setTextFill(Color.web("#94a3b8"));
         lblPickupLbl.setFont(Font.font("Arial", 12));
 
-        tfPickup = new TextField("Meskel Square, Addis Ababa");
+        tfPickup = new TextField();
+        tfPickup.setPromptText("Detecting your location...");
         styleField(tfPickup);
-        tfPickup.textProperty().addListener((o, ov, nv) -> updatePriceEstimate());
+        tfPickup.textProperty().addListener((o, ov, nv) -> schedulePriceEstimate());
+
+        // Location hint shown while auto-detecting
+        lblLocationHint = new Label("📍 Detecting your location...");
+        lblLocationHint.setTextFill(Color.web("#475569"));
+        lblLocationHint.setFont(Font.font("Arial", 11));
+        lblLocationHint.setVisible(false);
+        lblLocationHint.setManaged(false);
 
         Label lblDestLbl = new Label("Destination");
         lblDestLbl.setTextFill(Color.web("#94a3b8"));
@@ -167,7 +198,7 @@ public class MainScreen {
         tfDestination = new TextField();
         tfDestination.setPromptText("Enter destination...");
         styleField(tfDestination);
-        tfDestination.textProperty().addListener((o, ov, nv) -> updatePriceEstimate());
+        tfDestination.textProperty().addListener((o, ov, nv) -> schedulePriceEstimate());
 
         Label lblCat = new Label("Select Ride Type");
         lblCat.setTextFill(Color.web("#94a3b8"));
@@ -192,7 +223,8 @@ public class MainScreen {
         HBox quickRow = buildQuickLocations();
 
         panel.getChildren().addAll(lblTitle, lblSub,
-            lblPickupLbl, tfPickup, lblDestLbl, tfDestination,
+            lblPickupLbl, tfPickup, lblLocationHint,
+            lblDestLbl, tfDestination,
             lblCat, categoryRow, lblPriceEstimate, btnRequest,
             new Separator(), quickRow);
         return panel;
@@ -294,7 +326,7 @@ public class MainScreen {
         btnPremium.setStyle(tilestyle(false));
         btnElite.setStyle(tilestyle(false));
         selected.setStyle(tilestyle(true));
-        updatePriceEstimate();
+        schedulePriceEstimate();
     }
 
     private HBox buildQuickLocations() {
@@ -315,11 +347,26 @@ public class MainScreen {
         VBox box = new VBox(4, ico, lbl, addr2);
         box.setAlignment(Pos.CENTER);
         box.setStyle("-fx-cursor: hand;");
-        box.setOnMouseClicked(e -> { tfDestination.setText(addr); updatePriceEstimate(); });
+        box.setOnMouseClicked(e -> { tfDestination.setText(addr); schedulePriceEstimate(); });
         return box;
     }
 
     // ── Price estimate ────────────────────────────────────────────────────────
+
+    /**
+     * Debounced wrapper — waits 500ms after the user stops typing before
+     * firing the actual estimate request. Prevents hammering Nominatim on
+     * every keystroke.
+     */
+    private void schedulePriceEstimate() {
+        if (pendingEstimate != null && !pendingEstimate.isDone()) {
+            pendingEstimate.cancel(false);
+        }
+        pendingEstimate = debouncer.schedule(
+            () -> Platform.runLater(this::updatePriceEstimate),
+            500, TimeUnit.MILLISECONDS
+        );
+    }
 
     private void updatePriceEstimate() {
         String pickup = tfPickup.getText().trim();
@@ -583,6 +630,139 @@ public class MainScreen {
         tfDestination.clear();
         lblPriceEstimate.setText("Enter destination for price estimate");
         lblPriceEstimate.setTextFill(Color.web("#475569"));
+    }
+
+    // ── Location detection ────────────────────────────────────────────────────
+
+    /**
+     * Detects the user's approximate location using IP geolocation (ip-api.com,
+     * free, no key), then reverse-geocodes the coordinates via Nominatim to get
+     * a human-readable street/area name, and pre-fills the pickup field.
+     *
+     * The user can always override the suggested value by typing.
+     */
+    private void detectAndSuggestLocation() {
+        // Show hint while detecting
+        lblLocationHint.setText("📍 Detecting your location...");
+        lblLocationHint.setTextFill(Color.web("#475569"));
+        lblLocationHint.setVisible(true);
+        lblLocationHint.setManaged(true);
+
+        Thread t = new Thread(() -> {
+            try {
+                // Step 1 — IP geolocation (free, no key, ~city-level accuracy)
+                String ipJson = httpGet("http://ip-api.com/json?fields=lat,lon,city,status");
+                org.json.JSONObject ipData = new org.json.JSONObject(ipJson);
+
+                if (!"success".equals(ipData.optString("status"))) {
+                    // IP lookup failed — fall back to Addis Ababa center
+                    suggestPickup("Addis Ababa, Ethiopia", false);
+                    return;
+                }
+
+                double lat  = ipData.getDouble("lat");
+                double lon  = ipData.getDouble("lon");
+                String city = ipData.optString("city", "");
+
+                // Step 2 — Nominatim reverse geocode to get a street/area name
+                String reverseUrl = String.format(
+                    "https://nominatim.openstreetmap.org/reverse?lat=%.6f&lon=%.6f&format=json&zoom=16",
+                    lat, lon);
+                String reverseJson = httpGet(reverseUrl, true);
+                org.json.JSONObject place = new org.json.JSONObject(reverseJson);
+
+                // Build a concise address: "Neighbourhood, City" or "Road, City"
+                org.json.JSONObject addr = place.optJSONObject("address");
+                String suggestion;
+                if (addr != null) {
+                    String area = firstNonEmpty(
+                        addr.optString("neighbourhood"),
+                        addr.optString("suburb"),
+                        addr.optString("quarter"),
+                        addr.optString("road"),
+                        addr.optString("pedestrian")
+                    );
+                    String cityName = firstNonEmpty(
+                        addr.optString("city"),
+                        addr.optString("town"),
+                        addr.optString("village"),
+                        city
+                    );
+                    suggestion = area.isEmpty()
+                        ? (cityName.isEmpty() ? place.optString("display_name", "Addis Ababa") : cityName)
+                        : (cityName.isEmpty() ? area : area + ", " + cityName);
+                } else {
+                    suggestion = city.isEmpty() ? "Addis Ababa, Ethiopia" : city + ", Ethiopia";
+                }
+
+                suggestPickup(suggestion, true);
+
+            } catch (Exception ex) {
+                // Any failure — silently fall back, don't bother the user
+                suggestPickup("Addis Ababa, Ethiopia", false);
+            }
+        }, "location-detect");
+        t.setDaemon(true);
+        t.start();
+    }
+
+    /** Pre-fills the pickup field only if the user hasn't typed anything yet. */
+    private void suggestPickup(String address, boolean fromGps) {
+        Platform.runLater(() -> {
+            // Only auto-fill if the field is still empty or has the default placeholder
+            String current = tfPickup.getText().trim();
+            if (current.isEmpty()) {
+                tfPickup.setText(address);
+                lblLocationHint.setText(fromGps
+                    ? "📍 Using your approximate location — tap to change"
+                    : "📍 Could not detect location — using default");
+                lblLocationHint.setTextFill(fromGps
+                    ? Color.web("#22c55e") : Color.web("#475569"));
+            } else {
+                // User already typed something — just hide the hint
+                lblLocationHint.setVisible(false);
+                lblLocationHint.setManaged(false);
+            }
+        });
+    }
+
+    /** Returns the first non-empty, non-null string from the candidates. */
+    private String firstNonEmpty(String... candidates) {
+        for (String s : candidates) {
+            if (s != null && !s.isBlank()) return s;
+        }
+        return "";
+    }
+
+    /**
+     * Simple HTTP GET helper for client-side use (IP geolocation + Nominatim reverse).
+     * Separate from the server's RoutingService — runs in the passenger app JVM.
+     */
+    private String httpGet(String urlString) throws Exception {
+        return httpGet(urlString, false);
+    }
+
+    private String httpGet(String urlString, boolean nominatimUserAgent) throws Exception {
+        URL url = new URL(urlString);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setConnectTimeout(6_000);
+        conn.setReadTimeout(6_000);
+        if (nominatimUserAgent) {
+            conn.setRequestProperty("User-Agent",
+                "EthioRide/1.0 (ride-hailing app; contact@ethioride.com)");
+        }
+        int status = conn.getResponseCode();
+        if (status != 200) throw new Exception("HTTP " + status);
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) sb.append(line);
+            return sb.toString();
+        } finally {
+            conn.disconnect();
+        }
     }
 
     // ── Sign out ──────────────────────────────────────────────────────────────

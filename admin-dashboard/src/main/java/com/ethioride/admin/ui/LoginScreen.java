@@ -94,22 +94,18 @@ public class LoginScreen {
                 final String[] errorDetail = {null};
                 final Object lock = new Object();
 
-                // Set handler BEFORE connecting to avoid race condition
                 client.setMessageHandler(msg -> {
-                    System.out.println("[DEBUG] Received message type: " + msg.getType());
-                    System.out.println("[DEBUG] Payload: " + msg.getPayload());
                     if (msg.getType() == com.ethioride.shared.protocol.MessageType.LOGIN_RESPONSE) {
                         synchronized (lock) {
                             if (msg.getPayload() instanceof com.ethioride.shared.dto.UserDTO) {
                                 user[0] = (com.ethioride.shared.dto.UserDTO) msg.getPayload();
-                                System.out.println("[DEBUG] User role: " + user[0].getRole());
                                 if (user[0].getRole() == com.ethioride.shared.enums.UserRole.ADMIN) {
                                     authenticated[0] = true;
                                 } else {
-                                    errorDetail[0] = "Access denied. Role is: " + user[0].getRole() + " (Admin required)";
+                                    errorDetail[0] = "Access denied. Admin privileges required.";
                                 }
                             } else {
-                                errorDetail[0] = "No user found in DB. Check server console for debug info.";
+                                errorDetail[0] = "Invalid credentials. Please try again.";
                             }
                             lock.notify();
                         }

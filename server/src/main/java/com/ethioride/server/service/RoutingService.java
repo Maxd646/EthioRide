@@ -65,13 +65,7 @@ public class RoutingService {
         double[] destinationCoords = geocode(destination);
 
         // Step 3 — get driving route from OSRM
-        // OSRM coordinate order is longitude,latitude (GeoJSON convention)
-        String osrmRequest = String.format("%s/%.6f,%.6f;%.6f,%.6f?overview=false",
-                OSRM_URL,
-                originCoords[1],      destinationCoords[1],   // lng
-                originCoords[0],      destinationCoords[0]);   // lat — wait, OSRM is lng,lat
-
-        // Correct OSRM format: /route/v1/driving/{lng},{lat};{lng},{lat}
+        // OSRM format: /route/v1/driving/{lng},{lat};{lng},{lat}
         String osrmUrl = String.format("%s/%.6f,%.6f;%.6f,%.6f?overview=false",
                 OSRM_URL,
                 originCoords[1],      originCoords[0],      // lng,lat of origin

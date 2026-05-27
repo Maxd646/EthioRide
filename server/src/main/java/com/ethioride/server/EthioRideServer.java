@@ -640,7 +640,7 @@ public class EthioRideServer {
                     new com.ethioride.server.service.PricingService();
                 com.ethioride.server.service.PricingService.PriceEstimate estimate =
                     pricing.calculatePrice(parts[0], parts[1],
-                        com.ethioride.shared.enums.TripCategory.valueOf(parts[2]));
+                        com.ethioride.shared.enums.RideCategory.valueOf(parts[2]));
 
                 com.ethioride.shared.dto.PriceEstimateDTO dto = new com.ethioride.shared.dto.PriceEstimateDTO(
                     estimate.getDistanceKm(), estimate.getDurationMinutes(),
