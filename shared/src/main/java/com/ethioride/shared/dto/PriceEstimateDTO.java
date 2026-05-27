@@ -12,6 +12,11 @@ public class PriceEstimateDTO implements Serializable {
     private double bookingFee;
     private double totalFare;
     private RideCategory category;
+    // Geocoded coordinates — used by the client to set pickup/dropoff lat/lng on TripRequestDTO
+    private double originLat;
+    private double originLng;
+    private double destLat;
+    private double destLng;
 
     public PriceEstimateDTO() {}
 
@@ -44,4 +49,12 @@ public class PriceEstimateDTO implements Serializable {
     public void        setTotalFare(double v)       { this.totalFare = v; }
     public RideCategory getCategory()       { return category; }
     public void        setCategory(RideCategory v)  { this.category = v; }
+    public double      getOriginLat()       { return originLat; }
+    public void        setOriginLat(double v)       { this.originLat = v; }
+    public double      getOriginLng()       { return originLng; }
+    public void        setOriginLng(double v)       { this.originLng = v; }
+    public double      getDestLat()         { return destLat; }
+    public void        setDestLat(double v)         { this.destLat = v; }
+    public double      getDestLng()         { return destLng; }
+    public void        setDestLng(double v)         { this.destLng = v; }
 }

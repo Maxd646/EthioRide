@@ -136,10 +136,8 @@ public class LoginScreen {
             try {
                 ServerConnection conn = new ServerConnection();
                 conn.connect();
-
-                // Build login request with phone+password as payload "phone:password"
                 Message request = new Message(MessageType.LOGIN_REQUEST, phone + ":" + password, "passenger");
-                Message response = conn.sendAndReceive(request);
+                Message response = conn.sendAndWait(request, MessageType.LOGIN_RESPONSE, 5000);
                 conn.close();
 
                 Platform.runLater(() -> {

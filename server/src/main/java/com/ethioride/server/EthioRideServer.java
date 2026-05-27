@@ -648,6 +648,10 @@ public class EthioRideServer {
                     estimate.getTimeFare(), estimate.getBookingFee(),
                     estimate.getTotalFare(), estimate.getCategory()
                 );
+                dto.setOriginLat(estimate.getOriginLat());
+                dto.setOriginLng(estimate.getOriginLng());
+                dto.setDestLat(estimate.getDestLat());
+                dto.setDestLng(estimate.getDestLng());
                 out.writeObject(new Message(MessageType.PRICE_ESTIMATE_RESPONSE, dto, "server"));
                 out.flush();
                 System.out.printf("[Server] Price estimate: %.2f ETB for %s → %s%n",

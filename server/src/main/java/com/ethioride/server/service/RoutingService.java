@@ -96,7 +96,9 @@ public class RoutingService {
         System.out.printf("[Routing] Distance: %.2f km%n",  distanceKm);
         System.out.printf("[Routing] Duration: %.0f min%n", durationMinutes);
 
-        return new DistanceResult(distanceKm, durationMinutes);
+        return new DistanceResult(distanceKm, durationMinutes,
+                originCoords[0],      originCoords[1],      // origin lat, lng
+                destinationCoords[0], destinationCoords[1]); // dest lat, lng
     }
 
     // ── Geocoding ─────────────────────────────────────────────────────────────
@@ -166,19 +168,34 @@ public class RoutingService {
     // ── Result type ───────────────────────────────────────────────────────────
 
     /**
-     * Identical structure to the old GoogleMapsService.DistanceResult.
-     * PricingService uses this type — no changes needed there.
+     * Routing result — distance, duration, and the geocoded coordinates
+     * for both origin and destination. Coordinates are passed back to the
+     * client so they can be stored on the trip record for proximity matching.
      */
     public static class DistanceResult {
         private final double distanceKm;
         private final double durationMinutes;
+        private final double originLat;
+        private final double originLng;
+        private final double destLat;
+        private final double destLng;
 
-        public DistanceResult(double distanceKm, double durationMinutes) {
+        public DistanceResult(double distanceKm, double durationMinutes,
+                              double originLat, double originLng,
+                              double destLat,   double destLng) {
             this.distanceKm      = distanceKm;
             this.durationMinutes = durationMinutes;
+            this.originLat       = originLat;
+            this.originLng       = originLng;
+            this.destLat         = destLat;
+            this.destLng         = destLng;
         }
 
         public double getDistanceKm()      { return distanceKm;      }
         public double getDurationMinutes() { return durationMinutes; }
+        public double getOriginLat()       { return originLat;       }
+        public double getOriginLng()       { return originLng;       }
+        public double getDestLat()         { return destLat;         }
+        public double getDestLng()         { return destLng;         }
     }
 }

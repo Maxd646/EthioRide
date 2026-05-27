@@ -138,12 +138,13 @@ public class PaymentsScreen {
             try {
                 ServerConnection conn = new ServerConnection();
                 conn.connect();
-                Message response = conn.sendAndReceive(
-                    new Message(MessageType.PASSENGER_TRIP_HISTORY_REQUEST, passengerId, passengerId));
+                Message response = conn.sendAndWait(
+                    new Message(MessageType.PASSENGER_TRIP_HISTORY_REQUEST, passengerId, passengerId),
+                    MessageType.PASSENGER_TRIP_HISTORY_RESPONSE, 8000);
                 conn.close();
 
                 Platform.runLater(() -> {
-                    if (response.getType() == MessageType.PASSENGER_TRIP_HISTORY_RESPONSE) {
+                    if (response != null && response.getType() == MessageType.PASSENGER_TRIP_HISTORY_RESPONSE) {
                         @SuppressWarnings("unchecked")
                         List<TripRequestDTO> trips = (List<TripRequestDTO>) response.getPayload();
                         renderPayments(trips);

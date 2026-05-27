@@ -32,7 +32,7 @@ public class NetworkClient {
 
     private NetworkClient() {}
 
-    public static NetworkClient getInstance() {
+    public static synchronized NetworkClient getInstance() {
         if (instance == null) instance = new NetworkClient();
         return instance;
     }

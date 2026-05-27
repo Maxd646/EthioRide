@@ -23,21 +23,25 @@ public class TripRepository {
 
         // Step 4: PreparedStatement — INSERT
         String sql = "INSERT INTO trips (id, passenger_id, driver_id, pickup_location, " +
-                     "dropoff_location, category, fare, distance_km, status) " +
-                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                     "dropoff_location, pickup_lat, pickup_lng, dropoff_lat, dropoff_lng, " +
+                     "category, fare, distance_km, status) " +
+                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement stmt = conn.prepareStatement(sql);
 
-        // Step 5: Set parameters
         stmt.setString(1, trip.getTripId());
         stmt.setString(2, trip.getPassengerId());
-        stmt.setString(3, trip.getDriverId());   // may be null initially
+        stmt.setString(3, trip.getDriverId());
         stmt.setString(4, trip.getPickupLocation());
         stmt.setString(5, trip.getDropoffLocation());
-        stmt.setString(6, trip.getCategory() != null
+        stmt.setDouble(6, trip.getPickupLat());
+        stmt.setDouble(7, trip.getPickupLng());
+        stmt.setDouble(8, trip.getDropoffLat());
+        stmt.setDouble(9, trip.getDropoffLng());
+        stmt.setString(10, trip.getCategory() != null
                           ? trip.getCategory().name() : RideCategory.ECONOMY.name());
-        stmt.setDouble(7, trip.getFare());
-        stmt.setDouble(8, trip.getDistanceKm());
-        stmt.setString(9, TripStatus.PENDING.name());
+        stmt.setDouble(11, trip.getFare());
+        stmt.setDouble(12, trip.getDistanceKm());
+        stmt.setString(13, TripStatus.PENDING.name());
 
         int rows = stmt.executeUpdate();
         System.out.println("[DB] Trip saved, rows affected: " + rows);
@@ -103,7 +107,7 @@ public class TripRepository {
         List<TripRequestDTO> list = new ArrayList<>();
         while (rs.next()) {
             TripRequestDTO t = mapRow(rs);
-            t.setPassengerPhone(rs.getString("passenger_name"));
+            t.setPassengerName(rs.getString("passenger_name")); // proper field
             list.add(t);
         }
 
@@ -250,13 +254,16 @@ public class TripRepository {
         t.setDriverId(rs.getString("driver_id"));
         t.setPickupLocation(rs.getString("pickup_location"));
         t.setDropoffLocation(rs.getString("dropoff_location"));
+        t.setPickupLat(rs.getDouble("pickup_lat"));
+        t.setPickupLng(rs.getDouble("pickup_lng"));
+        t.setDropoffLat(rs.getDouble("dropoff_lat"));
+        t.setDropoffLng(rs.getDouble("dropoff_lng"));
         t.setFare(rs.getDouble("fare"));
         t.setDistanceKm(rs.getDouble("distance_km"));
         String cat = rs.getString("category");
         if (cat != null) t.setCategory(RideCategory.valueOf(cat));
         String status = rs.getString("status");
         if (status != null) t.setStatus(TripStatus.valueOf(status));
-        // created_at — store as formatted string for display
         java.sql.Timestamp ts = rs.getTimestamp("created_at");
         if (ts != null) t.setCreatedAt(
             new java.text.SimpleDateFormat("MMM dd, yyyy  HH:mm").format(ts));

@@ -60,7 +60,7 @@ public class SimpleMatchmaker {
 
     private SimpleMatchmaker() {}
 
-    public static SimpleMatchmaker getInstance() {
+    public static synchronized SimpleMatchmaker getInstance() {
         if (instance == null) instance = new SimpleMatchmaker();
         return instance;
     }

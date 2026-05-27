@@ -392,13 +392,14 @@ public class MainScreen {
             try {
                 ServerConnection conn = new ServerConnection();
                 conn.connect();
-                Message response = conn.sendAndReceive(
+                Message response = conn.sendAndWait(
                     new Message(MessageType.PRICE_ESTIMATE_REQUEST,
-                        pickup + "|" + dest + "|" + selectedCategory.name(), "passenger"));
+                        pickup + "|" + dest + "|" + selectedCategory.name(), "passenger"),
+                    MessageType.PRICE_ESTIMATE_RESPONSE, 15000);
                 conn.close();
 
                 Platform.runLater(() -> {
-                    if (response.getType() == MessageType.PRICE_ESTIMATE_RESPONSE) {
+                    if (response != null && response.getType() == MessageType.PRICE_ESTIMATE_RESPONSE) {
                         currentEstimate = (PriceEstimateDTO) response.getPayload();
                         lblPriceEstimate.setText(String.format("💰 ETB %.2f  •  %.1f km  •  ~%.0f min",
                             currentEstimate.getTotalFare(),
@@ -441,6 +442,10 @@ public class MainScreen {
 
         final double fare       = currentEstimate.getTotalFare();
         final double distanceKm = currentEstimate.getDistanceKm();
+        final double originLat  = currentEstimate.getOriginLat();
+        final double originLng  = currentEstimate.getOriginLng();
+        final double destLat    = currentEstimate.getDestLat();
+        final double destLng    = currentEstimate.getDestLng();
         final String tripId     = UUID.randomUUID().toString();
         activeTripId = tripId;
 
@@ -455,6 +460,10 @@ public class MainScreen {
                 trip.setCategory(selectedCategory);
                 trip.setFare(fare);
                 trip.setDistanceKm(distanceKm);
+                trip.setPickupLat(originLat);
+                trip.setPickupLng(originLng);
+                trip.setDropoffLat(destLat);
+                trip.setDropoffLng(destLng);
 
                 // Use the persistent connection so the server can push back to us
                 ServerConnection conn = ServerConnection.getPersistent();

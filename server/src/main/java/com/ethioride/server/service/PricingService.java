@@ -60,7 +60,9 @@ public class PricingService {
             timeFare,
             bookingFee,
             total,
-            category
+            category,
+            distance.getOriginLat(), distance.getOriginLng(),
+            distance.getDestLat(),   distance.getDestLng()
         );
     }
     
@@ -132,28 +134,42 @@ public class PricingService {
         private final double bookingFee;
         private final double totalFare;
         private final RideCategory category;
+        private final double originLat;
+        private final double originLng;
+        private final double destLat;
+        private final double destLng;
 
         public PriceEstimate(double distanceKm, double durationMinutes, double baseFare,
                            double distanceFare, double timeFare, double bookingFee,
-                           double totalFare, RideCategory category) {
-            this.distanceKm = distanceKm;
+                           double totalFare, RideCategory category,
+                           double originLat, double originLng,
+                           double destLat,   double destLng) {
+            this.distanceKm    = distanceKm;
             this.durationMinutes = durationMinutes;
-            this.baseFare = baseFare;
-            this.distanceFare = distanceFare;
-            this.timeFare = timeFare;
-            this.bookingFee = bookingFee;
-            this.totalFare = totalFare;
-            this.category = category;
+            this.baseFare      = baseFare;
+            this.distanceFare  = distanceFare;
+            this.timeFare      = timeFare;
+            this.bookingFee    = bookingFee;
+            this.totalFare     = totalFare;
+            this.category      = category;
+            this.originLat     = originLat;
+            this.originLng     = originLng;
+            this.destLat       = destLat;
+            this.destLng       = destLng;
         }
         
-        public double getDistanceKm() { return distanceKm; }
+        public double getDistanceKm()      { return distanceKm; }
         public double getDurationMinutes() { return durationMinutes; }
-        public double getBaseFare() { return baseFare; }
-        public double getDistanceFare() { return distanceFare; }
-        public double getTimeFare() { return timeFare; }
-        public double getBookingFee() { return bookingFee; }
-        public double getTotalFare() { return totalFare; }
-        public RideCategory getCategory() { return category; }
+        public double getBaseFare()        { return baseFare; }
+        public double getDistanceFare()    { return distanceFare; }
+        public double getTimeFare()        { return timeFare; }
+        public double getBookingFee()      { return bookingFee; }
+        public double getTotalFare()       { return totalFare; }
+        public RideCategory getCategory()  { return category; }
+        public double getOriginLat()       { return originLat; }
+        public double getOriginLng()       { return originLng; }
+        public double getDestLat()         { return destLat; }
+        public double getDestLng()         { return destLng; }
         
         @Override
         public String toString() {

@@ -99,7 +99,7 @@ public class RideHistoryScreen {
             "-fx-border-radius:8px;-fx-background-radius:8px;-fx-padding:8px 12px;");
         HBox.setHgrow(tfSearch, Priority.ALWAYS);
         ComboBox<String> cbFilter = new ComboBox<>();
-        cbFilter.getItems().addAll("All", "COMPLETED", "CANCELLED");
+        cbFilter.getItems().addAll("All", "COMPLETED", "IN_PROGRESS", "ACCEPTED", "PENDING", "CANCELLED");
         cbFilter.setValue("All");
         cbFilter.setStyle("-fx-background-color:#0d1526;-fx-text-fill:#f1f5f9;");
 
@@ -138,12 +138,13 @@ public class RideHistoryScreen {
             try {
                 ServerConnection conn = new ServerConnection();
                 conn.connect();
-                Message response = conn.sendAndReceive(
-                    new Message(MessageType.PASSENGER_TRIP_HISTORY_REQUEST, passengerId, passengerId));
+                Message response = conn.sendAndWait(
+                    new Message(MessageType.PASSENGER_TRIP_HISTORY_REQUEST, passengerId, passengerId),
+                    MessageType.PASSENGER_TRIP_HISTORY_RESPONSE, 8000);
                 conn.close();
 
                 Platform.runLater(() -> {
-                    if (response.getType() == MessageType.PASSENGER_TRIP_HISTORY_RESPONSE) {
+                    if (response != null && response.getType() == MessageType.PASSENGER_TRIP_HISTORY_RESPONSE) {
                         @SuppressWarnings("unchecked")
                         List<TripRequestDTO> trips = (List<TripRequestDTO>) response.getPayload();
                         allTrips = trips;
