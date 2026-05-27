@@ -14,6 +14,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.util.List;
@@ -28,6 +29,8 @@ public class PaymentsScreen {
     private final Stage stage;
     private Label lblTotal;
     private VBox tripList;
+    /** Tracks the current available balance so withdrawals can deduct from it. */
+    private double currentBalance = 0.0;
 
     public PaymentsScreen(Stage stage) { this.stage = stage; }
 
@@ -85,7 +88,7 @@ public class PaymentsScreen {
         lblTotal.setFont(Font.font("Arial", FontWeight.BOLD, 28));
         lblTotal.setTextFill(Color.web("#22c55e"));
 
-        Button btnWithdraw = new Button("Withdraw to Telebirr");
+        Button btnWithdraw = new Button("Withdraw");
         btnWithdraw.setStyle("-fx-background-color:#22c55e;-fx-text-fill:white;" +
             "-fx-font-weight:bold;-fx-background-radius:8px;-fx-padding:10 20;-fx-cursor:hand;");
         btnWithdraw.setOnAction(e -> onWithdraw(btnWithdraw));
@@ -147,6 +150,7 @@ public class PaymentsScreen {
                         List<TripRequestDTO> trips = (List<TripRequestDTO>) data.get("trips");
 
                         Platform.runLater(() -> {
+                            currentBalance = total;
                             lblTotal.setText(String.format("ETB %.2f", total));
                             renderTrips(trips.stream()
                                 .filter(tr -> tr.getStatus() == TripStatus.COMPLETED)
@@ -197,34 +201,177 @@ public class PaymentsScreen {
     }
 
     /**
-     * Simulates a withdrawal to Telebirr.
-     * In a real system this would call the Telebirr payout API.
+     * Full withdrawal flow:
+     *  1. Ask for amount
+     *  2. Validate against available balance
+     *  3. Let driver pick a payment method
+     *  4. Confirm and deduct from the displayed balance
      */
     private void onWithdraw(Button btn) {
+        if (currentBalance <= 0) {
+            showAlert(Alert.AlertType.WARNING, "No Balance",
+                "You have no available balance to withdraw.");
+            return;
+        }
+
+        // ── Step 1: Enter amount ──────────────────────────────────────────────
+        Stage dialog = new Stage();
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        dialog.initOwner(stage);
+        dialog.setTitle("Withdraw Funds");
+        dialog.setResizable(false);
+
+        VBox root = new VBox(18);
+        root.setPadding(new Insets(28));
+        root.setStyle("-fx-background-color:#0d1526;");
+        root.setPrefWidth(360);
+
+        Label heading = new Label("Withdraw Funds");
+        heading.setFont(Font.font("Arial", FontWeight.BOLD, 18));
+        heading.setTextFill(Color.web("#f1f5f9"));
+
+        Label available = new Label(String.format("Available: ETB %.2f", currentBalance));
+        available.setTextFill(Color.web("#22c55e"));
+        available.setFont(Font.font("Arial", 13));
+
+        Label amtLabel = new Label("Enter amount (ETB)");
+        amtLabel.setTextFill(Color.web("#94a3b8"));
+        amtLabel.setFont(Font.font("Arial", 12));
+
+        TextField amtField = new TextField();
+        amtField.setPromptText("e.g. 500");
+        amtField.setStyle("-fx-background-color:#0a0e1a;-fx-text-fill:#f1f5f9;" +
+            "-fx-border-color:#1e3a5f;-fx-border-radius:6px;-fx-background-radius:6px;" +
+            "-fx-padding:8 12;-fx-font-size:14;");
+
+        Label errorLbl = new Label("");
+        errorLbl.setTextFill(Color.web("#ef4444"));
+        errorLbl.setFont(Font.font("Arial", 12));
+
+        Button nextBtn = new Button("Next  →");
+        nextBtn.setMaxWidth(Double.MAX_VALUE);
+        nextBtn.setStyle("-fx-background-color:#22c55e;-fx-text-fill:white;" +
+            "-fx-font-weight:bold;-fx-background-radius:8px;-fx-padding:10 20;-fx-cursor:hand;");
+
+        nextBtn.setOnAction(e -> {
+            String raw = amtField.getText().trim();
+            double amount;
+            try {
+                amount = Double.parseDouble(raw);
+            } catch (NumberFormatException ex) {
+                errorLbl.setText("Please enter a valid number.");
+                return;
+            }
+            if (amount <= 0) {
+                errorLbl.setText("Amount must be greater than 0.");
+                return;
+            }
+            if (amount > currentBalance) {
+                errorLbl.setText(String.format(
+                    "Insufficient balance. Max: ETB %.2f", currentBalance));
+                return;
+            }
+            // ── Step 2: Pick payment method ───────────────────────────────────
+            dialog.close();
+            showMethodPicker(btn, amount);
+        });
+
+        root.getChildren().addAll(heading, available, amtLabel, amtField, errorLbl, nextBtn);
+        dialog.setScene(new Scene(root));
+        dialog.show();
+    }
+
+    /** Step 2 – payment method selection dialog. */
+    private void showMethodPicker(Button btn, double amount) {
+        Stage dialog = new Stage();
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        dialog.initOwner(stage);
+        dialog.setTitle("Select Payment Method");
+        dialog.setResizable(false);
+
+        VBox root = new VBox(14);
+        root.setPadding(new Insets(28));
+        root.setStyle("-fx-background-color:#0d1526;");
+        root.setPrefWidth(360);
+
+        Label heading = new Label("Select Payment Method");
+        heading.setFont(Font.font("Arial", FontWeight.BOLD, 18));
+        heading.setTextFill(Color.web("#f1f5f9"));
+
+        Label sub = new Label(String.format("Withdrawing: ETB %.2f", amount));
+        sub.setTextFill(Color.web("#94a3b8"));
+        sub.setFont(Font.font("Arial", 13));
+
+        ToggleGroup group = new ToggleGroup();
+
+        RadioButton rbTelebirr = styledRadio("📱  Telebirr", group);
+        RadioButton rbCBE      = styledRadio("🏦  CBE Birr", group);
+        rbTelebirr.setSelected(true);
+
+        Label errorLbl = new Label("");
+        errorLbl.setTextFill(Color.web("#ef4444"));
+        errorLbl.setFont(Font.font("Arial", 12));
+
+        Button confirmBtn = new Button("Confirm Withdrawal");
+        confirmBtn.setMaxWidth(Double.MAX_VALUE);
+        confirmBtn.setStyle("-fx-background-color:#22c55e;-fx-text-fill:white;" +
+            "-fx-font-weight:bold;-fx-background-radius:8px;-fx-padding:10 20;-fx-cursor:hand;");
+
+        confirmBtn.setOnAction(e -> {
+            RadioButton selected = (RadioButton) group.getSelectedToggle();
+            if (selected == null) { errorLbl.setText("Please select a method."); return; }
+            String method = selected.getText().replaceAll("^[^a-zA-Z]+", "").trim();
+            dialog.close();
+            processWithdrawal(btn, amount, method);
+        });
+
+        root.getChildren().addAll(heading, sub, rbTelebirr, rbCBE, errorLbl, confirmBtn);
+        dialog.setScene(new Scene(root));
+        dialog.show();
+    }
+
+    /** Step 3 – simulate processing and update the balance label. */
+    private void processWithdrawal(Button btn, double amount, String method) {
         btn.setDisable(true);
         btn.setText("Processing...");
 
         new Thread(() -> {
             try { Thread.sleep(900); } catch (InterruptedException ignored) {}
             Platform.runLater(() -> {
-                btn.setText("✓ Withdrawn");
-                btn.setStyle("-fx-background-color:#166534;-fx-text-fill:#22c55e;" +
-                    "-fx-font-weight:bold;-fx-background-radius:8px;-fx-padding:10 20;");
+                // Deduct from displayed balance
+                currentBalance -= amount;
+                lblTotal.setText(String.format("ETB %.2f", currentBalance));
 
-                Alert alert = new Alert(Alert.AlertType.INFORMATION,
-                    "Your earnings have been sent to your Telebirr account.\n" +
-                    "Funds typically arrive within 1-2 minutes.", ButtonType.OK);
-                alert.setTitle("Withdrawal Successful");
-                alert.setHeaderText("✓ Payout Confirmed");
-                alert.showAndWait();
-
-                // Re-enable after confirmation
                 btn.setDisable(false);
-                btn.setText("Withdraw to Telebirr");
+                btn.setText("Withdraw");
                 btn.setStyle("-fx-background-color:#22c55e;-fx-text-fill:white;" +
                     "-fx-font-weight:bold;-fx-background-radius:8px;-fx-padding:10 20;-fx-cursor:hand;");
+
+                showAlert(Alert.AlertType.INFORMATION,
+                    "Withdrawal Successful",
+                    String.format("ETB %.2f has been sent to your %s account.\n" +
+                        "Funds typically arrive within 1–2 minutes.\n\n" +
+                        "Remaining balance: ETB %.2f", amount, method, currentBalance));
             });
         }, "withdraw-sim").start();
+    }
+
+    private RadioButton styledRadio(String text, ToggleGroup group) {
+        RadioButton rb = new RadioButton(text);
+        rb.setToggleGroup(group);
+        rb.setTextFill(Color.web("#f1f5f9"));
+        rb.setFont(Font.font("Arial", 14));
+        rb.setStyle("-fx-padding:10 14;-fx-background-color:#0a0e1a;" +
+            "-fx-background-radius:8px;-fx-cursor:hand;");
+        rb.setMaxWidth(Double.MAX_VALUE);
+        return rb;
+    }
+
+    private void showAlert(Alert.AlertType type, String title, String message) {
+        Alert alert = new Alert(type, message, ButtonType.OK);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.showAndWait();
     }
 
     private void showEmpty(String msg) {

@@ -127,7 +127,11 @@ public class MainScreen {
         Button btnSettings = navButton("⚙  Settings");
         btnMap.setStyle(btnMap.getStyle() + "-fx-background-color: #1e3a5f;");
 
+<<<<<<< HEAD
+        btnHistory.setOnAction(e  -> new RideHistoryScreen(stage).show());
+=======
         btnHistory.setOnAction(e -> new RideHistoryScreen(stage).show());
+>>>>>>> 5c7ce678c376c6c1a7c38009039c1be076b03285
         btnPayments.setOnAction(e -> new PaymentsScreen(stage).show());
         btnSettings.setOnAction(e -> new SettingsScreen(stage).show());
 

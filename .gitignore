@@ -17,3 +17,6 @@ server/production/
 
 # Documents
 document/
+
+# vscode settings
+.vscode/

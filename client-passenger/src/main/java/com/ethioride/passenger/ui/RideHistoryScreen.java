@@ -24,8 +24,12 @@ import java.util.stream.Collectors;
 public class RideHistoryScreen {
     private final Stage stage;
     private VBox tripList;
+<<<<<<< HEAD
+    private Label lblSummary;
+=======
     private List<TripRequestDTO> allTrips = new ArrayList<>();
     private Label lblTotalTrips, lblTotalSpent;
+>>>>>>> 5c7ce678c376c6c1a7c38009039c1be076b03285
 
     public RideHistoryScreen(Stage stage) { this.stage = stage; }
 
@@ -66,7 +70,7 @@ public class RideHistoryScreen {
     }
 
     private ScrollPane buildContent() {
-        VBox content = new VBox(16);
+        VBox content = new VBox(20);
         content.setPadding(new Insets(30));
         content.setStyle("-fx-background-color:#0a0e1a;");
 
@@ -74,6 +78,11 @@ public class RideHistoryScreen {
         title.setFont(Font.font("Arial", FontWeight.BOLD, 24));
         title.setTextFill(Color.web("#f1f5f9"));
 
+<<<<<<< HEAD
+        lblSummary = new Label("Loading...");
+        lblSummary.setFont(Font.font("Arial", 13));
+        lblSummary.setTextFill(Color.web("#94a3b8"));
+=======
         // Summary cards — updated after load
         lblTotalTrips = new Label("...");
         lblTotalTrips.setFont(Font.font("Arial", FontWeight.BOLD, 16));
@@ -108,19 +117,109 @@ public class RideHistoryScreen {
             "-fx-background-radius:6px;-fx-padding:8 14;-fx-cursor:hand;");
         btnRefresh.setOnAction(e -> loadHistory());
         toolbar.getChildren().addAll(tfSearch, cbFilter, btnRefresh);
+>>>>>>> 5c7ce678c376c6c1a7c38009039c1be076b03285
 
         tripList = new VBox(8);
 
-        tfSearch.textProperty().addListener((o, ov, nv) -> filter(nv, cbFilter.getValue()));
-        cbFilter.setOnAction(e -> filter(tfSearch.getText(), cbFilter.getValue()));
-
-        content.getChildren().addAll(title, summary, toolbar, tripList);
+        content.getChildren().addAll(title, lblSummary, tripList);
         ScrollPane sp = new ScrollPane(content);
         sp.setFitToWidth(true);
         sp.setStyle("-fx-background-color:#0a0e1a;-fx-background:#0a0e1a;");
         return sp;
     }
 
+<<<<<<< HEAD
+    @SuppressWarnings("unchecked")
+    private void loadHistory() {
+        String passengerId = SessionState.getInstance().isLoggedIn()
+            ? SessionState.getInstance().getCurrentUser().getId() : null;
+
+        Thread t = new Thread(() -> {
+            try {
+                ServerConnection conn = new ServerConnection();
+                conn.connect();
+                Message resp = conn.sendAndReceive(
+                    new Message(MessageType.TRIP_LIST_REQUEST, null, "passenger"));
+                conn.close();
+
+                Platform.runLater(() -> {
+                    if (resp.getType() == MessageType.TRIP_LIST_RESPONSE) {
+                        List<TripRequestDTO> all = (List<TripRequestDTO>) resp.getPayload();
+                        List<TripRequestDTO> mine = all.stream()
+                            .filter(tr -> passengerId != null && passengerId.equals(tr.getPassengerId()))
+                            .toList();
+                        renderTrips(mine);
+                    } else {
+                        lblSummary.setText("Could not load trip history.");
+                    }
+                });
+            } catch (Exception ex) {
+                Platform.runLater(() -> lblSummary.setText("Server offline — cannot load history."));
+            }
+        }, "ride-history-thread");
+        t.setDaemon(true);
+        t.start();
+    }
+
+    private void renderTrips(List<TripRequestDTO> trips) {
+        tripList.getChildren().clear();
+        if (trips.isEmpty()) {
+            lblSummary.setText("No trips yet.");
+            Label empty = new Label("You haven't taken any rides yet.");
+            empty.setTextFill(Color.web("#475569"));
+            empty.setFont(Font.font("Arial", 14));
+            tripList.getChildren().add(empty);
+            return;
+        }
+
+        long completed = trips.stream().filter(t -> t.getStatus() == TripStatus.COMPLETED).count();
+        double total   = trips.stream().filter(t -> t.getStatus() == TripStatus.COMPLETED)
+                              .mapToDouble(TripRequestDTO::getFare).sum();
+        lblSummary.setText(String.format("%d trips  •  %d completed  •  ETB %.2f spent",
+            trips.size(), completed, total));
+
+        for (TripRequestDTO trip : trips) {
+            tripList.getChildren().add(buildTripCard(trip));
+        }
+    }
+
+    private HBox buildTripCard(TripRequestDTO trip) {
+        HBox card = new HBox(16);
+        card.setAlignment(Pos.CENTER_LEFT);
+        card.setStyle("-fx-background-color:#0d1526;-fx-background-radius:10px;" +
+                      "-fx-border-color:#1e3a5f;-fx-border-radius:10px;-fx-padding:14;");
+
+        // Status icon
+        String icon = switch (trip.getStatus() == null ? TripStatus.PENDING : trip.getStatus()) {
+            case COMPLETED  -> "✅";
+            case CANCELLED  -> "❌";
+            case IN_PROGRESS -> "🚗";
+            default          -> "🕐";
+        };
+        Label lblIcon = new Label(icon);
+        lblIcon.setFont(Font.font("Arial", 22));
+
+        // Route info
+        VBox info = new VBox(4);
+        HBox.setHgrow(info, Priority.ALWAYS);
+        Label lblRoute = new Label(trip.getPickupLocation() + "  →  " + trip.getDropoffLocation());
+        lblRoute.setFont(Font.font("Arial", FontWeight.BOLD, 13));
+        lblRoute.setTextFill(Color.web("#f1f5f9"));
+
+        String cat = trip.getCategory() != null ? trip.getCategory().name() : "ECONOMY";
+        String status = trip.getStatus() != null ? trip.getStatus().name() : "PENDING";
+        Label lblMeta = new Label(cat + "  •  " + status);
+        lblMeta.setFont(Font.font("Arial", 11));
+        lblMeta.setTextFill(Color.web("#475569"));
+        info.getChildren().addAll(lblRoute, lblMeta);
+
+        // Fare
+        Label lblFare = new Label(String.format("ETB %.2f", trip.getFare()));
+        lblFare.setFont(Font.font("Arial", FontWeight.BOLD, 15));
+        lblFare.setTextFill(Color.web("#3b82f6"));
+
+        card.getChildren().addAll(lblIcon, info, lblFare);
+=======
     // ── Load from server ──────────────────────────────────────────────────────
 
     private void loadHistory() {
@@ -248,6 +347,7 @@ public class RideHistoryScreen {
         lbl.setTextFill(Color.web("#94a3b8"));
         lbl.setFont(Font.font("Arial", 11));
         card.getChildren().addAll(lbl, valueLabel);
+>>>>>>> 5c7ce678c376c6c1a7c38009039c1be076b03285
         return card;
     }
 
