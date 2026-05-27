@@ -110,10 +110,20 @@ public class MainScreen {
         requestOverlay = buildRequestOverlay();
         requestOverlay.setVisible(false);
         requestOverlay.setManaged(false);
+        // Stretch overlay to fill the entire center area
+        StackPane.setAlignment(requestOverlay, Pos.CENTER);
 
         center.getChildren().addAll(mapLabel, statusPanel, requestOverlay);
+
+        // Make overlay fill the StackPane by binding its size
+        requestOverlay.prefWidthProperty().bind(center.widthProperty());
+        requestOverlay.prefHeightProperty().bind(center.heightProperty());
+
         return center;
     }
+
+    // ── Status label (shown below the toggle) ────────────────────────────────
+    private Label lblDriverStatus;
 
     private VBox buildStatusPanel() {
         VBox panel = new VBox(12);
@@ -133,6 +143,8 @@ public class MainScreen {
             toggleOnline.setStyle(online
                 ? "-fx-background-color:#166534;-fx-text-fill:#22c55e;-fx-background-radius:8px;-fx-padding:10px;-fx-cursor:hand;"
                 : "-fx-background-color:#1e3a5f;-fx-text-fill:#94a3b8;-fx-background-radius:8px;-fx-padding:10px;-fx-cursor:hand;");
+            if (lblDriverStatus != null)
+                lblDriverStatus.setText(online ? "Waiting for ride requests..." : "Go online to receive trips");
             sendStatusUpdate(online);
         });
 
@@ -163,7 +175,14 @@ public class MainScreen {
         earningsProgress.setMaxWidth(Double.MAX_VALUE);
         earningsProgress.setPrefHeight(6);
 
-        panel.getChildren().addAll(toggleOnline, lblEarningsTitle, lblShiftEarnings, earningsProgress);
+        // ── Driver status hint ────────────────────────────────────────────────
+        lblDriverStatus = new Label(DriverSessionState.getInstance().isOnline()
+                ? "Waiting for ride requests..." : "Go online to receive trips");
+        lblDriverStatus.setTextFill(Color.web("#475569"));
+        lblDriverStatus.setFont(Font.font("Arial", 11));
+        lblDriverStatus.setWrapText(true);
+
+        panel.getChildren().addAll(toggleOnline, lblEarningsTitle, lblShiftEarnings, earningsProgress, lblDriverStatus);
         return panel;
     }
 
@@ -261,7 +280,11 @@ public class MainScreen {
             sp.getChildren().removeIf(n -> n instanceof VBox v &&
                     v.getStyle().contains("#22c55e"));
         }
-        // Make driver available again
+        // Reset driver status label
+        if (lblDriverStatus != null) {
+            lblDriverStatus.setText("Waiting for ride requests...");
+            lblDriverStatus.setTextFill(Color.web("#475569"));
+        }
         DriverSessionState.getInstance().setOnline(true);
 
         Alert alert = new Alert(Alert.AlertType.INFORMATION,
@@ -274,8 +297,9 @@ public class MainScreen {
     private void showTripRequest(TripRequestDTO trip) {
         pendingTrip = trip;
         lblOverlayFare.setText(String.format("ETB %.2f", trip.getFare()));
-        lblOverlayPickup.setText("Pickup: " + trip.getPickupLocation());
-        lblOverlayDropoff.setText("Drop-off: " + trip.getDropoffLocation());
+        lblOverlayPickup.setText("📍  " + trip.getPickupLocation());
+        lblOverlayDropoff.setText("🏁  " + trip.getDropoffLocation());
+        if (lblDriverStatus != null) lblDriverStatus.setText("⚡ Incoming ride request!");
 
         requestOverlay.setVisible(true);
         requestOverlay.setManaged(true);
@@ -504,6 +528,10 @@ public class MainScreen {
                     "-fx-background-radius:8px;-fx-padding:8;-fx-cursor:hand;");
             btnDismiss.setOnAction(ev -> {
                 if (card.getParent() instanceof StackPane sp) sp.getChildren().remove(card);
+                if (lblDriverStatus != null) {
+                    lblDriverStatus.setText("Waiting for ride requests...");
+                    lblDriverStatus.setTextFill(Color.web("#475569"));
+                }
             });
 
             card.getChildren().addAll(lblDone, lblEarned, lblShift, btnDismiss);
@@ -515,6 +543,10 @@ public class MainScreen {
 
         // Add to the center StackPane
         Platform.runLater(() -> {
+            if (lblDriverStatus != null) {
+                lblDriverStatus.setText("● On a trip");
+                lblDriverStatus.setTextFill(Color.web("#22c55e"));
+            }
             if (stage.getScene().getRoot() instanceof BorderPane bp &&
                     bp.getCenter() instanceof StackPane sp) {
                 StackPane.setAlignment(card, Pos.BOTTOM_LEFT);
@@ -542,6 +574,27 @@ public class MainScreen {
             }, "trip-decline");
             t.setDaemon(true);
             t.start();
+
+            // Show declined state briefly, then reset to waiting
+            if (lblDriverStatus != null) {
+                lblDriverStatus.setText("✕  Request declined — waiting for next trip...");
+                lblDriverStatus.setTextFill(Color.web("#ef4444"));
+                // Reset colour after 3 seconds
+                new Thread(() -> {
+                    try { Thread.sleep(3000); } catch (InterruptedException ignored) {}
+                    Platform.runLater(() -> {
+                        if (lblDriverStatus != null) {
+                            lblDriverStatus.setText("Waiting for ride requests...");
+                            lblDriverStatus.setTextFill(Color.web("#475569"));
+                        }
+                    });
+                }, "decline-reset").start();
+            }
+        } else {
+            if (lblDriverStatus != null) {
+                lblDriverStatus.setText("Waiting for ride requests...");
+                lblDriverStatus.setTextFill(Color.web("#475569"));
+            }
         }
         pendingTrip = null;
         requestOverlay.setVisible(false);
