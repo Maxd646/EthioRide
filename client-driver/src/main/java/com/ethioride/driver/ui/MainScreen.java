@@ -245,7 +245,7 @@ public class MainScreen {
                     }
                 });
             } catch (Exception ex) {
-                System.err.println("[Driver] Could not connect for push listener: " + ex.getMessage());
+                // push listener connection failed — ignore silently
             }
         }, "driver-push-connect");
         t.setDaemon(true);
@@ -259,7 +259,7 @@ public class MainScreen {
                 stage.getScene().getRoot() instanceof BorderPane bp &&
                 bp.getCenter() instanceof StackPane sp) {
             sp.getChildren().removeIf(n -> n instanceof VBox v &&
-                    v.getStyle().contains("#22c55e") && v != requestOverlay);
+                    v.getStyle().contains("#22c55e"));
         }
         // Make driver available again
         DriverSessionState.getInstance().setOnline(true);
@@ -307,8 +307,9 @@ public class MainScreen {
                 nc.send(new Message(MessageType.DRIVER_STATUS_UPDATE,
                         online ? "ONLINE" : "OFFLINE", driverId));
             } catch (Exception ex) {
-                Platform.runLater(() ->
-                    System.err.println("[Driver] Status update failed: " + ex.getMessage()));
+                Platform.runLater(() -> {
+                    // status update failed — ignore silently
+                });
             }
         }, "driver-status-update");
         t.setDaemon(true);
@@ -350,7 +351,7 @@ public class MainScreen {
                 nc.send(new Message(MessageType.DRIVER_LOCATION_UPDATE,
                         String.format("%.6f,%.6f", lat, lng), driverId));
             } catch (Exception ex) {
-                System.err.println("[Driver] Location update failed: " + ex.getMessage());
+                // location update failed — ignore silently
             }
         }, 5, 15, java.util.concurrent.TimeUnit.SECONDS);
     }
@@ -374,7 +375,7 @@ public class MainScreen {
                 if (!nc.isConnected()) nc.connect();
                 nc.send(new Message(MessageType.TRIP_ACCEPTED, trip.getTripId(), driverId));
             } catch (Exception ex) {
-                System.err.println("[Driver] Accept send failed: " + ex.getMessage());
+                // accept send failed — ignore silently
             }
         }, "trip-accept");
         t.setDaemon(true);
@@ -456,7 +457,7 @@ public class MainScreen {
                     NetworkClient.getInstance().send(
                         new Message(MessageType.TRIP_STARTED, trip.getTripId(), driverId));
                 } catch (Exception ex) {
-                    System.err.println("[Driver] Trip started send failed: " + ex.getMessage());
+                    // trip started send failed — ignore silently
                 }
             }, "trip-started");
             ts.setDaemon(true);
@@ -477,7 +478,7 @@ public class MainScreen {
                     NetworkClient.getInstance().send(
                         new Message(MessageType.TRIP_COMPLETED, trip.getTripId(), driverId));
                 } catch (Exception ex) {
-                    System.err.println("[Driver] Trip completed send failed: " + ex.getMessage());
+                    // trip completed send failed — ignore silently
                 }
             }, "trip-completed");
             tc.setDaemon(true);
@@ -536,7 +537,7 @@ public class MainScreen {
                         nc.send(new Message(MessageType.TRIP_DECLINED, tripId, driverId));
                     }
                 } catch (Exception ex) {
-                    System.err.println("[Driver] Decline send failed: " + ex.getMessage());
+                    // decline send failed — ignore silently
                 }
             }, "trip-decline");
             t.setDaemon(true);
