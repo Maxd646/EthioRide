@@ -86,9 +86,9 @@ public class MainScreen {
 
         btnMap.setStyle(btnMap.getStyle() + "-fx-background-color: #1e3a5f;");
 
-        btnHistory.setOnAction(e -> showInfo("Ride History", "Your past trips will appear here."));
-        btnPayments.setOnAction(e -> showInfo("Payments", "Payment methods and history."));
-        btnSettings.setOnAction(e -> showInfo("Settings", "App settings."));
+        btnHistory.setOnAction(e  -> new RideHistoryScreen(stage).show());
+        btnPayments.setOnAction(e -> new PaymentsScreen(stage).show());
+        btnSettings.setOnAction(e -> new SettingsScreen(stage).show());
 
         Region spacer = new Region();
         VBox.setVgrow(spacer, Priority.ALWAYS);
