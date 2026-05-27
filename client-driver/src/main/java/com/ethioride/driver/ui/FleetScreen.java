@@ -155,24 +155,30 @@ public class FleetScreen {
 
     private void loadDrivers() {
         lblCount.setText("Loading...");
-        try {
-            NetworkClient.getInstance().connect();
-            NetworkClient.getInstance().sendRequest(
-                MessageType.USER_LIST_REQUEST, null,
-                MessageType.USER_LIST_RESPONSE, msg -> {
-                    @SuppressWarnings("unchecked")
-                    List<UserDTO> users = (List<UserDTO>) msg.getPayload();
-                    Platform.runLater(() -> {
-                        allDrivers.clear();
-                        users.stream()
-                            .filter(u -> u.getRole() == UserRole.DRIVER)
-                            .forEach(allDrivers::add);
-                        lblCount.setText(allDrivers.size() + " drivers");
+        // Network I/O must never run on the JavaFX Application Thread
+        Thread t = new Thread(() -> {
+            try {
+                NetworkClient nc = NetworkClient.getInstance();
+                if (!nc.isConnected()) nc.connect();
+                nc.sendRequest(
+                    MessageType.USER_LIST_REQUEST, null,
+                    MessageType.USER_LIST_RESPONSE, msg -> {
+                        @SuppressWarnings("unchecked")
+                        List<UserDTO> users = (List<UserDTO>) msg.getPayload();
+                        Platform.runLater(() -> {
+                            allDrivers.clear();
+                            users.stream()
+                                .filter(u -> u.getRole() == UserRole.DRIVER)
+                                .forEach(allDrivers::add);
+                            lblCount.setText(allDrivers.size() + " drivers");
+                        });
                     });
-                });
-        } catch (Exception e) {
-            Platform.runLater(() -> lblCount.setText("Could not load drivers"));
-        }
+            } catch (Exception e) {
+                Platform.runLater(() -> lblCount.setText("Could not load drivers"));
+            }
+        }, "fleet-load");
+        t.setDaemon(true);
+        t.start();
     }
 
     private TableCell<UserDTO, String> styledCell(String color) {

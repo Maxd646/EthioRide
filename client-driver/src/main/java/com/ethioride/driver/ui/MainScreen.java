@@ -256,8 +256,8 @@ public class MainScreen {
     // ── Actions ───────────────────────────────────────────────────────────────
 
     private void sendStatusUpdate(boolean online) {
-        String driverId = DriverSessionState.getInstance().getCurrentDriver() != null
-            ? DriverSessionState.getInstance().getCurrentDriver().getId() : "unknown";
+        if (DriverSessionState.getInstance().getCurrentDriver() == null) return;
+        final String driverId = DriverSessionState.getInstance().getCurrentDriver().getId();
         Thread t = new Thread(() -> {
             try {
                 NetworkClient nc = NetworkClient.getInstance();
@@ -282,8 +282,8 @@ public class MainScreen {
      * at different positions during testing.
      */
     private void startLocationUpdater() {
-        String driverId = DriverSessionState.getInstance().getCurrentDriver() != null
-            ? DriverSessionState.getInstance().getCurrentDriver().getId() : "unknown";
+        if (DriverSessionState.getInstance().getCurrentDriver() == null) return;
+        final String driverId = DriverSessionState.getInstance().getCurrentDriver().getId();
 
         // Simulate a location near Addis Ababa center (9.0320, 38.7469)
         // with a small random offset per driver so they appear at different spots
@@ -316,10 +316,14 @@ public class MainScreen {
     private void onAccept() {
         if (countdownTimer != null) countdownTimer.stop();
         if (pendingTrip == null) return;
+        // Guard: must have a valid driver session
+        if (DriverSessionState.getInstance().getCurrentDriver() == null) {
+            dismissRequest(false);
+            return;
+        }
 
         final TripRequestDTO trip = pendingTrip;
-        final String driverId = DriverSessionState.getInstance().getCurrentDriver() != null
-            ? DriverSessionState.getInstance().getCurrentDriver().getId() : "unknown";
+        final String driverId = DriverSessionState.getInstance().getCurrentDriver().getId();
 
         // Send TRIP_ACCEPTED to server — server updates DB and notifies passenger
         Thread t = new Thread(() -> {
@@ -434,10 +438,10 @@ public class MainScreen {
 
     private void dismissRequest(boolean sendDecline) {
         if (countdownTimer != null) countdownTimer.stop();
-        if (sendDecline && pendingTrip != null) {
+        if (sendDecline && pendingTrip != null
+                && DriverSessionState.getInstance().getCurrentDriver() != null) {
             final String tripId   = pendingTrip.getTripId();
-            final String driverId = DriverSessionState.getInstance().getCurrentDriver() != null
-                ? DriverSessionState.getInstance().getCurrentDriver().getId() : "unknown";
+            final String driverId = DriverSessionState.getInstance().getCurrentDriver().getId();
             Thread t = new Thread(() -> {
                 try {
                     NetworkClient nc = NetworkClient.getInstance();

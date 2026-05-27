@@ -133,29 +133,35 @@ public class PaymentsScreen {
             ? DriverSessionState.getInstance().getCurrentDriver().getId() : null;
         if (driverId == null) return;
 
-        try {
-            NetworkClient.getInstance().connect();
-            NetworkClient.getInstance().sendRequest(
-                MessageType.DRIVER_EARNINGS_REQUEST, driverId,
-                MessageType.DRIVER_EARNINGS_RESPONSE, msg -> {
-                    java.util.Map<String, Object> data =
-                        (java.util.Map<String, Object>) msg.getPayload();
-                    double total = (double) data.get("total");
-                    List<TripRequestDTO> trips = (List<TripRequestDTO>) data.get("trips");
+        // Network I/O must never run on the JavaFX Application Thread
+        Thread t = new Thread(() -> {
+            try {
+                NetworkClient nc = NetworkClient.getInstance();
+                if (!nc.isConnected()) nc.connect();
+                nc.sendRequest(
+                    MessageType.DRIVER_EARNINGS_REQUEST, driverId,
+                    MessageType.DRIVER_EARNINGS_RESPONSE, msg -> {
+                        java.util.Map<String, Object> data =
+                            (java.util.Map<String, Object>) msg.getPayload();
+                        double total = (double) data.get("total");
+                        List<TripRequestDTO> trips = (List<TripRequestDTO>) data.get("trips");
 
-                    Platform.runLater(() -> {
-                        lblTotal.setText(String.format("ETB %.2f", total));
-                        renderTrips(trips.stream()
-                            .filter(t -> t.getStatus() == TripStatus.COMPLETED)
-                            .collect(Collectors.toList()));
+                        Platform.runLater(() -> {
+                            lblTotal.setText(String.format("ETB %.2f", total));
+                            renderTrips(trips.stream()
+                                .filter(tr -> tr.getStatus() == TripStatus.COMPLETED)
+                                .collect(Collectors.toList()));
+                        });
                     });
+            } catch (Exception e) {
+                Platform.runLater(() -> {
+                    lblTotal.setText("N/A");
+                    showEmpty("Could not load earnings.");
                 });
-        } catch (Exception e) {
-            Platform.runLater(() -> {
-                lblTotal.setText("N/A");
-                showEmpty("Could not load earnings.");
-            });
-        }
+            }
+        }, "driver-payments-load");
+        t.setDaemon(true);
+        t.start();
     }
 
     private void renderTrips(List<TripRequestDTO> trips) {
