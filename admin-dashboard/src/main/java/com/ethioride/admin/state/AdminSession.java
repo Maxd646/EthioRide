@@ -12,7 +12,7 @@ public class AdminSession {
 
     private AdminSession() {}
 
-    public static AdminSession getInstance() {
+    public static synchronized AdminSession getInstance() {
         if (instance == null) instance = new AdminSession();
         return instance;
     }

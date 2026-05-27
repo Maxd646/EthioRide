@@ -10,7 +10,7 @@ public class DriverSessionState {
 
     private DriverSessionState() {}
 
-    public static DriverSessionState getInstance() {
+    public static synchronized DriverSessionState getInstance() {
         if (instance == null) instance = new DriverSessionState();
         return instance;
     }
