@@ -50,15 +50,17 @@ public class SystemScreen {
         Button btnDash    = navBtn("📊  Dashboard");
         Button btnDrivers = navBtn("🚗  Drivers");
         Button btnTrips   = navBtn("🗺  Trips");
+        Button btnUsers   = navBtn("👥  Users");
         Button btnSystem  = navBtn("🖥  System");
         btnSystem.setStyle(btnSystem.getStyle() + "-fx-background-color:#1e3a5f;");
         btnDash.setOnAction(e    -> { stopLog(); new DashboardScreen(stage).show(); });
         btnDrivers.setOnAction(e -> { stopLog(); new DriversScreen(stage).show(); });
         btnTrips.setOnAction(e   -> { stopLog(); new TripsScreen(stage).show(); });
+        btnUsers.setOnAction(e   -> { stopLog(); new UsersScreen(stage).show(); });
         Region sp = new Region(); VBox.setVgrow(sp, Priority.ALWAYS);
         Button btnOut = navBtn("↩  Sign Out");
         btnOut.setOnAction(e -> { stopLog(); AdminService.getInstance().disconnect(); AdminSession.getInstance().logout(); new LoginScreen(stage).show(); });
-        s.getChildren().addAll(logo, btnDash, btnDrivers, btnTrips, btnSystem, sp, btnOut);
+        s.getChildren().addAll(logo, btnDash, btnDrivers, btnTrips, btnUsers, btnSystem, sp, btnOut);
         return s;
     }
 

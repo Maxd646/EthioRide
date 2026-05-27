@@ -49,6 +49,10 @@ public class AdminSocketClient {
         this.messageHandler = handler;
     }
 
+    public Consumer<Message> getMessageHandler() {
+        return this.messageHandler;
+    }
+
     public boolean isConnected() { return connected; }
 
     public void disconnect() {

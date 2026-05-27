@@ -20,26 +20,55 @@ public class UserRepository {
     // ── READ ──────────────────────────────────────────────────────────────────
 
     /**
-     * SELECT — find a user by phone and password.
-     * Returns UserDTO if found, null otherwise.
+     * SELECT — get all users from the database.
+     * Returns a list of all UserDTO objects.
      */
-    public UserDTO findByPhoneAndPassword(String phone, String password) throws Exception {
-        // Step 3: Connect
+    public java.util.List<UserDTO> findAll() throws Exception {
         Connection conn = DBConnection.getConnection();
 
-        // Step 4: Create a PreparedStatement (safer than Statement — prevents SQL injection)
+        String sql = "SELECT id, full_name, phone, email, role, rating FROM users ORDER BY created_at DESC";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        ResultSet rs = stmt.executeQuery();
+
+        java.util.List<UserDTO> users = new java.util.ArrayList<>();
+        while (rs.next()) {
+            UserDTO user = new UserDTO();
+            user.setId(rs.getString("id"));
+            user.setFullName(rs.getString("full_name"));
+            user.setPhone(rs.getString("phone"));
+            user.setEmail(rs.getString("email"));
+            user.setRole(UserRole.valueOf(rs.getString("role")));
+            user.setRating(rs.getDouble("rating"));
+            users.add(user);
+        }
+
+        rs.close();
+        stmt.close();
+        conn.close();
+
+        return users;
+    }
+
+    /**
+     * SELECT — find a user by phone/email and password.
+     * Returns UserDTO if found, null otherwise.
+     * Accepts either phone number or email address.
+     */
+    public UserDTO findByPhoneAndPassword(String phoneOrEmail, String password) throws Exception {
+        Connection conn = DBConnection.getConnection();
+
         String sql = "SELECT id, full_name, phone, email, role, rating " +
-                     "FROM users WHERE phone = ? AND password_hash = ?";
+                     "FROM users WHERE (phone = ? OR email = ?) AND password_hash = ?";
         PreparedStatement stmt = conn.prepareStatement(sql);
 
-        // Step 5: Set parameters and execute
-        stmt.setString(1, phone);
-        stmt.setString(2, hashPassword(password));
+        stmt.setString(1, phoneOrEmail);
+        stmt.setString(2, phoneOrEmail);
+        stmt.setString(3, hashPassword(password));
+
         ResultSet rs = stmt.executeQuery();
 
         UserDTO user = null;
         if (rs.next()) {
-            // Process the ResultSet — map each column to the DTO
             user = new UserDTO();
             user.setId(rs.getString("id"));
             user.setFullName(rs.getString("full_name"));
@@ -49,10 +78,8 @@ public class UserRepository {
             user.setRating(rs.getDouble("rating"));
         }
 
-        // Step 6: Close ResultSet and Statement
         rs.close();
         stmt.close();
-        // Step 7: Close Connection
         conn.close();
 
         return user;
@@ -99,8 +126,7 @@ public class UserRepository {
         stmt.setDouble(7, 5.0);
 
         // executeUpdate() returns the number of rows affected
-        int rowsAffected = stmt.executeUpdate();
-        System.out.println("[DB] User inserted, rows affected: " + rowsAffected);
+        stmt.executeUpdate();
 
         stmt.close();
         conn.close();
@@ -142,7 +168,7 @@ public class UserRepository {
     // ── Helper ────────────────────────────────────────────────────────────────
 
     /** SHA-256 password hash. */
-    private String hashPassword(String password) {
+    public static String hashPassword(String password) {
         try {
             java.security.MessageDigest md = java.security.MessageDigest.getInstance("SHA-256");
             byte[] hash = md.digest(password.getBytes(java.nio.charset.StandardCharsets.UTF_8));

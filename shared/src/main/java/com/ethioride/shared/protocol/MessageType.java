@@ -20,6 +20,14 @@ public enum MessageType {
     DRIVER_LOCATION_UPDATE,
     DRIVER_STATUS_UPDATE,
 
+    // Admin - User Management
+    USER_LIST_REQUEST,
+    USER_LIST_RESPONSE,
+    USER_CREATE_REQUEST,
+    USER_CREATE_RESPONSE,
+    USER_DELETE_REQUEST,
+    USER_DELETE_RESPONSE,
+
     // System
     HEARTBEAT,
     ERROR,

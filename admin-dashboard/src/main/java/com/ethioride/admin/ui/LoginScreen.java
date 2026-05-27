@@ -36,7 +36,7 @@ public class LoginScreen {
         sub.setTextFill(Color.web("#94a3b8"));
 
         tfUsername = new TextField();
-        tfUsername.setPromptText("admin");
+        tfUsername.setPromptText("admin@ethioride.com or +251 900 000 000");
         styleField(tfUsername);
 
         pfPassword = new PasswordField();
@@ -48,12 +48,17 @@ public class LoginScreen {
         lblError.setFont(Font.font("Arial", 12));
         lblError.setVisible(false);
         lblError.setManaged(false);
+        lblError.setWrapText(true);
+        lblError.setMaxWidth(400);
 
         btnLogin = new Button("Login");
         btnLogin.setMaxWidth(Double.MAX_VALUE);
         btnLogin.setFont(Font.font("Arial", FontWeight.BOLD, 14));
         btnLogin.setStyle("-fx-background-color:#f59e0b;-fx-text-fill:#0a0e1a;-fx-background-radius:8px;-fx-padding:12px;-fx-cursor:hand;");
         btnLogin.setOnAction(e -> onLogin());
+
+        // Allow Enter key to submit
+        pfPassword.setOnAction(e -> onLogin());
 
         root.getChildren().addAll(
             logo, sub,
@@ -69,22 +74,103 @@ public class LoginScreen {
     private void onLogin() {
         String username = tfUsername.getText().trim();
         String password = pfPassword.getText();
-        if (username.isEmpty() || password.isEmpty()) { showError("Username and password are required."); return; }
+
+        if (username.isEmpty() || password.isEmpty()) {
+            showError("Username and password are required.");
+            return;
+        }
+
+        btnLogin.setDisable(true);
+        btnLogin.setText("Authenticating...");
         hideError();
-        AdminSession.getInstance().login(username, "token-placeholder");
-        AdminService.getInstance().connect();
-        new DashboardScreen(stage).show();
+
+        Thread authThread = new Thread(() -> {
+            try {
+                com.ethioride.admin.network.AdminSocketClient client =
+                    com.ethioride.admin.network.AdminSocketClient.getInstance();
+                client.connect();
+
+                final boolean[] authenticated = {false};
+                final com.ethioride.shared.dto.UserDTO[] user = {null};
+                final String[] errorDetail = {null};
+                final Object lock = new Object();
+
+                client.setMessageHandler(msg -> {
+                    if (msg.getType() == com.ethioride.shared.protocol.MessageType.LOGIN_RESPONSE) {
+                        synchronized (lock) {
+                            if (msg.getPayload() instanceof com.ethioride.shared.dto.UserDTO) {
+                                user[0] = (com.ethioride.shared.dto.UserDTO) msg.getPayload();
+                                if (user[0].getRole() == com.ethioride.shared.enums.UserRole.ADMIN) {
+                                    authenticated[0] = true;
+                                } else {
+                                    errorDetail[0] = "Access denied. Admin privileges required.";
+                                }
+                            } else {
+                                errorDetail[0] = "Invalid credentials. Please try again.";
+                            }
+                            lock.notify();
+                        }
+                    } else if (msg.getType() == com.ethioride.shared.protocol.MessageType.ERROR) {
+                        synchronized (lock) {
+                            errorDetail[0] = "Server error: " + msg.getPayload();
+                            lock.notify();
+                        }
+                    }
+                });
+
+                client.send(new com.ethioride.shared.protocol.Message(
+                    com.ethioride.shared.protocol.MessageType.LOGIN_REQUEST,
+                    username + ":" + password,
+                    "admin"
+                ));
+
+                synchronized (lock) {
+                    lock.wait(5000);
+                }
+
+                if (authenticated[0] && user[0] != null) {
+                    javafx.application.Platform.runLater(() -> {
+                        AdminSession.getInstance().login(user[0].getFullName(), user[0].getId());
+                        AdminService.getInstance().connect();
+                        new DashboardScreen(stage).show();
+                    });
+                } else {
+                    final String msg = errorDetail[0] != null ? errorDetail[0] : "Invalid credentials. Please try again.";
+                    javafx.application.Platform.runLater(() -> {
+                        showError(msg);
+                        resetButton();
+                    });
+                }
+            } catch (Exception ex) {
+                javafx.application.Platform.runLater(() -> {
+                    showError("Connection failed: " + ex.getMessage());
+                    resetButton();
+                });
+            }
+        }, "admin-auth");
+        authThread.setDaemon(true);
+        authThread.start();
+    }
+
+    private void resetButton() {
+        btnLogin.setDisable(false);
+        btnLogin.setText("Login");
     }
 
     private void showError(String m) { lblError.setText(m); lblError.setVisible(true); lblError.setManaged(true); }
     private void hideError()         { lblError.setVisible(false); lblError.setManaged(false); }
 
     private Label lbl(String text) {
-        Label l = new Label(text); l.setTextFill(Color.web("#94a3b8")); l.setFont(Font.font("Arial", 12)); return l;
+        Label l = new Label(text);
+        l.setTextFill(Color.web("#94a3b8"));
+        l.setFont(Font.font("Arial", 12));
+        return l;
     }
 
     private void styleField(TextField f) {
-        f.setStyle("-fx-background-color:#0d1526;-fx-text-fill:#f1f5f9;-fx-prompt-text-fill:#475569;-fx-border-color:#1e3a5f;-fx-border-radius:8px;-fx-background-radius:8px;-fx-padding:10px 14px;-fx-font-size:13px;");
+        f.setStyle("-fx-background-color:#0d1526;-fx-text-fill:#f1f5f9;-fx-prompt-text-fill:#475569;" +
+                   "-fx-border-color:#1e3a5f;-fx-border-radius:8px;-fx-background-radius:8px;" +
+                   "-fx-padding:10px 14px;-fx-font-size:13px;");
         f.setMaxWidth(Double.MAX_VALUE);
     }
 }
