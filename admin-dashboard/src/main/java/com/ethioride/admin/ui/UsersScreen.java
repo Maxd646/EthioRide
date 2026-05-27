@@ -56,16 +56,18 @@ public class UsersScreen {
         Button btnDrivers = navBtn("🚗  Drivers");
         Button btnTrips   = navBtn("🗺  Trips");
         Button btnUsers   = navBtn("👥  Users");
+        Button btnPricing = navBtn("💰  Pricing");
         Button btnSystem  = navBtn("🖥  System");
         btnUsers.setStyle(btnUsers.getStyle() + "-fx-background-color:#1e3a5f;");
         btnDash.setOnAction(e    -> new DashboardScreen(stage).show());
         btnDrivers.setOnAction(e -> new DriversScreen(stage).show());
         btnTrips.setOnAction(e   -> new TripsScreen(stage).show());
+        btnPricing.setOnAction(e -> new PricingScreen(stage).show());
         btnSystem.setOnAction(e  -> new SystemScreen(stage).show());
         Region sp = new Region(); VBox.setVgrow(sp, Priority.ALWAYS);
         Button btnOut = navBtn("↩  Sign Out");
         btnOut.setOnAction(e -> { AdminService.getInstance().disconnect(); AdminSession.getInstance().logout(); new LoginScreen(stage).show(); });
-        s.getChildren().addAll(logo, btnDash, btnDrivers, btnTrips, btnUsers, btnSystem, sp, btnOut);
+        s.getChildren().addAll(logo, btnDash, btnDrivers, btnTrips, btnUsers, btnPricing, btnSystem, sp, btnOut);
         return s;
     }
 

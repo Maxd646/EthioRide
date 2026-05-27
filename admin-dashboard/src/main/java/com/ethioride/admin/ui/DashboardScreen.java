@@ -2,6 +2,7 @@ package com.ethioride.admin.ui;
 
 import com.ethioride.admin.service.AdminService;
 import com.ethioride.admin.state.AdminSession;
+import com.ethioride.shared.dto.DashboardStatsDTO;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -26,6 +27,12 @@ public class DashboardScreen {
     private Timeline logTimer;
     private boolean paused = false;
 
+    // Stat card value labels — updated live from DB
+    private Label lblDriversVal;
+    private Label lblPassengersVal;
+    private Label lblActiveTripsVal;
+    private Label lblRevenueVal;
+
     public DashboardScreen(Stage stage) { this.stage = stage; }
 
     public void show() {
@@ -37,6 +44,7 @@ public class DashboardScreen {
         stage.setResizable(true);
         stage.show();
         startLogSimulator();
+        loadStats();
     }
 
     private VBox buildSidebar() {
@@ -48,7 +56,8 @@ public class DashboardScreen {
         logo.setTextFill(Color.web("#f59e0b"));
         logo.setPadding(new Insets(24, 20, 4, 20));
         Label sub = new Label("Admin Dashboard");
-        sub.setFont(Font.font("Arial", 11)); sub.setTextFill(Color.web("#475569"));
+        sub.setFont(Font.font("Arial", 11));
+        sub.setTextFill(Color.web("#475569"));
         sub.setPadding(new Insets(0, 20, 20, 20));
         Button btnDash    = navBtn("📊  Dashboard");
         Button btnDrivers = navBtn("🚗  Drivers");
@@ -62,10 +71,16 @@ public class DashboardScreen {
         btnSystem.setOnAction(e  -> { stopLog(); new SystemScreen(stage).show(); });
         Region sp = new Region(); VBox.setVgrow(sp, Priority.ALWAYS);
         Label lblUser = new Label("👤 " + AdminSession.getInstance().getUsername());
-        lblUser.setTextFill(Color.web("#f1f5f9")); lblUser.setFont(Font.font("Arial", 12));
+        lblUser.setTextFill(Color.web("#f1f5f9"));
+        lblUser.setFont(Font.font("Arial", 12));
         lblUser.setPadding(new Insets(8, 20, 4, 20));
         Button btnOut = navBtn("↩  Sign Out");
-        btnOut.setOnAction(e -> { stopLog(); AdminService.getInstance().disconnect(); AdminSession.getInstance().logout(); new LoginScreen(stage).show(); });
+        btnOut.setOnAction(e -> {
+            stopLog();
+            AdminService.getInstance().disconnect();
+            AdminSession.getInstance().logout();
+            new LoginScreen(stage).show();
+        });
         s.getChildren().addAll(logo, sub, btnDash, btnDrivers, btnTrips, btnUsers, btnSystem, sp, lblUser, btnOut);
         return s;
     }
@@ -79,14 +94,24 @@ public class DashboardScreen {
         title.setFont(Font.font("Arial", FontWeight.BOLD, 24));
         title.setTextFill(Color.web("#f1f5f9"));
 
-        // Stat cards
+        // Stat cards — values start as "..." until DB responds
+        lblDriversVal     = new Label("...");
+        lblPassengersVal  = new Label("...");
+        lblActiveTripsVal = new Label("...");
+        lblRevenueVal     = new Label("...");
+
         HBox cards = new HBox(16);
         cards.getChildren().addAll(
-            statCard("Active Drivers", "1,284", "+12%", "#22c55e"),
-            statCard("Ongoing Trips",  "452",   "Peak Hour", "#f59e0b"),
-            statCard("Server Load",    "62%",   "PULSE: OK", "#3b82f6"),
-            statCard("Uptime",         "99.98%","24ms latency", "#a855f7")
+            statCard("Total Drivers",     lblDriversVal,     "from database", "#22c55e"),
+            statCard("Total Passengers",  lblPassengersVal,  "from database", "#3b82f6"),
+            statCard("Active Trips",      lblActiveTripsVal, "in progress",   "#f59e0b"),
+            statCard("Total Revenue",     lblRevenueVal,     "completed trips","#a855f7")
         );
+
+        // Refresh button
+        Button btnRefresh = new Button("↻  Refresh Stats");
+        btnRefresh.setStyle("-fx-background-color:#1e3a5f;-fx-text-fill:#f1f5f9;-fx-background-radius:6px;-fx-padding:8 16;-fx-cursor:hand;");
+        btnRefresh.setOnAction(e -> loadStats());
 
         // Live log
         Label lblLog = new Label("Live System Log");
@@ -111,27 +136,40 @@ public class DashboardScreen {
         btnClear.setOnAction(e -> logContainer.getChildren().clear());
         logControls.getChildren().addAll(btnPause, btnClear);
 
-        content.getChildren().addAll(title, cards, lblLog, logControls, logScroll);
+        content.getChildren().addAll(title, cards, btnRefresh, lblLog, logControls, logScroll);
         ScrollPane sp = new ScrollPane(content);
         sp.setFitToWidth(true);
         sp.setStyle("-fx-background-color:#0a0e1a;-fx-background:#0a0e1a;");
         return sp;
     }
 
+    private void loadStats() {
+        AdminService.getInstance().requestDashboardStats(stats -> Platform.runLater(() -> {
+            lblDriversVal.setText(String.valueOf(stats.getTotalDrivers()));
+            lblPassengersVal.setText(String.valueOf(stats.getTotalPassengers()));
+            lblActiveTripsVal.setText(String.valueOf(stats.getActiveTrips()));
+            lblRevenueVal.setText(String.format("ETB %.0f", stats.getTotalRevenue()));
+            appendLog("[STATS] Dashboard refreshed — " +
+                stats.getTotalDrivers() + " drivers, " +
+                stats.getActiveTrips() + " active trips, " +
+                String.format("ETB %.0f", stats.getTotalRevenue()) + " revenue");
+        }));
+    }
+
     private void startLogSimulator() {
         AdminService.getInstance().setLogHandler(msg -> Platform.runLater(() -> appendLog(msg)));
         String[] samples = {
             "[SOCKET_AUTH] Connection received from Client ID: 0029-Px",
-            "[DRIVER_LOC] Driver 4442 updated coordinates to 9.0302, 38.7469",
-            "[ERROR] Database connection retry attempted (Attempt 1 of 3)",
-            "[SUCCESS] Cache handshake verified.",
-            "[TRIP_ACCEPTED] Driver 4442 accepted trip T-8821",
-            "[HEARTBEAT] Server pulse OK — 24ms"
+            "[DRIVER_LOC] Driver updated coordinates to 9.0302, 38.7469",
+            "[TRIP_ACCEPTED] Driver accepted new trip request",
+            "[HEARTBEAT] Server pulse OK — 24ms",
+            "[SUCCESS] Cache handshake verified."
         };
         final int[] idx = {0};
-        logTimer = new Timeline(new KeyFrame(Duration.seconds(2), e -> {
+        logTimer = new Timeline(new KeyFrame(Duration.seconds(3), e -> {
             if (!paused) {
-                String entry = "[" + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "] " + samples[idx[0]++ % samples.length];
+                String entry = "[" + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "] "
+                    + samples[idx[0]++ % samples.length];
                 appendLog(entry);
             }
         }));
@@ -143,32 +181,43 @@ public class DashboardScreen {
         Label lbl = new Label(text);
         lbl.setWrapText(true);
         String upper = text.toUpperCase();
-        if (upper.contains("ERROR"))   lbl.setStyle("-fx-text-fill:#ef4444;-fx-font-family:monospace;-fx-font-size:11px;");
-        else if (upper.contains("SUCCESS")) lbl.setStyle("-fx-text-fill:#22c55e;-fx-font-family:monospace;-fx-font-size:11px;");
-        else lbl.setStyle("-fx-text-fill:#94a3b8;-fx-font-family:monospace;-fx-font-size:11px;");
+        if (upper.contains("ERROR"))
+            lbl.setStyle("-fx-text-fill:#ef4444;-fx-font-family:monospace;-fx-font-size:11px;");
+        else if (upper.contains("SUCCESS") || upper.contains("STATS"))
+            lbl.setStyle("-fx-text-fill:#22c55e;-fx-font-family:monospace;-fx-font-size:11px;");
+        else
+            lbl.setStyle("-fx-text-fill:#94a3b8;-fx-font-family:monospace;-fx-font-size:11px;");
         logContainer.getChildren().add(lbl);
         logScroll.setVvalue(1.0);
     }
 
     private void stopLog() { if (logTimer != null) logTimer.stop(); }
 
-    private VBox statCard(String label, String value, String sub, String color) {
+    private VBox statCard(String label, Label valueLabel, String sub, String color) {
         VBox card = new VBox(6);
         card.setAlignment(Pos.CENTER_LEFT);
-        card.setStyle("-fx-background-color:#0d1526;-fx-border-color:#1e3a5f;-fx-border-radius:12px;-fx-background-radius:12px;-fx-padding:16;");
-        card.setPrefWidth(200);
-        Label lbl = new Label(label); lbl.setTextFill(Color.web("#94a3b8")); lbl.setFont(Font.font("Arial", 11));
-        Label val = new Label(value); val.setTextFill(Color.web(color)); val.setFont(Font.font("Arial", FontWeight.BOLD, 22));
-        Label s   = new Label(sub);   s.setTextFill(Color.web("#475569")); s.setFont(Font.font("Arial", 11));
-        card.getChildren().addAll(lbl, val, s);
+        card.setStyle("-fx-background-color:#0d1526;-fx-border-color:#1e3a5f;" +
+                      "-fx-border-radius:12px;-fx-background-radius:12px;-fx-padding:16;");
+        card.setPrefWidth(210);
+        Label lbl = new Label(label);
+        lbl.setTextFill(Color.web("#94a3b8"));
+        lbl.setFont(Font.font("Arial", 11));
+        valueLabel.setTextFill(Color.web(color));
+        valueLabel.setFont(Font.font("Arial", FontWeight.BOLD, 22));
+        Label s = new Label(sub);
+        s.setTextFill(Color.web("#475569"));
+        s.setFont(Font.font("Arial", 11));
+        card.getChildren().addAll(lbl, valueLabel, s);
         return card;
     }
 
     private Button navBtn(String text) {
         Button btn = new Button(text);
-        btn.setMaxWidth(Double.MAX_VALUE); btn.setAlignment(Pos.CENTER_LEFT);
+        btn.setMaxWidth(Double.MAX_VALUE);
+        btn.setAlignment(Pos.CENTER_LEFT);
         btn.setFont(Font.font("Arial", 13));
-        btn.setStyle("-fx-background-color:transparent;-fx-text-fill:#94a3b8;-fx-padding:10px 20px;-fx-cursor:hand;-fx-background-radius:6px;");
+        btn.setStyle("-fx-background-color:transparent;-fx-text-fill:#94a3b8;" +
+                     "-fx-padding:10px 20px;-fx-cursor:hand;-fx-background-radius:6px;");
         return btn;
     }
 }

@@ -2,6 +2,10 @@ package com.ethioride.admin.ui;
 
 import com.ethioride.admin.service.AdminService;
 import com.ethioride.admin.state.AdminSession;
+import com.ethioride.shared.dto.TripRequestDTO;
+import com.ethioride.shared.protocol.Message;
+import com.ethioride.shared.protocol.MessageType;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,8 +24,8 @@ import java.util.List;
 
 public class TripsScreen {
     private final Stage stage;
-    private ObservableList<String[]> allTrips;
-    private FilteredList<String[]> filtered;
+    private ObservableList<TripRequestDTO> allTrips;
+    private FilteredList<TripRequestDTO> filtered;
     private Label lblCount;
 
     public TripsScreen(Stage stage) { this.stage = stage; }
@@ -34,6 +38,7 @@ public class TripsScreen {
         stage.setScene(new Scene(root, 1100, 700));
         stage.setResizable(true);
         stage.show();
+        loadTrips();
     }
 
     private VBox buildSidebar() {
@@ -48,16 +53,18 @@ public class TripsScreen {
         Button btnDrivers = navBtn("🚗  Drivers");
         Button btnTrips   = navBtn("🗺  Trips");
         Button btnUsers   = navBtn("👥  Users");
+        Button btnPricing = navBtn("💰  Pricing");
         Button btnSystem  = navBtn("🖥  System");
         btnTrips.setStyle(btnTrips.getStyle() + "-fx-background-color:#1e3a5f;");
         btnDash.setOnAction(e    -> new DashboardScreen(stage).show());
         btnDrivers.setOnAction(e -> new DriversScreen(stage).show());
         btnUsers.setOnAction(e   -> new UsersScreen(stage).show());
+        btnPricing.setOnAction(e -> new PricingScreen(stage).show());
         btnSystem.setOnAction(e  -> new SystemScreen(stage).show());
         Region sp = new Region(); VBox.setVgrow(sp, Priority.ALWAYS);
         Button btnOut = navBtn("↩  Sign Out");
         btnOut.setOnAction(e -> { AdminService.getInstance().disconnect(); AdminSession.getInstance().logout(); new LoginScreen(stage).show(); });
-        s.getChildren().addAll(logo, btnDash, btnDrivers, btnTrips, btnUsers, btnSystem, sp, btnOut);
+        s.getChildren().addAll(logo, btnDash, btnDrivers, btnTrips, btnUsers, btnPricing, btnSystem, sp, btnOut);
         return s;
     }
 
@@ -73,39 +80,86 @@ public class TripsScreen {
         HBox toolbar = new HBox(12);
         toolbar.setAlignment(Pos.CENTER_LEFT);
         TextField tfSearch = new TextField();
-        tfSearch.setPromptText("Search trips...");
-        tfSearch.setStyle("-fx-background-color:#0d1526;-fx-text-fill:#f1f5f9;-fx-prompt-text-fill:#475569;-fx-border-color:#1e3a5f;-fx-border-radius:8px;-fx-background-radius:8px;-fx-padding:8px 12px;");
+        tfSearch.setPromptText("Search by pickup or dropoff...");
+        tfSearch.setStyle("-fx-background-color:#0d1526;-fx-text-fill:#f1f5f9;-fx-prompt-text-fill:#475569;" +
+                          "-fx-border-color:#1e3a5f;-fx-border-radius:8px;-fx-background-radius:8px;-fx-padding:8px 12px;");
         HBox.setHgrow(tfSearch, Priority.ALWAYS);
+
         ComboBox<String> cbStatus = new ComboBox<>();
-        cbStatus.getItems().addAll("All", "PENDING", "IN_PROGRESS", "COMPLETED", "CANCELLED");
+        cbStatus.getItems().addAll("All", "PENDING", "ACCEPTED", "IN_PROGRESS", "COMPLETED", "CANCELLED");
         cbStatus.setValue("All");
         cbStatus.setStyle("-fx-background-color:#0d1526;-fx-text-fill:#f1f5f9;");
-        lblCount = new Label("5 trips");
-        lblCount.setTextFill(Color.web("#94a3b8")); lblCount.setFont(Font.font("Arial", 12));
-        toolbar.getChildren().addAll(tfSearch, cbStatus, lblCount);
 
-        TableView<String[]> table = new TableView<>();
+        Button btnRefresh = new Button("↻ Refresh");
+        btnRefresh.setStyle("-fx-background-color:#1e3a5f;-fx-text-fill:#f1f5f9;-fx-background-radius:6px;-fx-padding:8 14;-fx-cursor:hand;");
+        btnRefresh.setOnAction(e -> loadTrips());
+
+        lblCount = new Label("Loading...");
+        lblCount.setTextFill(Color.web("#94a3b8"));
+        lblCount.setFont(Font.font("Arial", 12));
+        toolbar.getChildren().addAll(tfSearch, cbStatus, btnRefresh, lblCount);
+
+        TableView<TripRequestDTO> table = new TableView<>();
         table.setStyle("-fx-background-color:#0d1526;-fx-text-fill:#f1f5f9;");
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         VBox.setVgrow(table, Priority.ALWAYS);
 
-        table.getColumns().addAll(
-            col("Trip ID",    0, "#94a3b8"),
-            col("Passenger",  1, "#f1f5f9"),
-            col("Driver",     2, "#f1f5f9"),
-            col("Pickup",     3, "#94a3b8"),
-            col("Drop-off",   4, "#94a3b8"),
-            col("Fare",       5, "#22c55e"),
-            tripStatusCol()
-        );
+        // Passenger name is stored in passengerPhone field as "passengerName|driverName"
+        TableColumn<TripRequestDTO, String> colPassenger = new TableColumn<>("Passenger");
+        colPassenger.setCellValueFactory(d -> {
+            String raw = d.getValue().getPassengerPhone();
+            String name = raw != null && raw.contains("|") ? raw.split("\\|")[0] : "Unknown";
+            return new SimpleStringProperty(name);
+        });
+        colPassenger.setCellFactory(c -> styledCell("#f1f5f9"));
 
-        allTrips = FXCollections.observableArrayList(List.of(
-            new String[]{"T-8821", "Hanna T.",  "Dawit B.",  "Edna Mall, Bole",  "Sarbet",    "145.00", "IN_PROGRESS"},
-            new String[]{"T-8820", "Yonas A.",  "Abebe G.",  "Meskel Square",    "Bole Airport","320.00","IN_PROGRESS"},
-            new String[]{"T-8819", "Sara M.",   "Tigist H.", "Piassa",           "Kazanchis", "90.00",  "COMPLETED"},
-            new String[]{"T-8818", "Biruk T.",  "Yonas A.",  "CMC",              "Megenagna", "75.00",  "COMPLETED"},
-            new String[]{"T-8817", "Meron K.",  "—",         "Bole Medhanialem", "Gerji",     "110.00", "CANCELLED"}
-        ));
+        TableColumn<TripRequestDTO, String> colDriver = new TableColumn<>("Driver");
+        colDriver.setCellValueFactory(d -> {
+            String raw = d.getValue().getPassengerPhone();
+            String name = raw != null && raw.contains("|") ? raw.split("\\|")[1] : "—";
+            return new SimpleStringProperty(name);
+        });
+        colDriver.setCellFactory(c -> styledCell("#f1f5f9"));
+
+        TableColumn<TripRequestDTO, String> colPickup = new TableColumn<>("Pickup");
+        colPickup.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getPickupLocation()));
+        colPickup.setCellFactory(c -> styledCell("#94a3b8"));
+
+        TableColumn<TripRequestDTO, String> colDropoff = new TableColumn<>("Drop-off");
+        colDropoff.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getDropoffLocation()));
+        colDropoff.setCellFactory(c -> styledCell("#94a3b8"));
+
+        TableColumn<TripRequestDTO, String> colFare = new TableColumn<>("Fare");
+        colFare.setCellValueFactory(d -> new SimpleStringProperty(
+            String.format("ETB %.2f", d.getValue().getFare())));
+        colFare.setCellFactory(c -> styledCell("#22c55e"));
+
+        TableColumn<TripRequestDTO, String> colDist = new TableColumn<>("Distance");
+        colDist.setCellValueFactory(d -> new SimpleStringProperty(
+            String.format("%.1f km", d.getValue().getDistanceKm())));
+        colDist.setCellFactory(c -> styledCell("#94a3b8"));
+
+        TableColumn<TripRequestDTO, String> colStatus = new TableColumn<>("Status");
+        colStatus.setCellValueFactory(d -> new SimpleStringProperty(
+            d.getValue().getStatus() != null ? d.getValue().getStatus().name() : "—"));
+        colStatus.setCellFactory(c -> new TableCell<>() {
+            @Override protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) { setText(null); setStyle(""); return; }
+                setText(item);
+                setStyle(switch (item) {
+                    case "IN_PROGRESS" -> "-fx-text-fill:#f59e0b;";
+                    case "COMPLETED"   -> "-fx-text-fill:#22c55e;";
+                    case "CANCELLED"   -> "-fx-text-fill:#ef4444;";
+                    case "ACCEPTED"    -> "-fx-text-fill:#3b82f6;";
+                    default            -> "-fx-text-fill:#94a3b8;";
+                });
+            }
+        });
+
+        table.getColumns().addAll(colPassenger, colDriver, colPickup, colDropoff, colFare, colDist, colStatus);
+
+        allTrips = FXCollections.observableArrayList();
         filtered = new FilteredList<>(allTrips, t -> true);
         table.setItems(filtered);
 
@@ -116,44 +170,32 @@ public class TripsScreen {
         return content;
     }
 
+    private void loadTrips() {
+        lblCount.setText("Loading...");
+        AdminService.getInstance().requestTripList(trips -> Platform.runLater(() -> {
+            allTrips.setAll(trips);
+            lblCount.setText(trips.size() + " trips");
+        }));
+    }
+
     private void applyFilter(String q, String status) {
         filtered.setPredicate(t ->
-            (q.isEmpty() || t[0].toLowerCase().contains(q.toLowerCase()) || t[1].toLowerCase().contains(q.toLowerCase()))
-            && ("All".equals(status) || t[6].equals(status))
+            (q.isEmpty() ||
+             t.getPickupLocation().toLowerCase().contains(q.toLowerCase()) ||
+             t.getDropoffLocation().toLowerCase().contains(q.toLowerCase()))
+            && ("All".equals(status) || (t.getStatus() != null && t.getStatus().name().equals(status)))
         );
         lblCount.setText(filtered.size() + " trips");
     }
 
-    private TableColumn<String[], String> col(String header, int idx, String color) {
-        TableColumn<String[], String> c = new TableColumn<>(header);
-        c.setCellValueFactory(d -> new SimpleStringProperty(d.getValue()[idx]));
-        c.setCellFactory(col -> new TableCell<>() {
+    private TableCell<TripRequestDTO, String> styledCell(String color) {
+        return new TableCell<>() {
             @Override protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
                 setText(empty ? null : item);
                 setStyle(empty ? "" : "-fx-text-fill:" + color + ";");
             }
-        });
-        return c;
-    }
-
-    private TableColumn<String[], String> tripStatusCol() {
-        TableColumn<String[], String> c = new TableColumn<>("Status");
-        c.setCellValueFactory(d -> new SimpleStringProperty(d.getValue()[6]));
-        c.setCellFactory(col -> new TableCell<>() {
-            @Override protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) { setText(null); setStyle(""); return; }
-                setText(item);
-                setStyle(switch (item) {
-                    case "IN_PROGRESS" -> "-fx-text-fill:#f59e0b;";
-                    case "COMPLETED"   -> "-fx-text-fill:#22c55e;";
-                    case "CANCELLED"   -> "-fx-text-fill:#ef4444;";
-                    default            -> "-fx-text-fill:#94a3b8;";
-                });
-            }
-        });
-        return c;
+        };
     }
 
     private Button navBtn(String text) {
