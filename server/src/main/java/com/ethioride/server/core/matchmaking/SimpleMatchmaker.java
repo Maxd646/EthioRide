@@ -187,6 +187,12 @@ public class SimpleMatchmaker {
                 }
 
                 // Assign in DB: status → ACCEPTED, driver_id set
+                // Re-check the trip hasn't been cancelled between findPending() and now
+                TripRequestDTO fresh = tripRepo.findById(trip.getTripId());
+                if (fresh == null || fresh.getStatus() == com.ethioride.shared.enums.TripStatus.CANCELLED) {
+                    LOG.info("Matchmaker skipping trip " + trip.getTripId() + " — cancelled before assignment.");
+                    continue;
+                }
                 tripRepo.assignDriver(trip.getTripId(), nearest.driverId);
 
                 // Mark driver as ON_TRIP so they won't be matched again

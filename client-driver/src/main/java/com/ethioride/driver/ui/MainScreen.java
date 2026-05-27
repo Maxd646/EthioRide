@@ -429,19 +429,21 @@ public class MainScreen {
                         List<TripRequestDTO> loaded = (List<TripRequestDTO>) msg.getPayload();
                         Platform.runLater(() -> {
                             // Merge: keep local status if driver has already acted on a trip
-                            // (e.g. driver clicked Accept but server still shows PENDING)
+                            // Exception: CANCELLED always wins — passenger cancelled, no action possible
                             for (TripRequestDTO incoming : loaded) {
                                 trips.stream()
                                     .filter(local -> local.getTripId().equals(incoming.getTripId()))
                                     .findFirst()
                                     .ifPresentOrElse(
                                         local -> {
-                                            // Only update from server if local status hasn't advanced
-                                            if (local.getStatus() == incoming.getStatus()) {
+                                            // CANCELLED always overrides local state
+                                            if (incoming.getStatus() == TripStatus.CANCELLED) {
+                                                local.setStatus(TripStatus.CANCELLED);
+                                            } else if (local.getStatus() == incoming.getStatus()) {
+                                                // Same status — just refresh display name
                                                 local.setPassengerName(incoming.getPassengerName());
                                             }
-                                            // If local is more advanced (e.g. IN_PROGRESS vs server ACCEPTED),
-                                            // keep local — driver already acted
+                                            // If local is more advanced, keep local
                                         },
                                         () -> trips.add(0, incoming) // new trip — add at top
                                     );

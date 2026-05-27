@@ -390,13 +390,14 @@ public class EthioRideServer {
                     new com.ethioride.server.db.TripRepository();
                 com.ethioride.shared.dto.TripRequestDTO trip = tripRepo.findById(tripId);
 
+                // Mark CANCELLED in DB first — matchmaker will skip it on next cycle
                 tripRepo.updateStatus(tripId, com.ethioride.shared.enums.TripStatus.CANCELLED);
 
                 if (trip != null) {
-                    // If driver had the trip, free them up
                     if (trip.getDriverId() != null) {
+                        // Driver was already assigned — free them and notify
                         SimpleMatchmaker.getInstance().setDriverAvailable(trip.getDriverId());
-                        // Notify the other party
+
                         if (senderId.equals(trip.getPassengerId())) {
                             // Passenger cancelled → notify driver
                             ClientRegistry.getInstance().push(trip.getDriverId(),
@@ -404,6 +405,18 @@ public class EthioRideServer {
                         } else {
                             // Driver cancelled → notify passenger
                             ClientRegistry.getInstance().push(trip.getPassengerId(),
+                                new Message(MessageType.TRIP_CANCELLED, tripId, "server"));
+                        }
+                    } else {
+                        // No driver assigned yet (PENDING) — trip is now CANCELLED in DB.
+                        // The matchmaker checks DB status before assigning, so it will skip
+                        // this trip on the next cycle. No driver to notify.
+                        // However, if the matchmaker already picked a driver between the
+                        // passenger's cancel and this handler running, push to that driver too.
+                        com.ethioride.shared.dto.TripRequestDTO fresh = tripRepo.findById(tripId);
+                        if (fresh != null && fresh.getDriverId() != null) {
+                            SimpleMatchmaker.getInstance().setDriverAvailable(fresh.getDriverId());
+                            ClientRegistry.getInstance().push(fresh.getDriverId(),
                                 new Message(MessageType.TRIP_CANCELLED, tripId, "server"));
                         }
                     }
