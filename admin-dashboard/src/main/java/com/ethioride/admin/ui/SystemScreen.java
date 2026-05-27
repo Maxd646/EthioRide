@@ -2,8 +2,6 @@ package com.ethioride.admin.ui;
 
 import com.ethioride.admin.service.AdminService;
 import com.ethioride.admin.state.AdminSession;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -14,16 +12,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
-import javafx.util.Duration;
-
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 
 public class SystemScreen {
     private final Stage stage;
     private VBox logContainer;
     private ScrollPane logScroll;
-    private Timeline logTimer;
     private boolean paused = false;
 
     public SystemScreen(Stage stage) { this.stage = stage; }
@@ -54,11 +47,11 @@ public class SystemScreen {
         Button btnPricing = navBtn("💰  Pricing");
         Button btnSystem  = navBtn("🖥  System");
         btnSystem.setStyle(btnSystem.getStyle() + "-fx-background-color:#1e3a5f;");
-        btnDash.setOnAction(e    -> { stopLog(); new DashboardScreen(stage).show(); });
-        btnDrivers.setOnAction(e -> { stopLog(); new DriversScreen(stage).show(); });
-        btnTrips.setOnAction(e   -> { stopLog(); new TripsScreen(stage).show(); });
-        btnUsers.setOnAction(e   -> { stopLog(); new UsersScreen(stage).show(); });
-        btnPricing.setOnAction(e -> { stopLog(); new PricingScreen(stage).show(); });
+        btnDash.setOnAction(e    -> new DashboardScreen(stage).show());
+        btnDrivers.setOnAction(e -> new DriversScreen(stage).show());
+        btnTrips.setOnAction(e   -> new TripsScreen(stage).show());
+        btnUsers.setOnAction(e   -> new UsersScreen(stage).show());
+        btnPricing.setOnAction(e -> new PricingScreen(stage).show());
         Region sp = new Region(); VBox.setVgrow(sp, Priority.ALWAYS);
         Button btnOut = navBtn("↩  Sign Out");
         btnOut.setOnAction(e -> { stopLog(); AdminService.getInstance().disconnect(); AdminSession.getInstance().logout(); new LoginScreen(stage).show(); });
@@ -92,8 +85,24 @@ public class SystemScreen {
         Button btnRestart = new Button("Restart Server");
         btnRestart.setStyle("-fx-background-color:#7f1d1d;-fx-text-fill:#fca5a5;-fx-background-radius:8px;-fx-padding:10 20;-fx-cursor:hand;");
         btnRestart.setOnAction(e -> {
-            Alert a = new Alert(Alert.AlertType.CONFIRMATION, "All active connections will be dropped.", ButtonType.OK, ButtonType.CANCEL);
-            a.setTitle("Restart Server"); a.setHeaderText("Restart the EthioRide server?"); a.showAndWait();
+            Alert a = new Alert(Alert.AlertType.CONFIRMATION,
+                "All active connections will be dropped.\nThe server process must be restarted manually from the terminal.",
+                ButtonType.OK, ButtonType.CANCEL);
+            a.setTitle("Restart Server");
+            a.setHeaderText("Restart the EthioRide server?");
+            a.showAndWait().ifPresent(btn -> {
+                if (btn == ButtonType.OK) {
+                    // Disconnect the admin client — operator must restart the server process manually
+                    AdminService.getInstance().disconnect();
+                    appendLog("[ADMIN] Disconnect requested. Restart the server process manually.");
+                    Alert info = new Alert(Alert.AlertType.INFORMATION,
+                        "Admin client disconnected.\nPlease restart the server process from the terminal, then log in again.",
+                        ButtonType.OK);
+                    info.setTitle("Restart Required");
+                    info.setHeaderText("Manual restart required");
+                    info.showAndWait();
+                }
+            });
         });
         actions.getChildren().addAll(btnHeartbeat, btnRestart);
 
@@ -127,23 +136,9 @@ public class SystemScreen {
     }
 
     private void startLogSimulator() {
+        // Wire real server messages to the log — no fake cycling entries
         AdminService.getInstance().setLogHandler(msg -> Platform.runLater(() -> appendLog(msg)));
-        String[] samples = {
-            "[SOCKET_AUTH] Connection received from Client ID: 0029-Px",
-            "[DRIVER_LOC] Driver 4442 updated coordinates to 9.0302, 38.7469",
-            "[ERROR] Database connection retry attempted (Attempt 1 of 3)",
-            "[SUCCESS] Cache handshake verified.",
-            "[HEARTBEAT] Server pulse OK — 24ms"
-        };
-        final int[] idx = {0};
-        logTimer = new Timeline(new KeyFrame(Duration.seconds(2), e -> {
-            if (!paused) {
-                String entry = "[" + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "] " + samples[idx[0]++ % samples.length];
-                appendLog(entry);
-            }
-        }));
-        logTimer.setCycleCount(Timeline.INDEFINITE);
-        logTimer.play();
+        appendLog("[System] Log started — waiting for server events...");
     }
 
     private void appendLog(String text) {

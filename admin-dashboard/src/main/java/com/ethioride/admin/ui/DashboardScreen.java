@@ -159,24 +159,9 @@ public class DashboardScreen {
     }
 
     private void startLogSimulator() {
+        // Wire real server messages to the log — no fake cycling entries
         AdminService.getInstance().setLogHandler(msg -> Platform.runLater(() -> appendLog(msg)));
-        String[] samples = {
-            "[SOCKET_AUTH] Connection received from Client ID: 0029-Px",
-            "[DRIVER_LOC] Driver updated coordinates to 9.0302, 38.7469",
-            "[TRIP_ACCEPTED] Driver accepted new trip request",
-            "[HEARTBEAT] Server pulse OK — 24ms",
-            "[SUCCESS] Cache handshake verified."
-        };
-        final int[] idx = {0};
-        logTimer = new Timeline(new KeyFrame(Duration.seconds(3), e -> {
-            if (!paused) {
-                String entry = "[" + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "] "
-                    + samples[idx[0]++ % samples.length];
-                appendLog(entry);
-            }
-        }));
-        logTimer.setCycleCount(Timeline.INDEFINITE);
-        logTimer.play();
+        appendLog("[System] Dashboard log started — waiting for server events...");
     }
 
     private void appendLog(String text) {
