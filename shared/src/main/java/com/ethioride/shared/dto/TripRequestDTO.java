@@ -5,6 +5,8 @@ import com.ethioride.shared.enums.TripStatus;
 import java.io.Serializable;
 
 public class TripRequestDTO implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private String tripId;
     private String passengerId;
     private String driverId;

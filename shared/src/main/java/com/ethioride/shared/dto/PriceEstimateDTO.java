@@ -4,6 +4,8 @@ import com.ethioride.shared.enums.RideCategory;
 import java.io.Serializable;
 
 public class PriceEstimateDTO implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private double distanceKm;
     private double durationMinutes;
     private double baseFare;

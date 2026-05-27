@@ -6,6 +6,8 @@ import java.io.Serializable;
  * Carries live dashboard statistics from server to admin dashboard.
  */
 public class DashboardStatsDTO implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private int totalDrivers;
     private int onlineDrivers;
     private int totalPassengers;

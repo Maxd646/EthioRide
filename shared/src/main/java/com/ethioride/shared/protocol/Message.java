@@ -6,6 +6,8 @@ import java.io.Serializable;
  * Generic protocol message exchanged between client and server over TCP.
  */
 public class Message implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private MessageType type;
     private Object payload;
     private String senderId;
