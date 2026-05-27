@@ -60,67 +60,58 @@ public class SettingsScreen {
         title.setFont(Font.font("Arial", FontWeight.BOLD, 24));
         title.setTextFill(Color.web("#f1f5f9"));
 
-        // Profile card
-        VBox profileCard = new VBox(10);
-        profileCard.setStyle("-fx-background-color:#0d1526;-fx-border-color:#1e3a5f;-fx-border-radius:12px;-fx-background-radius:12px;-fx-padding:20;");
-        Label lblProfileTitle = new Label("Profile");
-        lblProfileTitle.setFont(Font.font("Arial", FontWeight.BOLD, 15));
-        lblProfileTitle.setTextFill(Color.web("#f1f5f9"));
-
+        // Profile info (read-only)
         SessionState session = SessionState.getInstance();
-        String name  = session.isLoggedIn() ? session.getCurrentUser().getFullName() : "Guest";
-        String phone = session.isLoggedIn() ? session.getCurrentUser().getPhone() : "—";
-        String email = session.isLoggedIn() && session.getCurrentUser().getEmail() != null ? session.getCurrentUser().getEmail() : "—";
+        String name  = session.isLoggedIn() ? session.getCurrentUser().getFullName() : "—";
+        String phone = session.isLoggedIn() ? session.getCurrentUser().getPhone()    : "—";
+        String email = session.isLoggedIn() && session.getCurrentUser().getEmail() != null
+                       ? session.getCurrentUser().getEmail() : "—";
+
+        VBox profileCard = new VBox(10);
+        profileCard.setStyle("-fx-background-color:#0d1526;-fx-border-color:#1e3a5f;" +
+            "-fx-border-radius:12px;-fx-background-radius:12px;-fx-padding:20;");
+
+        Label lblProfile = new Label("Profile");
+        lblProfile.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        lblProfile.setTextFill(Color.web("#f1f5f9"));
 
         profileCard.getChildren().addAll(
-            lblProfileTitle,
-            profileRow("Name",  name),
-            profileRow("Phone", phone),
-            profileRow("Email", email)
+            lblProfile,
+            infoRow("Full Name", name),
+            infoRow("Phone",     phone),
+            infoRow("Email",     email)
         );
 
-        // Notifications
-        VBox notifCard = new VBox(10);
-        notifCard.setStyle("-fx-background-color:#0d1526;-fx-border-color:#1e3a5f;-fx-border-radius:12px;-fx-background-radius:12px;-fx-padding:20;");
-        Label lblNotif = new Label("Notifications");
-        lblNotif.setFont(Font.font("Arial", FontWeight.BOLD, 15));
-        lblNotif.setTextFill(Color.web("#f1f5f9"));
-        CheckBox cbRide   = styledCheckBox("Ride status updates", true);
-        CheckBox cbPromo  = styledCheckBox("Promotions and offers", true);
-        CheckBox cbArrival = styledCheckBox("Driver arrival alerts", true);
-        notifCard.getChildren().addAll(lblNotif, cbRide, cbPromo, cbArrival);
-
-        // Save button
-        Button btnSave = new Button("Save Settings");
-        btnSave.setFont(Font.font("Arial", FontWeight.BOLD, 14));
-        btnSave.setStyle("-fx-background-color:#3b82f6;-fx-text-fill:white;-fx-background-radius:8px;-fx-padding:12 24;-fx-cursor:hand;");
-        btnSave.setOnAction(e -> {
-            Alert a = new Alert(Alert.AlertType.INFORMATION, "Your settings have been saved.", ButtonType.OK);
-            a.setTitle("Settings Saved"); a.setHeaderText(null); a.showAndWait();
+        // Sign out
+        Button btnSignOut = new Button("Sign Out");
+        btnSignOut.setMaxWidth(Double.MAX_VALUE);
+        btnSignOut.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        btnSignOut.setStyle("-fx-background-color:#ef4444;-fx-text-fill:white;" +
+            "-fx-background-radius:10px;-fx-padding:12px;-fx-cursor:hand;");
+        btnSignOut.setOnAction(e -> {
+            SessionState.getInstance().clear();
+            new LoginScreen(stage).show();
         });
 
-        content.getChildren().addAll(title, profileCard, notifCard, btnSave);
+        content.getChildren().addAll(title, profileCard, btnSignOut);
         ScrollPane sp = new ScrollPane(content);
         sp.setFitToWidth(true);
         sp.setStyle("-fx-background-color:#0a0e1a;-fx-background:#0a0e1a;");
         return sp;
     }
 
-    private HBox profileRow(String label, String value) {
+    private HBox infoRow(String label, String value) {
         HBox row = new HBox(12);
         row.setAlignment(Pos.CENTER_LEFT);
-        Label lbl = new Label(label + ":"); lbl.setTextFill(Color.web("#94a3b8")); lbl.setFont(Font.font("Arial", 12)); lbl.setMinWidth(60);
-        Label val = new Label(value); val.setTextFill(Color.web("#f1f5f9")); val.setFont(Font.font("Arial", 13));
+        Label lbl = new Label(label + ":");
+        lbl.setTextFill(Color.web("#475569"));
+        lbl.setFont(Font.font("Arial", 12));
+        lbl.setMinWidth(80);
+        Label val = new Label(value);
+        val.setTextFill(Color.web("#f1f5f9"));
+        val.setFont(Font.font("Arial", 13));
         row.getChildren().addAll(lbl, val);
         return row;
-    }
-
-    private CheckBox styledCheckBox(String text, boolean selected) {
-        CheckBox cb = new CheckBox(text);
-        cb.setSelected(selected);
-        cb.setTextFill(Color.web("#f1f5f9"));
-        cb.setFont(Font.font("Arial", 13));
-        return cb;
     }
 
     private Button navBtn(String text) {

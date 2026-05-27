@@ -108,6 +108,7 @@ public class EthioRideServer {
                 case DASHBOARD_STATS_REQUEST     -> handleDashboardStats(msg, out);
                 case DRIVER_TRIP_HISTORY_REQUEST -> handleDriverTripHistory(msg, out);
                 case DRIVER_EARNINGS_REQUEST     -> handleDriverEarnings(msg, out);
+                case PASSENGER_TRIP_HISTORY_REQUEST -> handlePassengerTripHistory(msg, out);
                 case PRICE_ESTIMATE_REQUEST      -> handlePriceEstimate(msg, out);
                 case PRICING_RULES_REQUEST       -> handlePricingRulesGet(msg, out);
                 case PRICING_RULES_UPDATE        -> handlePricingRulesUpdate(msg, out);
@@ -554,13 +555,11 @@ public class EthioRideServer {
                 java.util.List<com.ethioride.shared.dto.TripRequestDTO> trips =
                     new com.ethioride.server.db.TripRepository().findByDriver(driverId);
 
-                // Calculate earnings from completed trips
                 double total = trips.stream()
                     .filter(t -> t.getStatus() == com.ethioride.shared.enums.TripStatus.COMPLETED)
                     .mapToDouble(com.ethioride.shared.dto.TripRequestDTO::getFare)
                     .sum();
 
-                // Return as a simple map: total, tripCount
                 java.util.Map<String, Object> earnings = new java.util.HashMap<>();
                 earnings.put("total", total);
                 earnings.put("tripCount", (int) trips.stream()
@@ -574,6 +573,21 @@ public class EthioRideServer {
             } catch (Exception e) {
                 System.err.println("[Server] Driver earnings error: " + e.getMessage());
                 out.writeObject(new Message(MessageType.ERROR, "Failed to fetch earnings", "server"));
+                out.flush();
+            }
+        }
+
+        private void handlePassengerTripHistory(Message msg, ObjectOutputStream out) throws IOException {
+            try {
+                String passengerId = msg.getPayload().toString();
+                java.util.List<com.ethioride.shared.dto.TripRequestDTO> trips =
+                    new com.ethioride.server.db.TripRepository().findByPassenger(passengerId);
+                out.writeObject(new Message(MessageType.PASSENGER_TRIP_HISTORY_RESPONSE, trips, "server"));
+                out.flush();
+                System.out.printf("[Server] Sent %d trips to passenger %s%n", trips.size(), passengerId);
+            } catch (Exception e) {
+                System.err.println("[Server] Passenger trip history error: " + e.getMessage());
+                out.writeObject(new Message(MessageType.ERROR, "Failed to fetch trip history", "server"));
                 out.flush();
             }
         }
