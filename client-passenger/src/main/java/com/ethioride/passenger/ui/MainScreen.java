@@ -350,8 +350,18 @@ public class MainScreen {
             return;
         }
 
+        // Require a price estimate before booking so fare and distance are real
+        if (currentEstimate == null) {
+            showStatus("Please wait for price estimate to load.", false);
+            return;
+        }
+
         btnRequest.setDisable(true);
         btnRequest.setText("Finding driver...");
+
+        // Capture estimate values on the FX thread before handing off to background thread
+        final double fare        = currentEstimate.getTotalFare();
+        final double distanceKm  = currentEstimate.getDistanceKm();
 
         Thread t = new Thread(() -> {
             try {
@@ -362,10 +372,8 @@ public class MainScreen {
                 trip.setPickupLocation(pickup);
                 trip.setDropoffLocation(dest);
                 trip.setCategory(selectedCategory);
-                trip.setFare(selectedCategory == RideCategory.ECONOMY ? AppConstants.ECONOMY_BASE_FARE
-                           : selectedCategory == RideCategory.PREMIUM  ? AppConstants.PREMIUM_BASE_FARE
-                           : AppConstants.ELITE_BASE_FARE);
-                trip.setDistanceKm(5.0); // placeholder
+                trip.setFare(fare);           // real fare from Google Maps + pricing rules
+                trip.setDistanceKm(distanceKm); // real distance from Google Maps
 
                 ServerConnection conn = new ServerConnection();
                 conn.connect();

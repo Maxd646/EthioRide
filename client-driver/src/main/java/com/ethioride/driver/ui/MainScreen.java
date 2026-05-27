@@ -207,14 +207,25 @@ public class MainScreen {
     /**
      * Registers a push handler on the persistent NetworkClient connection.
      * When the server sends MATCH_NOTIFY_DRIVER, the trip popup is shown.
+     * Also connects to the server so push messages can be received.
      */
     private void startPushListener() {
-        NetworkClient.getInstance().setPushHandler(msg -> {
-            if (msg.getType() == MessageType.MATCH_NOTIFY_DRIVER
-                    && msg.getPayload() instanceof TripRequestDTO trip) {
-                Platform.runLater(() -> showTripRequest(trip));
+        Thread t = new Thread(() -> {
+            try {
+                NetworkClient nc = NetworkClient.getInstance();
+                if (!nc.isConnected()) nc.connect();
+                nc.setPushHandler(msg -> {
+                    if (msg.getType() == MessageType.MATCH_NOTIFY_DRIVER
+                            && msg.getPayload() instanceof TripRequestDTO trip) {
+                        Platform.runLater(() -> showTripRequest(trip));
+                    }
+                });
+            } catch (Exception ex) {
+                System.err.println("[Driver] Could not connect for push listener: " + ex.getMessage());
             }
-        });
+        }, "driver-push-connect");
+        t.setDaemon(true);
+        t.start();
     }
 
     private void showTripRequest(TripRequestDTO trip) {

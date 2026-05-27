@@ -18,6 +18,7 @@ public class NetworkClient {
     private ObjectOutputStream out;
     private ObjectInputStream in;
     private Consumer<Message> messageHandler;
+    private Consumer<Message> pushHandler;   // persistent push listener (e.g. MATCH_NOTIFY_DRIVER)
     private volatile boolean connected;
 
     private NetworkClient() {}
@@ -57,6 +58,15 @@ public class NetworkClient {
         return messageHandler;
     }
 
+    /**
+     * Sets a persistent push handler that receives server-initiated messages
+     * (e.g. MATCH_NOTIFY_DRIVER) independently of the request/response handler.
+     * The push handler is never replaced by sendRequest().
+     */
+    public void setPushHandler(Consumer<Message> handler) {
+        this.pushHandler = handler;
+    }
+
     public boolean isConnected() { return connected; }
 
     public void close() {
@@ -86,7 +96,13 @@ public class NetworkClient {
             try {
                 while (connected) {
                     Message msg = (Message) in.readObject();
-                    if (messageHandler != null) messageHandler.accept(msg);
+                    // Push handler gets server-initiated messages (MATCH_NOTIFY_DRIVER, etc.)
+                    // It runs alongside the regular request/response handler.
+                    if (pushHandler != null && msg.getType() == MessageType.MATCH_NOTIFY_DRIVER) {
+                        pushHandler.accept(msg);
+                    } else if (messageHandler != null) {
+                        messageHandler.accept(msg);
+                    }
                 }
             } catch (Exception e) {
                 connected = false;
