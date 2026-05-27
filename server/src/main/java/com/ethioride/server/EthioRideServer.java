@@ -1,6 +1,8 @@
 package com.ethioride.server;
 
 import com.ethioride.server.config.ServerConfig;
+import com.ethioride.server.core.matchmaking.SimpleMatchmaker;
+import com.ethioride.server.core.session.ClientRegistry;
 import com.ethioride.shared.protocol.Message;
 import com.ethioride.shared.protocol.MessageType;
 
@@ -26,6 +28,9 @@ public class EthioRideServer {
         running = true;
         Runtime.getRuntime().addShutdownHook(new Thread(this::stop));
 
+        // ── Start the proximity matchmaker ────────────────────────────────────
+        SimpleMatchmaker.getInstance().start();
+
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             System.out.printf("[EthioRide] Server listening on port %d%n", port);
             while (running) {
@@ -41,6 +46,7 @@ public class EthioRideServer {
 
     public void stop() {
         running = false;
+        SimpleMatchmaker.getInstance().stop();
         threadPool.shutdown();
         System.out.println("[EthioRide] Server stopped.");
     }
@@ -53,6 +59,7 @@ public class EthioRideServer {
 
     private static class ClientHandler implements Runnable {
         private final Socket socket;
+        private String registeredClientId = null; // set after successful login
 
         ClientHandler(Socket socket) { this.socket = socket; }
 
@@ -72,6 +79,12 @@ public class EthioRideServer {
             } catch (Exception e) {
                 System.err.println("[EthioRide] Handler error: " + e.getMessage());
             } finally {
+                // Unregister from ClientRegistry and mark driver offline on disconnect
+                if (registeredClientId != null) {
+                    ClientRegistry.getInstance().unregister(registeredClientId);
+                    SimpleMatchmaker.getInstance().setDriverOffline(registeredClientId);
+                    System.out.printf("[EthioRide] Client disconnected: %s%n", registeredClientId);
+                }
                 try { socket.close(); } catch (IOException ignored) {}
             }
         }
@@ -81,6 +94,8 @@ public class EthioRideServer {
                 case LOGIN_REQUEST               -> handleLogin(msg, out);
                 case REGISTER_REQUEST            -> handleRegister(msg, out);
                 case TRIP_REQUEST                -> handleTripRequest(msg, out);
+                case DRIVER_STATUS_UPDATE        -> handleDriverStatusUpdate(msg, out);
+                case DRIVER_LOCATION_UPDATE      -> handleDriverLocationUpdate(msg, out);
                 case USER_LIST_REQUEST           -> handleUserList(msg, out);
                 case USER_CREATE_REQUEST         -> handleUserCreate(msg, out);
                 case USER_DELETE_REQUEST         -> handleUserDelete(msg, out);
@@ -110,6 +125,9 @@ public class EthioRideServer {
                         .findByPhoneAndPassword(parts[0], parts[1]);
                 if (user != null) {
                     System.out.printf("[Server] Login: %s (%s)%n", user.getFullName(), user.getRole());
+                    // Register this socket so the server can push messages to this client
+                    ClientRegistry.getInstance().register(user.getId(), out);
+                    registeredClientId = user.getId();
                 } else {
                     System.out.println("[Server] Login failed - invalid credentials");
                 }
@@ -119,6 +137,55 @@ public class EthioRideServer {
                 System.err.println("[Server] Login error: " + e.getMessage());
                 out.writeObject(new Message(MessageType.ERROR, "Login failed: " + e.getMessage(), "server"));
                 out.flush();
+            }
+        }
+
+        /**
+         * DRIVER_STATUS_UPDATE — payload is "ONLINE" or "OFFLINE".
+         * Registers/removes the driver from the matchmaker pool.
+         */
+        private void handleDriverStatusUpdate(Message msg, ObjectOutputStream out) throws IOException {
+            try {
+                String driverId = msg.getSenderId();
+                String status   = msg.getPayload().toString().trim().toUpperCase();
+
+                // Ensure this driver's socket is registered for push messages
+                if (registeredClientId == null && driverId != null) {
+                    ClientRegistry.getInstance().register(driverId, out);
+                    registeredClientId = driverId;
+                }
+
+                if ("ONLINE".equals(status)) {
+                    SimpleMatchmaker.getInstance().setDriverOnline(driverId);
+                    System.out.printf("[Server] Driver %s is now ONLINE (%d available)%n",
+                            driverId, SimpleMatchmaker.getInstance().countAvailable());
+                } else {
+                    SimpleMatchmaker.getInstance().setDriverOffline(driverId);
+                    System.out.printf("[Server] Driver %s is now OFFLINE%n", driverId);
+                }
+                out.writeObject(new Message(MessageType.ACK, status, "server"));
+                out.flush();
+            } catch (Exception e) {
+                System.err.println("[Server] Driver status update error: " + e.getMessage());
+            }
+        }
+
+        /**
+         * DRIVER_LOCATION_UPDATE — payload is "lat,lng".
+         * Updates the driver's position in the matchmaker for proximity sorting.
+         */
+        private void handleDriverLocationUpdate(Message msg, ObjectOutputStream out) throws IOException {
+            try {
+                String driverId = msg.getSenderId();
+                String[] coords = msg.getPayload().toString().split(",", 2);
+                if (coords.length == 2) {
+                    double lat = Double.parseDouble(coords[0].trim());
+                    double lng = Double.parseDouble(coords[1].trim());
+                    SimpleMatchmaker.getInstance().updateDriverLocation(driverId, lat, lng);
+                }
+                // No response needed for location updates — fire and forget
+            } catch (Exception e) {
+                System.err.println("[Server] Driver location update error: " + e.getMessage());
             }
         }
 

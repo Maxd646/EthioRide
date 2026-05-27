@@ -43,6 +43,7 @@ public class MainScreen {
         stage.setResizable(true);
         stage.show();
         startPushListener();
+        startLocationUpdater();
     }
 
     // ── Sidebar ───────────────────────────────────────────────────────────────
@@ -270,6 +271,46 @@ public class MainScreen {
         }, "driver-status-update");
         t.setDaemon(true);
         t.start();
+    }
+
+    /**
+     * Sends the driver's GPS location to the server every 15 seconds while online.
+     * The server uses this to sort drivers by proximity to the passenger's pickup.
+     *
+     * In a real app this would use the device GPS. Here we simulate a location
+     * near Addis Ababa with a small random offset so multiple drivers appear
+     * at different positions during testing.
+     */
+    private void startLocationUpdater() {
+        String driverId = DriverSessionState.getInstance().getCurrentDriver() != null
+            ? DriverSessionState.getInstance().getCurrentDriver().getId() : "unknown";
+
+        // Simulate a location near Addis Ababa center (9.0320, 38.7469)
+        // with a small random offset per driver so they appear at different spots
+        double baseLat = 9.0320 + (Math.random() - 0.5) * 0.05;
+        double baseLng = 38.7469 + (Math.random() - 0.5) * 0.05;
+
+        java.util.concurrent.ScheduledExecutorService locScheduler =
+            java.util.concurrent.Executors.newSingleThreadScheduledExecutor(r -> {
+                Thread t = new Thread(r, "driver-location-updater");
+                t.setDaemon(true);
+                return t;
+            });
+
+        locScheduler.scheduleAtFixedRate(() -> {
+            if (!DriverSessionState.getInstance().isOnline()) return;
+            try {
+                NetworkClient nc = NetworkClient.getInstance();
+                if (!nc.isConnected()) return;
+                // Small drift each cycle to simulate movement
+                double lat = baseLat + (Math.random() - 0.5) * 0.002;
+                double lng = baseLng + (Math.random() - 0.5) * 0.002;
+                nc.send(new Message(MessageType.DRIVER_LOCATION_UPDATE,
+                        String.format("%.6f,%.6f", lat, lng), driverId));
+            } catch (Exception ex) {
+                System.err.println("[Driver] Location update failed: " + ex.getMessage());
+            }
+        }, 5, 15, java.util.concurrent.TimeUnit.SECONDS);
     }
 
     private void onAccept() {

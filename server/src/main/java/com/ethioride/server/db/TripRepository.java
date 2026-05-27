@@ -142,6 +142,28 @@ public class TripRepository {
         return list;
     }
 
+    /**
+     * SELECT all PENDING trips ordered by creation time (oldest first).
+     * Used by SimpleMatchmaker to find trips waiting for a driver.
+     */
+    public List<TripRequestDTO> findPending() throws Exception {
+        Connection conn = DBConnection.getConnection();
+
+        String sql = "SELECT * FROM trips WHERE status = 'PENDING' ORDER BY created_at ASC";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        ResultSet rs = stmt.executeQuery();
+
+        List<TripRequestDTO> list = new ArrayList<>();
+        while (rs.next()) {
+            list.add(mapRow(rs));
+        }
+
+        rs.close();
+        stmt.close();
+        conn.close();
+        return list;
+    }
+
     /** SELECT COUNT — how many trips have a given status. */
     public int countByStatus(TripStatus status) throws Exception {
         Connection conn = DBConnection.getConnection();
