@@ -1,8 +1,19 @@
 # Java compiled files
 *.class
-*.properties
 
-# IntelliJ build folders
+# IntelliJ project files (machine-specific)
 out/
 .idea/
 target/
+
+# Database config (contains passwords)
+db.properties
+
+# JAR dependencies (add manually per machine)
+lib/*.jar
+
+# Build output
+server/production/
+
+# Documents
+document/
