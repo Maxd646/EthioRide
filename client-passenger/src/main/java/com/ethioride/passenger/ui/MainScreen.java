@@ -522,13 +522,23 @@ public class MainScreen {
                     lblDriverRating.setText("★ " + ratingStr);
                     btnCancelTrip.setVisible(true);
                     btnCancelTrip.setManaged(true);
+
+                    // Show the driver info card now that we have a driver
+                    Object[] acceptedData = (Object[]) tripStatusPanel.getUserData();
+                    if (acceptedData != null) {
+                        VBox driverCard = (VBox) acceptedData[0];
+                        driverCard.setVisible(true);
+                        driverCard.setManaged(true);
+                    }
                 }
 
                 case TRIP_STARTED -> {
                     tripState = TripState.IN_PROGRESS;
-                    lblTripStatus.setText("🚗  Trip in progress...");
+                    lblTripStatus.setText("🚗  Trip in progress — enjoy your ride!");
                     lblTripStatus.setTextFill(Color.web("#f59e0b"));
-                    // Can still cancel while in progress (though unusual)
+                    // Cancel button hidden once trip is underway
+                    btnCancelTrip.setVisible(false);
+                    btnCancelTrip.setManaged(false);
                 }
 
                 case TRIP_COMPLETED -> {

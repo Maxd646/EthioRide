@@ -216,9 +216,17 @@ public class MainScreen {
                 NetworkClient nc = NetworkClient.getInstance();
                 if (!nc.isConnected()) nc.connect();
                 nc.setPushHandler(msg -> {
-                    if (msg.getType() == MessageType.MATCH_NOTIFY_DRIVER
-                            && msg.getPayload() instanceof TripRequestDTO trip) {
-                        Platform.runLater(() -> showTripRequest(trip));
+                    switch (msg.getType()) {
+                        case MATCH_NOTIFY_DRIVER -> {
+                            if (msg.getPayload() instanceof TripRequestDTO trip) {
+                                Platform.runLater(() -> showTripRequest(trip));
+                            }
+                        }
+                        case TRIP_CANCELLED -> {
+                            // Passenger cancelled while driver had the trip
+                            Platform.runLater(() -> onTripCancelledByPassenger());
+                        }
+                        default -> {} // ignore other push messages
                     }
                 });
             } catch (Exception ex) {
@@ -227,6 +235,25 @@ public class MainScreen {
         }, "driver-push-connect");
         t.setDaemon(true);
         t.start();
+    }
+
+    /** Called when the server pushes TRIP_CANCELLED (passenger cancelled). */
+    private void onTripCancelledByPassenger() {
+        // Remove any active trip card from the center StackPane
+        if (stage.getScene() != null &&
+                stage.getScene().getRoot() instanceof BorderPane bp &&
+                bp.getCenter() instanceof StackPane sp) {
+            sp.getChildren().removeIf(n -> n instanceof VBox v &&
+                    v.getStyle().contains("#22c55e") && v != requestOverlay);
+        }
+        // Make driver available again
+        DriverSessionState.getInstance().setOnline(true);
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION,
+                "The passenger has cancelled the trip.", ButtonType.OK);
+        alert.setTitle("Trip Cancelled");
+        alert.setHeaderText("Trip Cancelled by Passenger");
+        alert.showAndWait();
     }
 
     private void showTripRequest(TripRequestDTO trip) {
@@ -346,18 +373,25 @@ public class MainScreen {
     /**
      * Shows the active trip panel with STARTED and COMPLETED buttons.
      * Replaces the request overlay after the driver accepts.
+     * Full lifecycle: Accepted → Picked Up → In Progress → Completed.
      */
     private void showActiveTrip(TripRequestDTO trip, String driverId) {
-        // Build an active trip card overlaid on the map
-        VBox card = new VBox(12);
+        VBox card = new VBox(14);
         card.setAlignment(Pos.CENTER_LEFT);
         card.setMaxWidth(300);
         card.setStyle("-fx-background-color:#0d1526;-fx-border-color:#22c55e;" +
                 "-fx-border-radius:14px;-fx-background-radius:14px;-fx-padding:20;");
 
+        // ── Status badge ──────────────────────────────────────────────────────
+        Label lblStatus = new Label("● Accepted — Heading to pickup");
+        lblStatus.setFont(Font.font("Arial", FontWeight.BOLD, 12));
+        lblStatus.setTextFill(Color.web("#22c55e"));
+        lblStatus.setWrapText(true);
+
+        // ── Trip details ──────────────────────────────────────────────────────
         Label lblTitle = new Label("Active Trip");
-        lblTitle.setFont(Font.font("Arial", FontWeight.BOLD, 14));
-        lblTitle.setTextFill(Color.web("#22c55e"));
+        lblTitle.setFont(Font.font("Arial", FontWeight.BOLD, 15));
+        lblTitle.setTextFill(Color.web("#f1f5f9"));
 
         Label lblPickup = new Label("📍 " + trip.getPickupLocation());
         lblPickup.setTextFill(Color.web("#f1f5f9"));
@@ -369,22 +403,39 @@ public class MainScreen {
         lblDropoff.setFont(Font.font("Arial", 12));
         lblDropoff.setWrapText(true);
 
+        Label lblDist = new Label(String.format("📏 %.1f km", trip.getDistanceKm()));
+        lblDist.setTextFill(Color.web("#475569"));
+        lblDist.setFont(Font.font("Arial", 11));
+
         Label lblFare = new Label(String.format("ETB %.2f", trip.getFare()));
-        lblFare.setFont(Font.font("Arial", FontWeight.BOLD, 18));
+        lblFare.setFont(Font.font("Arial", FontWeight.BOLD, 20));
         lblFare.setTextFill(Color.web("#22c55e"));
 
-        Button btnStarted = new Button("Picked Up Passenger");
-        btnStarted.setMaxWidth(Double.MAX_VALUE);
-        btnStarted.setStyle("-fx-background-color:#f59e0b;-fx-text-fill:#0a0e1a;" +
-                "-fx-font-weight:bold;-fx-background-radius:8px;-fx-padding:10;-fx-cursor:hand;");
+        Separator sep = new Separator();
+        sep.setStyle("-fx-background-color:#1e3a5f;");
 
-        Button btnCompleted = new Button("Complete Trip");
-        btnCompleted.setMaxWidth(Double.MAX_VALUE);
-        btnCompleted.setStyle("-fx-background-color:#22c55e;-fx-text-fill:white;" +
-                "-fx-font-weight:bold;-fx-background-radius:8px;-fx-padding:10;-fx-cursor:hand;");
-        btnCompleted.setDisable(true); // enabled after STARTED
+        // ── Action buttons ────────────────────────────────────────────────────
+        Button btnPickedUp = new Button("✔  Picked Up Passenger");
+        btnPickedUp.setMaxWidth(Double.MAX_VALUE);
+        btnPickedUp.setFont(Font.font("Arial", FontWeight.BOLD, 13));
+        btnPickedUp.setStyle("-fx-background-color:#f59e0b;-fx-text-fill:#0a0e1a;" +
+                "-fx-background-radius:8px;-fx-padding:10;-fx-cursor:hand;");
 
-        btnStarted.setOnAction(e -> {
+        Button btnComplete = new Button("🏁  Complete Trip");
+        btnComplete.setMaxWidth(Double.MAX_VALUE);
+        btnComplete.setFont(Font.font("Arial", FontWeight.BOLD, 13));
+        btnComplete.setStyle("-fx-background-color:#22c55e;-fx-text-fill:white;" +
+                "-fx-background-radius:8px;-fx-padding:10;-fx-cursor:hand;");
+        btnComplete.setDisable(true); // only enabled after passenger is picked up
+
+        // ── Picked Up ─────────────────────────────────────────────────────────
+        btnPickedUp.setOnAction(e -> {
+            btnPickedUp.setDisable(true);
+            btnComplete.setDisable(false);
+            lblStatus.setText("● In Progress — Trip underway");
+            lblStatus.setTextFill(Color.web("#f59e0b"));
+            lblTitle.setText("Trip In Progress");
+
             Thread ts = new Thread(() -> {
                 try {
                     NetworkClient.getInstance().send(
@@ -395,18 +446,17 @@ public class MainScreen {
             }, "trip-started");
             ts.setDaemon(true);
             ts.start();
-            btnStarted.setDisable(true);
-            btnCompleted.setDisable(false);
-            lblTitle.setText("Trip In Progress");
         });
 
-        btnCompleted.setOnAction(e -> {
-            // Add earnings now — trip is actually done
+        // ── Complete ──────────────────────────────────────────────────────────
+        btnComplete.setOnAction(e -> {
+            // Update shift earnings display
             DriverSessionState.getInstance().addEarnings(trip.getFare());
             double earnings = DriverSessionState.getInstance().getShiftEarnings();
             lblShiftEarnings.setText(String.format("ETB %.0f", earnings));
             earningsProgress.setProgress(Math.min(earnings / 5000.0, 1.0));
 
+            // Send TRIP_COMPLETED to server
             Thread tc = new Thread(() -> {
                 try {
                     NetworkClient.getInstance().send(
@@ -417,18 +467,40 @@ public class MainScreen {
             }, "trip-completed");
             tc.setDaemon(true);
             tc.start();
-            // Remove the active trip card
-            if (card.getParent() instanceof StackPane sp) {
-                sp.getChildren().remove(card);
-            }
+
+            // Replace card content with a completion summary
+            card.getChildren().clear();
+            Label lblDone = new Label("✅  Trip Completed");
+            lblDone.setFont(Font.font("Arial", FontWeight.BOLD, 16));
+            lblDone.setTextFill(Color.web("#22c55e"));
+
+            Label lblEarned = new Label("You earned  " + String.format("ETB %.2f", trip.getFare()));
+            lblEarned.setFont(Font.font("Arial", 13));
+            lblEarned.setTextFill(Color.web("#f1f5f9"));
+
+            Label lblShift = new Label(String.format("Shift total: ETB %.0f", earnings));
+            lblShift.setFont(Font.font("Arial", 11));
+            lblShift.setTextFill(Color.web("#475569"));
+
+            Button btnDismiss = new Button("Dismiss");
+            btnDismiss.setMaxWidth(Double.MAX_VALUE);
+            btnDismiss.setStyle("-fx-background-color:#1e3a5f;-fx-text-fill:#f1f5f9;" +
+                    "-fx-background-radius:8px;-fx-padding:8;-fx-cursor:hand;");
+            btnDismiss.setOnAction(ev -> {
+                if (card.getParent() instanceof StackPane sp) sp.getChildren().remove(card);
+            });
+
+            card.getChildren().addAll(lblDone, lblEarned, lblShift, btnDismiss);
+            card.setStyle("-fx-background-color:#0d1526;-fx-border-color:#22c55e;" +
+                    "-fx-border-radius:14px;-fx-background-radius:14px;-fx-padding:20;");
         });
 
-        card.getChildren().addAll(lblTitle, lblPickup, lblDropoff, lblFare, btnStarted, btnCompleted);
+        card.getChildren().addAll(lblStatus, lblTitle, lblPickup, lblDropoff, lblDist, lblFare, sep, btnPickedUp, btnComplete);
 
         // Add to the center StackPane
-        javafx.application.Platform.runLater(() -> {
+        Platform.runLater(() -> {
             if (stage.getScene().getRoot() instanceof BorderPane bp &&
-                bp.getCenter() instanceof StackPane sp) {
+                    bp.getCenter() instanceof StackPane sp) {
                 StackPane.setAlignment(card, Pos.BOTTOM_LEFT);
                 StackPane.setMargin(card, new Insets(0, 0, 20, 20));
                 sp.getChildren().add(card);
