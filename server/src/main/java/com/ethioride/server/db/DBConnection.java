@@ -1,5 +1,6 @@
 package com.ethioride.server.db;
 
+import com.ethioride.server.logging.ServerLogger;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -49,12 +50,12 @@ public class DBConnection {
             // This dynamically loads the driver class into memory at runtime
             Class.forName("com.mysql.cj.jdbc.Driver");
 
-            System.out.println("[DB] Driver registered. URL: " + url);
+            ServerLogger.getInstance().info("DB driver registered. URL: " + url);
 
         } catch (ClassNotFoundException e) {
-            System.err.println("[DB] MySQL driver not found — add mysql-connector-j.jar to lib/");
+            ServerLogger.getInstance().error("DB MySQL driver not found — add mysql-connector-j.jar to lib/");
         } catch (Exception e) {
-            System.err.println("[DB] Failed to load db.properties: " + e.getMessage());
+            ServerLogger.getInstance().error("DB failed to load db.properties: " + e.getMessage());
         }
     }
 

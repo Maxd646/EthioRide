@@ -1,6 +1,7 @@
 package com.ethioride.server.service;
 
 import com.ethioride.server.db.DBConnection;
+import com.ethioride.server.logging.ServerLogger;
 import com.ethioride.shared.enums.RideCategory;
 
 import java.sql.Connection;
@@ -29,7 +30,7 @@ public class PricingService {
      * @throws Exception if calculation fails
      */
     public PriceEstimate calculatePrice(String origin, String destination, RideCategory category) throws Exception {
-        System.out.println("[Pricing] Calculating price for " + category + " trip (OSM/OSRM)");
+        ServerLogger.getInstance().info("Calculating price for " + category + " trip (OSM/OSRM)");
         
         // Get distance and duration from OpenStreetMap + OSRM (free, no API key)
         RoutingService.DistanceResult distance = routingService.calculateDistance(origin, destination);
@@ -46,11 +47,11 @@ public class PricingService {
         double subtotal = baseFare + distanceFare + timeFare;
         double total = Math.max(subtotal + bookingFee, rules.minimumFare);
         
-        System.out.println("[Pricing] Base: " + baseFare + " ETB");
-        System.out.println("[Pricing] Distance: " + String.format("%.2f", distanceFare) + " ETB");
-        System.out.println("[Pricing] Time: " + String.format("%.2f", timeFare) + " ETB");
-        System.out.println("[Pricing] Booking Fee: " + bookingFee + " ETB");
-        System.out.println("[Pricing] Total: " + String.format("%.2f", total) + " ETB");
+        ServerLogger.getInstance().info("Pricing base: " + baseFare + " ETB");
+        ServerLogger.getInstance().info("Pricing distance: " + String.format("%.2f", distanceFare) + " ETB");
+        ServerLogger.getInstance().info("Pricing time: " + String.format("%.2f", timeFare) + " ETB");
+        ServerLogger.getInstance().info("Pricing booking fee: " + bookingFee + " ETB");
+        ServerLogger.getInstance().info("Pricing total: " + String.format("%.2f", total) + " ETB");
         
         return new PriceEstimate(
             distance.getDistanceKm(),

@@ -1,5 +1,6 @@
 package com.ethioride.server.config;
 
+import com.ethioride.server.logging.ServerLogger;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -11,7 +12,7 @@ public class ServerConfig {
         try (InputStream in = ServerConfig.class.getResourceAsStream("/server.properties")) {
             if (in != null) props.load(in);
         } catch (IOException e) {
-            System.err.println("Could not load server.properties: " + e.getMessage());
+            ServerLogger.getInstance().error("Could not load server.properties: " + e.getMessage());
         }
     }
 

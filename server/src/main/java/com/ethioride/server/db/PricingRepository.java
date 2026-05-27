@@ -1,5 +1,6 @@
 package com.ethioride.server.db;
 
+import com.ethioride.server.logging.ServerLogger;
 import java.sql.*;
 
 /**
@@ -51,6 +52,6 @@ public class PricingRepository {
         stmt.setString(6, category);
         stmt.executeUpdate();
         stmt.close(); conn.close();
-        System.out.printf("[DB] Pricing updated: %s base=%.2f perKm=%.2f%n", category, baseFare, perKm);
+        ServerLogger.getInstance().info("Pricing updated: " + category + " base=" + String.format("%.2f", baseFare) + " perKm=" + String.format("%.2f", perKm));
     }
 }

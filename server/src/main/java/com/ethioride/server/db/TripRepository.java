@@ -1,5 +1,6 @@
 package com.ethioride.server.db;
 
+import com.ethioride.server.logging.ServerLogger;
 import com.ethioride.shared.dto.TripRequestDTO;
 import com.ethioride.shared.enums.RideCategory;
 import com.ethioride.shared.enums.TripStatus;
@@ -44,7 +45,7 @@ public class TripRepository {
         stmt.setString(13, TripStatus.PENDING.name());
 
         int rows = stmt.executeUpdate();
-        System.out.println("[DB] Trip saved, rows affected: " + rows);
+        ServerLogger.getInstance().info("Trip saved, rows: " + rows);
 
         // Step 6 & 7: Close
         stmt.close();

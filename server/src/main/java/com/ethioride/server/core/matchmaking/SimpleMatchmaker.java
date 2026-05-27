@@ -2,6 +2,7 @@ package com.ethioride.server.core.matchmaking;
 
 import com.ethioride.server.core.session.ClientRegistry;
 import com.ethioride.server.db.TripRepository;
+import com.ethioride.server.logging.ServerLogger;
 import com.ethioride.shared.dto.TripRequestDTO;
 import com.ethioride.shared.protocol.Message;
 import com.ethioride.shared.protocol.MessageType;
@@ -58,6 +59,8 @@ public class SimpleMatchmaker {
 
     private static SimpleMatchmaker instance;
 
+    private static final ServerLogger LOG = ServerLogger.getInstance();
+
     private SimpleMatchmaker() {}
 
     public static synchronized SimpleMatchmaker getInstance() {
@@ -87,7 +90,7 @@ public class SimpleMatchmaker {
     /** Start the matchmaking loop — runs every 5 seconds. */
     public void start() {
         scheduler.scheduleAtFixedRate(this::runMatchCycle, 2, 5, TimeUnit.SECONDS);
-        System.out.println("[Matchmaker] Started — proximity matching every 5s.");
+        LOG.info("Matchmaker started — proximity matching every 5s.");
     }
 
     public void stop() {
@@ -110,8 +113,7 @@ public class SimpleMatchmaker {
             existing.status = DriverStatus.AVAILABLE;
             return existing;
         });
-        System.out.printf("[Matchmaker] Driver ONLINE: %s (available drivers: %d)%n",
-                driverId, countAvailable());
+        LOG.info("Matchmaker driver ONLINE: " + driverId + " (available drivers: " + countAvailable() + ")");
     }
 
     /**
@@ -120,7 +122,7 @@ public class SimpleMatchmaker {
     public void setDriverOffline(String driverId) {
         DriverInfo info = drivers.get(driverId);
         if (info != null) info.status = DriverStatus.OFFLINE;
-        System.out.printf("[Matchmaker] Driver OFFLINE: %s%n", driverId);
+        LOG.info("Matchmaker driver OFFLINE: " + driverId);
     }
 
     /**
@@ -173,15 +175,14 @@ public class SimpleMatchmaker {
             List<TripRequestDTO> pending = tripRepo.findPending();
             if (pending.isEmpty()) return;
 
-            System.out.printf("[Matchmaker] %d pending trip(s), %d available driver(s).%n",
-                    pending.size(), countAvailable());
+            LOG.info("Matchmaker " + pending.size() + " pending trip(s), " + countAvailable() + " available driver(s).");
 
             for (TripRequestDTO trip : pending) {
                 // Find nearest available driver to the pickup location
                 DriverInfo nearest = findNearestDriver(trip.getPickupLat(), trip.getPickupLng());
 
                 if (nearest == null) {
-                    System.out.println("[Matchmaker] No available drivers — will retry next cycle.");
+                    LOG.info("Matchmaker no available drivers — will retry next cycle.");
                     break; // no point checking more trips
                 }
 
@@ -195,8 +196,7 @@ public class SimpleMatchmaker {
                         nearest.lat, nearest.lng,
                         trip.getPickupLat(), trip.getPickupLng());
 
-                System.out.printf("[Matchmaker] Matched trip %s → driver %s (%.1f km away)%n",
-                        trip.getTripId(), nearest.driverId, distKm);
+                LOG.info("Matchmaker matched trip " + trip.getTripId() + " -> driver " + nearest.driverId + " (" + String.format("%.1f", distKm) + " km away)");
 
                 // Push MATCH_NOTIFY_DRIVER to the driver's live socket
                 trip.setDriverId(nearest.driverId);
@@ -207,15 +207,14 @@ public class SimpleMatchmaker {
 
                 if (!pushed) {
                     // Driver socket is dead — roll back: put trip back to PENDING, driver OFFLINE
-                    System.err.printf("[Matchmaker] Driver %s unreachable — rolling back assignment.%n",
-                            nearest.driverId);
+                    LOG.error("Matchmaker driver " + nearest.driverId + " unreachable — rolling back assignment.");
                     tripRepo.updateStatus(trip.getTripId(),
                             com.ethioride.shared.enums.TripStatus.PENDING);
                     setDriverOffline(nearest.driverId);
                 }
             }
         } catch (Exception e) {
-            System.err.println("[Matchmaker] Error during match cycle: " + e.getMessage());
+            LOG.error("Matchmaker error during match cycle: " + e.getMessage());
         } finally {
             matchLock.unlock();
         }

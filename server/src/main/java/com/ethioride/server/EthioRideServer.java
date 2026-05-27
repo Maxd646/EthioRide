@@ -73,7 +73,7 @@ public class EthioRideServer {
             try (ObjectInputStream in  = new ObjectInputStream(socket.getInputStream());
                  ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
 
-                System.out.printf("[EthioRide] Client connected: %s%n", socket.getInetAddress());
+                LOG.info("Client connected: " + socket.getInetAddress());
                 while (!socket.isClosed()) {
                     Message msg = (Message) in.readObject();
                     handleMessage(msg, out);
@@ -423,9 +423,9 @@ public class EthioRideServer {
                 java.util.List<com.ethioride.shared.dto.UserDTO> users = repo.findAll();
                 out.writeObject(new Message(MessageType.USER_LIST_RESPONSE, users, "server"));
                 out.flush();
-                System.out.printf("[Server] Sent %d users to admin%n", users.size());
+                LOG.info("Sent " + users.size() + " users to admin");
             } catch (Exception e) {
-                System.err.println("[Server] User list error: " + e.getMessage());
+                LOG.error("User list error: " + e.getMessage());
                 out.writeObject(new Message(MessageType.ERROR, "Failed to fetch users", "server"));
                 out.flush();
             }
@@ -463,9 +463,9 @@ public class EthioRideServer {
                 
                 out.writeObject(new Message(MessageType.USER_CREATE_RESPONSE, user, "server"));
                 out.flush();
-                System.out.printf("[Server] Created %s: %s (%s)%n", parts[4], parts[0], parts[1]);
+                LOG.info("Created " + parts[4] + ": " + parts[0] + " (" + parts[1] + ")");
             } catch (Exception e) {
-                System.err.println("[Server] User create error: " + e.getMessage());
+                LOG.error("User create error: " + e.getMessage());
                 e.printStackTrace();
                 out.writeObject(new Message(MessageType.USER_CREATE_RESPONSE, "ERROR", "server"));
                 out.flush();
@@ -479,9 +479,9 @@ public class EthioRideServer {
                 repo.delete(userId);
                 out.writeObject(new Message(MessageType.USER_DELETE_RESPONSE, "OK", "server"));
                 out.flush();
-                System.out.printf("[Server] Deleted user: %s%n", userId);
+                LOG.info("Deleted user: " + userId);
             } catch (Exception e) {
-                System.err.println("[Server] User delete error: " + e.getMessage());
+                LOG.error("User delete error: " + e.getMessage());
                 out.writeObject(new Message(MessageType.USER_DELETE_RESPONSE, "ERROR", "server"));
                 out.flush();
             }
@@ -493,9 +493,9 @@ public class EthioRideServer {
                     new com.ethioride.server.db.TripRepository().findAll();
                 out.writeObject(new Message(MessageType.TRIP_LIST_RESPONSE, trips, "server"));
                 out.flush();
-                System.out.printf("[Server] Sent %d trips to admin%n", trips.size());
+                LOG.info("Sent " + trips.size() + " trips to admin");
             } catch (Exception e) {
-                System.err.println("[Server] Trip list error: " + e.getMessage());
+                LOG.error("Trip list error: " + e.getMessage());
                 out.writeObject(new Message(MessageType.ERROR, "Failed to fetch trips", "server"));
                 out.flush();
             }
@@ -524,7 +524,7 @@ public class EthioRideServer {
                 out.writeObject(new Message(MessageType.DASHBOARD_STATS_RESPONSE, stats, "server"));
                 out.flush();
             } catch (Exception e) {
-                System.err.println("[Server] Dashboard stats error: " + e.getMessage());
+                LOG.error("Dashboard stats error: " + e.getMessage());
                 out.writeObject(new Message(MessageType.ERROR, "Failed to fetch stats", "server"));
                 out.flush();
             }
@@ -537,9 +537,9 @@ public class EthioRideServer {
                     new com.ethioride.server.db.TripRepository().findByDriver(driverId);
                 out.writeObject(new Message(MessageType.DRIVER_TRIP_HISTORY_RESPONSE, trips, "server"));
                 out.flush();
-                System.out.printf("[Server] Sent %d trips to driver %s%n", trips.size(), driverId);
+                LOG.info("Sent " + trips.size() + " trips to driver " + driverId);
             } catch (Exception e) {
-                System.err.println("[Server] Driver trip history error: " + e.getMessage());
+                LOG.error("Driver trip history error: " + e.getMessage());
                 out.writeObject(new Message(MessageType.ERROR, "Failed to fetch trip history", "server"));
                 out.flush();
             }
@@ -567,7 +567,7 @@ public class EthioRideServer {
                     (java.io.Serializable) earnings, "server"));
                 out.flush();
             } catch (Exception e) {
-                System.err.println("[Server] Driver earnings error: " + e.getMessage());
+                LOG.error("Driver earnings error: " + e.getMessage());
                 out.writeObject(new Message(MessageType.ERROR, "Failed to fetch earnings", "server"));
                 out.flush();
             }
@@ -580,9 +580,9 @@ public class EthioRideServer {
                     new com.ethioride.server.db.TripRepository().findByPassenger(passengerId);
                 out.writeObject(new Message(MessageType.PASSENGER_TRIP_HISTORY_RESPONSE, trips, "server"));
                 out.flush();
-                System.out.printf("[Server] Sent %d trips to passenger %s%n", trips.size(), passengerId);
+                LOG.info("Sent " + trips.size() + " trips to passenger " + passengerId);
             } catch (Exception e) {
-                System.err.println("[Server] Passenger trip history error: " + e.getMessage());
+                LOG.error("Passenger trip history error: " + e.getMessage());
                 out.writeObject(new Message(MessageType.ERROR, "Failed to fetch trip history", "server"));
                 out.flush();
             }
@@ -594,7 +594,7 @@ public class EthioRideServer {
                 out.writeObject(new Message(MessageType.PRICING_RULES_RESPONSE, rules, "server"));
                 out.flush();
             } catch (Exception e) {
-                System.err.println("[Server] Pricing rules get error: " + e.getMessage());
+                LOG.error("Pricing rules get error: " + e.getMessage());
                 out.writeObject(new Message(MessageType.ERROR, "Failed to fetch pricing rules", "server"));
                 out.flush();
             }
@@ -615,9 +615,9 @@ public class EthioRideServer {
                 }
                 out.writeObject(new Message(MessageType.PRICING_RULES_UPDATE_RESPONSE, "OK", "server"));
                 out.flush();
-                System.out.println("[Server] Pricing rules updated by admin");
+                LOG.info("Pricing rules updated by admin");
             } catch (Exception e) {
-                System.err.println("[Server] Pricing rules update error: " + e.getMessage());
+                LOG.error("Pricing rules update error: " + e.getMessage());
                 out.writeObject(new Message(MessageType.PRICING_RULES_UPDATE_RESPONSE, "ERROR: " + e.getMessage(), "server"));
                 out.flush();
             }
@@ -650,10 +650,9 @@ public class EthioRideServer {
                 dto.setDestLng(estimate.getDestLng());
                 out.writeObject(new Message(MessageType.PRICE_ESTIMATE_RESPONSE, dto, "server"));
                 out.flush();
-                System.out.printf("[Server] Price estimate: %.2f ETB for %s → %s%n",
-                    estimate.getTotalFare(), parts[0], parts[1]);
+                LOG.info("Price estimate: " + String.format("%.2f", estimate.getTotalFare()) + " ETB for " + parts[0] + " -> " + parts[1]);
             } catch (Exception e) {
-                System.err.println("[Server] Price estimate error: " + e.getMessage());
+                LOG.error("Price estimate error: " + e.getMessage());
                 out.writeObject(new Message(MessageType.ERROR, "Price calculation failed: " + e.getMessage(), "server"));
                 out.flush();
             }

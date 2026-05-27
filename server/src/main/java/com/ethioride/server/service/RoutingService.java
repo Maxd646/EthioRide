@@ -1,5 +1,6 @@
 package com.ethioride.server.service;
 
+import com.ethioride.server.logging.ServerLogger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -58,7 +59,7 @@ public class RoutingService {
      * @throws Exception if geocoding or routing fails
      */
     public DistanceResult calculateDistance(String origin, String destination) throws Exception {
-        System.out.printf("[Routing] Calculating route: %s → %s%n", origin, destination);
+        ServerLogger.getInstance().info("Routing calculating route: " + origin + " -> " + destination);
 
         // Step 1 & 2 — geocode both addresses (can run sequentially; Nominatim is 1 req/s)
         double[] originCoords      = geocode(origin);
@@ -93,8 +94,8 @@ public class RoutingService {
         double distanceKm      = distanceMeters  / 1000.0;
         double durationMinutes = durationSeconds / 60.0;
 
-        System.out.printf("[Routing] Distance: %.2f km%n",  distanceKm);
-        System.out.printf("[Routing] Duration: %.0f min%n", durationMinutes);
+        ServerLogger.getInstance().info("Routing distance: " + String.format("%.2f", distanceKm) + " km");
+        ServerLogger.getInstance().info("Routing duration: " + String.format("%.0f", durationMinutes) + " min");
 
         return new DistanceResult(distanceKm, durationMinutes,
                 originCoords[0],      originCoords[1],      // origin lat, lng
@@ -125,7 +126,7 @@ public class RoutingService {
         double lat = place.getDouble("lat");
         double lon = place.getDouble("lon");
 
-        System.out.printf("[Routing] Geocoded \"%s\" → %.6f, %.6f%n", address, lat, lon);
+        ServerLogger.getInstance().info("Routing geocoded \"" + address + "\" -> " + String.format("%.6f", lat) + ", " + String.format("%.6f", lon));
         return new double[]{lat, lon};
     }
 
