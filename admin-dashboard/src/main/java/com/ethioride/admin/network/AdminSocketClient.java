@@ -36,6 +36,11 @@ public class AdminSocketClient {
     }
 
     public void connect() throws IOException {
+        // If already connected with a live socket, reuse it
+        if (connected && socket != null && !socket.isClosed()) return;
+        // Otherwise reset and reconnect
+        connected = false;
+        try { if (socket != null) socket.close(); } catch (IOException ignored) {}
         connect(AppConstants.DEFAULT_HOST, AppConstants.DEFAULT_PORT);
     }
 
