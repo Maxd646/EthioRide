@@ -104,7 +104,6 @@ public class RideHistoryScreen {
         cbFilter.setValue("All");
         cbFilter.setStyle("-fx-background-color:#0d1526;-fx-text-fill:#f1f5f9;");
         toolbar.getChildren().addAll(tfSearch, cbFilter);
-
         tripList = new VBox(8);
 
         tfSearch.textProperty().addListener((o, ov, nv) -> filter(nv, cbFilter.getValue()));
@@ -158,14 +157,20 @@ public class RideHistoryScreen {
 
     private void renderTrips(List<TripRequestDTO> trips) {
         tripList.getChildren().clear();
-        if (trips.isEmpty()) {
-            Label empty = new Label("No trips yet.");
+        // Only show finished trips in history — active trips are on the Live Map screen
+        List<TripRequestDTO> finished = trips.stream()
+            .filter(t -> t.getStatus() == TripStatus.COMPLETED
+                      || t.getStatus() == TripStatus.CANCELLED)
+            .collect(Collectors.toList());
+
+        if (finished.isEmpty()) {
+            Label empty = new Label("No completed trips yet.");
             empty.setTextFill(Color.web("#475569"));
             empty.setFont(Font.font("Arial", 13));
             tripList.getChildren().add(empty);
             return;
         }
-        for (TripRequestDTO t : trips) {
+        for (TripRequestDTO t : finished) {
             boolean completed = t.getStatus() == TripStatus.COMPLETED;
             HBox card = new HBox(16);
             card.setStyle("-fx-background-color:#1a2235;-fx-background-radius:12px;-fx-padding:16;");
