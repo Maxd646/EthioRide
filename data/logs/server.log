@@ -253,3 +253,11 @@
 [2026-05-27 23:36:42] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
 [2026-05-27 23:36:42] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> Garnet Avenue
 [2026-05-27 23:36:42] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-27 23:39:14] [INFO ] Client connected: /127.0.0.1
+[2026-05-27 23:39:14] [INFO ] Calculating price for PREMIUM trip (OSM/OSRM)
+[2026-05-27 23:39:14] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> Garnet Avenue
+[2026-05-27 23:39:15] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-27 23:39:15] [INFO ] Client connected: /127.0.0.1
+[2026-05-27 23:39:15] [INFO ] Sent 0 trips to passenger 94288ea5-4e0a-42b2-a7af-456334e8a27b
+[2026-05-27 23:39:18] [INFO ] Client connected: /127.0.0.1
+[2026-05-27 23:39:18] [INFO ] Sent 0 trips to passenger 94288ea5-4e0a-42b2-a7af-456334e8a27b
