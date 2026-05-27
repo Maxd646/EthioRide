@@ -3,6 +3,7 @@ package com.ethioride.server;
 import com.ethioride.server.config.ServerConfig;
 import com.ethioride.server.core.matchmaking.SimpleMatchmaker;
 import com.ethioride.server.core.session.ClientRegistry;
+import com.ethioride.server.logging.ServerLogger;
 import com.ethioride.shared.protocol.Message;
 import com.ethioride.shared.protocol.MessageType;
 
@@ -14,6 +15,9 @@ import java.util.concurrent.*;
  * Main TCP server. Accepts client connections and dispatches them to the thread pool.
  */
 public class EthioRideServer {
+
+    // Convenience alias — all server output goes through the file logger
+    private static final ServerLogger LOG = ServerLogger.getInstance();
 
     private final int port;
     private final ExecutorService threadPool;
@@ -32,13 +36,13 @@ public class EthioRideServer {
         SimpleMatchmaker.getInstance().start();
 
         try (ServerSocket serverSocket = new ServerSocket(port)) {
-            System.out.printf("[EthioRide] Server listening on port %d%n", port);
+            LOG.info("Server listening on port " + port);
             while (running) {
                 try {
                     Socket client = serverSocket.accept();
                     threadPool.submit(new ClientHandler(client));
                 } catch (SocketException e) {
-                    if (running) System.err.println("[EthioRide] Accept error: " + e.getMessage());
+                    if (running) LOG.error("Accept error: " + e.getMessage());
                 }
             }
         }
@@ -48,7 +52,8 @@ public class EthioRideServer {
         running = false;
         SimpleMatchmaker.getInstance().stop();
         threadPool.shutdown();
-        System.out.println("[EthioRide] Server stopped.");
+        LOG.info("Server stopped.");
+        ServerLogger.getInstance().close();
     }
 
     public static void main(String[] args) throws IOException {
@@ -69,7 +74,6 @@ public class EthioRideServer {
                  ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
 
                 System.out.printf("[EthioRide] Client connected: %s%n", socket.getInetAddress());
-
                 while (!socket.isClosed()) {
                     Message msg = (Message) in.readObject();
                     handleMessage(msg, out);
@@ -77,13 +81,13 @@ public class EthioRideServer {
             } catch (EOFException | SocketException ignored) {
                 // client disconnected
             } catch (Exception e) {
-                System.err.println("[EthioRide] Handler error: " + e.getMessage());
+                LOG.error("Handler error: " + e.getMessage());
             } finally {
                 // Unregister from ClientRegistry and mark driver offline on disconnect
                 if (registeredClientId != null) {
                     ClientRegistry.getInstance().unregister(registeredClientId);
                     SimpleMatchmaker.getInstance().setDriverOffline(registeredClientId);
-                    System.out.printf("[EthioRide] Client disconnected: %s%n", registeredClientId);
+                    LOG.info("Client disconnected: " + registeredClientId);
                 }
                 try { socket.close(); } catch (IOException ignored) {}
             }
@@ -113,7 +117,7 @@ public class EthioRideServer {
                 case PRICING_RULES_REQUEST       -> handlePricingRulesGet(msg, out);
                 case PRICING_RULES_UPDATE        -> handlePricingRulesUpdate(msg, out);
                 case HEARTBEAT                   -> sendAck(out, msg.getSenderId());
-                default -> System.out.println("[EthioRide] Unhandled: " + msg.getType());
+                default -> LOG.warn("Unhandled message type: " + msg.getType());
             }
         }
 
@@ -130,17 +134,16 @@ public class EthioRideServer {
                     new com.ethioride.server.db.UserRepository()
                         .findByPhoneAndPassword(parts[0], parts[1]);
                 if (user != null) {
-                    System.out.printf("[Server] Login: %s (%s)%n", user.getFullName(), user.getRole());
-                    // Register this socket so the server can push messages to this client
+                    LOG.info("Login: " + user.getFullName() + " (" + user.getRole() + ")");
                     ClientRegistry.getInstance().register(user.getId(), out);
                     registeredClientId = user.getId();
                 } else {
-                    System.out.println("[Server] Login failed - invalid credentials");
+                    LOG.warn("Login failed - invalid credentials");
                 }
                 out.writeObject(new Message(MessageType.LOGIN_RESPONSE, user, "server"));
                 out.flush();
             } catch (Exception e) {
-                System.err.println("[Server] Login error: " + e.getMessage());
+                LOG.error("Login error: " + e.getMessage());
                 out.writeObject(new Message(MessageType.ERROR, "Login failed: " + e.getMessage(), "server"));
                 out.flush();
             }
@@ -163,16 +166,15 @@ public class EthioRideServer {
 
                 if ("ONLINE".equals(status)) {
                     SimpleMatchmaker.getInstance().setDriverOnline(driverId);
-                    System.out.printf("[Server] Driver %s is now ONLINE (%d available)%n",
-                            driverId, SimpleMatchmaker.getInstance().countAvailable());
+                    LOG.info("Driver " + driverId + " is now ONLINE (" + SimpleMatchmaker.getInstance().countAvailable() + " available)");
                 } else {
                     SimpleMatchmaker.getInstance().setDriverOffline(driverId);
-                    System.out.printf("[Server] Driver %s is now OFFLINE%n", driverId);
+                    LOG.info("Driver " + driverId + " is now OFFLINE");
                 }
                 out.writeObject(new Message(MessageType.ACK, status, "server"));
                 out.flush();
             } catch (Exception e) {
-                System.err.println("[Server] Driver status update error: " + e.getMessage());
+                LOG.error("Driver status update error: " + e.getMessage());
             }
         }
 
@@ -191,7 +193,7 @@ public class EthioRideServer {
                 }
                 // No response needed for location updates — fire and forget
             } catch (Exception e) {
-                System.err.println("[Server] Driver location update error: " + e.getMessage());
+                LOG.error("Driver location update error: " + e.getMessage());
             }
         }
 
@@ -217,7 +219,7 @@ public class EthioRideServer {
                 out.writeObject(new Message(MessageType.REGISTER_RESPONSE, "OK", "server"));
                 out.flush();
             } catch (Exception e) {
-                System.err.println("[Server] Register error: " + e.getMessage());
+                LOG.error("Register error: " + e.getMessage());
                 out.writeObject(new Message(MessageType.REGISTER_RESPONSE, "ERROR", "server"));
                 out.flush();
             }
@@ -233,12 +235,11 @@ public class EthioRideServer {
                     ClientRegistry.getInstance().register(trip.getPassengerId(), out);
                     registeredClientId = trip.getPassengerId();
                 }
-                System.out.printf("[Server] Trip queued: %s -> %s%n",
-                    trip.getPickupLocation(), trip.getDropoffLocation());
+                LOG.info("Trip queued: " + trip.getPickupLocation() + " -> " + trip.getDropoffLocation());
                 out.writeObject(new Message(MessageType.ACK, "QUEUED", "server"));
                 out.flush();
             } catch (Exception e) {
-                System.err.println("[Server] Trip error: " + e.getMessage());
+                LOG.error("Trip request error: " + e.getMessage());
                 out.writeObject(new Message(MessageType.ERROR, "Trip failed", "server"));
                 out.flush();
             }
@@ -277,14 +278,13 @@ public class EthioRideServer {
                     ClientRegistry.getInstance().push(trip.getPassengerId(),
                         new Message(MessageType.TRIP_ACCEPTED, passengerPayload, "server"));
 
-                    System.out.printf("[Server] Trip %s accepted by driver %s — notified passenger%n",
-                        tripId, driverId);
+                    LOG.info("Trip " + tripId + " accepted by driver " + driverId + " — notified passenger");
                 }
 
                 out.writeObject(new Message(MessageType.ACK, "ACCEPTED", "server"));
                 out.flush();
             } catch (Exception e) {
-                System.err.println("[Server] Trip accept error: " + e.getMessage());
+                LOG.error("Trip accept error: " + e.getMessage());
                 out.writeObject(new Message(MessageType.ERROR, "Accept failed", "server"));
                 out.flush();
             }
@@ -301,22 +301,18 @@ public class EthioRideServer {
                 String tripId   = msg.getPayload().toString();
                 String driverId = msg.getSenderId();
 
-                new com.ethioride.server.db.TripRepository()
-                    .updateStatus(tripId, com.ethioride.shared.enums.TripStatus.PENDING);
-
-                // Re-queue trip: clear driver assignment
+                // clearDriver sets status = PENDING and driver_id = NULL in one query
                 new com.ethioride.server.db.TripRepository().clearDriver(tripId);
 
                 // Mark driver offline — they declined, don't spam them
                 SimpleMatchmaker.getInstance().setDriverOffline(driverId);
 
-                System.out.printf("[Server] Trip %s declined by driver %s — re-queued%n",
-                    tripId, driverId);
+                LOG.info("Trip " + tripId + " declined by driver " + driverId + " — re-queued");
 
                 out.writeObject(new Message(MessageType.ACK, "DECLINED", "server"));
                 out.flush();
             } catch (Exception e) {
-                System.err.println("[Server] Trip decline error: " + e.getMessage());
+                LOG.error("Trip decline error: " + e.getMessage());
             }
         }
 
@@ -338,11 +334,11 @@ public class EthioRideServer {
                         new Message(MessageType.TRIP_STARTED, tripId, "server"));
                 }
 
-                System.out.printf("[Server] Trip %s started (IN_PROGRESS)%n", tripId);
+                LOG.info("Trip " + tripId + " started (IN_PROGRESS)");
                 out.writeObject(new Message(MessageType.ACK, "STARTED", "server"));
                 out.flush();
             } catch (Exception e) {
-                System.err.println("[Server] Trip start error: " + e.getMessage());
+                LOG.error("Trip start error: " + e.getMessage());
             }
         }
 
@@ -373,12 +369,11 @@ public class EthioRideServer {
                             String.format("%.2f", trip.getFare()), "server"));
                 }
 
-                System.out.printf("[Server] Trip %s COMPLETED — driver %s now available%n",
-                    tripId, driverId);
+                LOG.info("Trip " + tripId + " COMPLETED — driver " + driverId + " now available");
                 out.writeObject(new Message(MessageType.ACK, "COMPLETED", "server"));
                 out.flush();
             } catch (Exception e) {
-                System.err.println("[Server] Trip complete error: " + e.getMessage());
+                LOG.error("Trip complete error: " + e.getMessage());
             }
         }
 
@@ -414,11 +409,11 @@ public class EthioRideServer {
                     }
                 }
 
-                System.out.printf("[Server] Trip %s CANCELLED by %s%n", tripId, senderId);
+                LOG.info("Trip " + tripId + " CANCELLED by " + senderId);
                 out.writeObject(new Message(MessageType.ACK, "CANCELLED", "server"));
                 out.flush();
             } catch (Exception e) {
-                System.err.println("[Server] Trip cancel error: " + e.getMessage());
+                LOG.error("Trip cancel error: " + e.getMessage());
             }
         }
 
@@ -517,6 +512,7 @@ public class EthioRideServer {
                 com.ethioride.shared.dto.DashboardStatsDTO stats = new com.ethioride.shared.dto.DashboardStatsDTO();
                 stats.setTotalDrivers((int) allUsers.stream()
                     .filter(u -> u.getRole() == com.ethioride.shared.enums.UserRole.DRIVER).count());
+                stats.setOnlineDrivers(SimpleMatchmaker.getInstance().countAvailable());
                 stats.setTotalPassengers((int) allUsers.stream()
                     .filter(u -> u.getRole() == com.ethioride.shared.enums.UserRole.PASSENGER).count());
                 stats.setActiveTrips(tripRepo.countByStatus(com.ethioride.shared.enums.TripStatus.IN_PROGRESS)
