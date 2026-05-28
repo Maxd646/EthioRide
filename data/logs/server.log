@@ -7054,3 +7054,1569 @@
 [2026-05-28 02:04:56] [INFO ] Client disconnected: a2159d62-d04e-4978-937b-a784c350b0c8
 [2026-05-28 02:04:58] [INFO ] Matchmaker driver OFFLINE: admin-001
 [2026-05-28 02:04:58] [INFO ] Client disconnected: admin-001
+[2026-05-28 09:24:19] [INFO ] === EthioRide Server started ===
+[2026-05-28 09:24:19] [INFO ] Matchmaker started — proximity matching every 5s.
+[2026-05-28 09:24:19] [INFO ] Server listening on port 9090
+[2026-05-28 09:24:21] [ERROR] DB failed to load db.properties: inStream parameter is null
+[2026-05-28 09:24:21] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:24:26] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:24:31] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:24:36] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:24:41] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:24:46] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:24:51] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:24:56] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:25:01] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:25:01] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 09:25:01] [ERROR] Login error: The url cannot be null
+[2026-05-28 09:25:06] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:25:11] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:25:16] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:25:21] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:25:25] [ERROR] Login error: The url cannot be null
+[2026-05-28 09:25:26] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:25:26] [ERROR] Login error: The url cannot be null
+[2026-05-28 09:25:31] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:25:36] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:25:41] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:25:43] [ERROR] Login error: The url cannot be null
+[2026-05-28 09:25:44] [ERROR] Login error: The url cannot be null
+[2026-05-28 09:25:46] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:25:51] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:25:56] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:26:01] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:26:06] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:26:11] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:26:16] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:26:21] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:26:26] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:26:31] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:26:36] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:26:41] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:26:46] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:26:51] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:26:56] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:27:01] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:27:06] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:27:11] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:27:16] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:27:21] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:27:26] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:27:31] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:27:33] [ERROR] Login error: The url cannot be null
+[2026-05-28 09:27:36] [ERROR] Login error: The url cannot be null
+[2026-05-28 09:27:36] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:27:41] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:27:46] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:27:51] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:27:56] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:28:01] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:28:06] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:28:11] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:28:16] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:28:21] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:28:26] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:28:31] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:28:36] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:28:41] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:28:46] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:28:51] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:28:56] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:29:01] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:29:06] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:29:11] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:29:16] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:29:21] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:29:26] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:29:31] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:29:36] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:29:41] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:29:46] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:29:51] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:29:56] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:30:01] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:30:06] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:30:11] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:30:16] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:30:21] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:30:26] [ERROR] Matchmaker error during match cycle: The url cannot be null
+[2026-05-28 09:30:51] [INFO ] === EthioRide Server started ===
+[2026-05-28 09:30:51] [INFO ] Matchmaker started — proximity matching every 5s.
+[2026-05-28 09:30:51] [INFO ] Server listening on port 9090
+[2026-05-28 09:30:53] [INFO ] DB driver registered. URL: jdbc:mysql://localhost:3306/ethioride?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+[2026-05-28 09:31:36] [INFO ] === EthioRide Server started ===
+[2026-05-28 09:31:36] [INFO ] Matchmaker started — proximity matching every 5s.
+[2026-05-28 09:31:36] [INFO ] Server stopped.
+[2026-05-28 09:31:59] [INFO ] === EthioRide Server started ===
+[2026-05-28 09:31:59] [INFO ] Matchmaker started — proximity matching every 5s.
+[2026-05-28 09:31:59] [INFO ] Server stopped.
+[2026-05-28 09:32:17] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 09:32:17] [INFO ] Login: System Administrator (ADMIN)
+[2026-05-28 09:32:28] [INFO ] Sent 5 users to admin
+[2026-05-28 09:32:33] [INFO ] Sent 0 trips to admin
+[2026-05-28 09:32:34] [INFO ] Sent 5 users to admin
+[2026-05-28 09:32:36] [INFO ] Sent 0 trips to admin
+[2026-05-28 09:32:38] [INFO ] Sent 5 users to admin
+[2026-05-28 09:33:23] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 09:33:23] [INFO ] Login: daniel (DRIVER)
+[2026-05-28 09:33:24] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:33:28] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:33:29] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:33:30] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:33:31] [INFO ] Matchmaker driver ONLINE: a2159d62-d04e-4978-937b-a784c350b0c8 (available drivers: 1)
+[2026-05-28 09:33:31] [INFO ] Driver a2159d62-d04e-4978-937b-a784c350b0c8 is now ONLINE (1 available)
+[2026-05-28 09:33:34] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:33:35] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:33:38] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:33:39] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:33:40] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:33:44] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:33:45] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:33:49] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:33:50] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:33:54] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:33:55] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:33:59] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:34:00] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:34:04] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:34:05] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:34:09] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:34:10] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:34:14] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:34:15] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:34:19] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:34:20] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:34:24] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:34:25] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:34:29] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:34:30] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:34:34] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:34:35] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:34:39] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:34:40] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:34:44] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:34:45] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:34:49] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:34:50] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:34:53] [INFO ] Sent 5 users to admin
+[2026-05-28 09:34:54] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:34:55] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:34:59] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:35:00] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:35:04] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:35:05] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:35:09] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:35:10] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:35:14] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:35:15] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:35:19] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:35:20] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:35:24] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:35:25] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:35:26] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 09:35:26] [INFO ] Login: Daniel Kebede (PASSENGER)
+[2026-05-28 09:35:26] [INFO ] Matchmaker driver OFFLINE: d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:35:26] [INFO ] Client disconnected: d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:35:26] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 09:35:29] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:35:30] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:35:30] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 09:35:30] [INFO ] Sent 0 trips to passenger d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:35:34] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:35:35] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:35:37] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 09:35:37] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-28 09:35:37] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> adama
+[2026-05-28 09:35:39] [ERROR] Price estimate error: Connection reset
+[2026-05-28 09:35:39] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:35:40] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:35:43] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 09:35:43] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-28 09:35:43] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> Kazanchis Square
+[2026-05-28 09:35:44] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:35:44] [ERROR] Price estimate error: Connection reset
+[2026-05-28 09:35:45] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:35:46] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 09:35:46] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-28 09:35:46] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> Garnet Avenue
+[2026-05-28 09:35:48] [ERROR] Price estimate error: Connection reset
+[2026-05-28 09:35:49] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:35:50] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:35:52] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 09:35:52] [INFO ] Calculating price for PREMIUM trip (OSM/OSRM)
+[2026-05-28 09:35:52] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> Garnet Avenue
+[2026-05-28 09:35:53] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 09:35:53] [INFO ] Calculating price for ELITE trip (OSM/OSRM)
+[2026-05-28 09:35:53] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> Garnet Avenue
+[2026-05-28 09:35:54] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:35:55] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-28 09:35:55] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-28 09:35:55] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:35:55] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 09:35:55] [INFO ] Sent 0 trips to passenger d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:35:59] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:36:00] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:36:04] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:36:05] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:36:07] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 09:36:07] [INFO ] Sent 0 trips to passenger d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:36:09] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:36:10] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:36:12] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 09:36:12] [INFO ] Sent 0 trips to passenger d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:36:14] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:36:15] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:36:19] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:36:20] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:36:24] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:36:25] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:36:29] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:36:30] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:36:34] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:36:35] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:36:39] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:36:40] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:36:44] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:36:45] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:36:49] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:36:50] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:36:54] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:36:54] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 09:36:54] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-28 09:36:54] [INFO ] Routing calculating route: Addis Ababa, Ethiopia -> ada
+[2026-05-28 09:36:55] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:36:55] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 09:36:55] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-28 09:36:55] [INFO ] Routing calculating route: Addis Ababa, Ethiopia -> adama
+[2026-05-28 09:36:56] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-28 09:36:56] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-28 09:36:59] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:37:00] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:37:04] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:37:05] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:37:09] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:37:10] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:37:14] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:37:15] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:37:19] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:37:20] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:37:24] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:37:25] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:37:29] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:37:30] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:37:34] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:37:35] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:37:39] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:37:40] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:37:44] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:37:45] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:37:49] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:37:50] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:37:54] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:37:55] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:37:59] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:38:00] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:38:04] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:38:05] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:38:09] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:38:10] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:38:14] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:38:15] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:38:19] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:38:20] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:38:24] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:38:25] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:38:29] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:38:30] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:38:34] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:38:35] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:38:39] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:38:40] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:38:44] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:38:45] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:38:49] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:38:50] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:38:54] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:38:55] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:38:59] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:39:00] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:39:04] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:39:05] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:39:09] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:39:10] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:39:14] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:39:15] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:39:19] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:39:20] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:39:24] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:39:25] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:39:29] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:39:30] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:39:34] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:39:35] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:39:39] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:39:40] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:39:44] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:39:45] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:39:49] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:39:50] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:39:54] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:39:55] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:39:59] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:40:00] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:40:04] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:40:05] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:40:09] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:40:10] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:40:14] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:40:15] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:40:19] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:40:20] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:40:24] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:40:25] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:40:29] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:40:30] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:40:34] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:40:35] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:40:39] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:40:40] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:40:44] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:40:45] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:40:49] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:40:50] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:40:54] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:40:55] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:40:59] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:41:00] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:41:04] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:41:05] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:41:09] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:41:10] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:41:14] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:41:15] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:41:19] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:41:20] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:41:24] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:41:25] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:41:29] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:41:30] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:41:34] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:41:35] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:41:39] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:41:40] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:41:44] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:41:45] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:41:49] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:41:50] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:41:54] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:41:55] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:41:59] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:42:00] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:42:04] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:42:05] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:42:09] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:42:10] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:42:14] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:42:15] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:42:19] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:42:20] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:42:24] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:42:25] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:42:29] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:42:30] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:42:34] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:42:35] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:42:39] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:42:40] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:42:44] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:42:45] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:42:49] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:42:50] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:42:54] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:42:55] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:42:59] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:43:00] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:43:04] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:43:05] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:43:09] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:43:10] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:43:14] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:43:15] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:43:19] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:43:20] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:43:24] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:43:25] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:43:29] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:43:30] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:43:34] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:43:35] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:43:39] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:43:40] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:43:44] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:43:45] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:43:49] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:43:50] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:43:54] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:43:55] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:43:59] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:44:00] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:44:04] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:44:05] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:44:09] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:44:10] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:44:14] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:44:15] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:44:19] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:44:20] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:44:24] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:44:25] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:44:29] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:44:30] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:44:34] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:44:35] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:44:39] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:44:40] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:44:44] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:44:45] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:44:49] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:44:50] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:44:54] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:44:55] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:44:59] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:45:00] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:45:04] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:45:05] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:45:09] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:45:10] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:45:14] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:45:15] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:45:19] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:45:20] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:45:24] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:45:25] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:45:29] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:45:30] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:45:34] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:45:35] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:45:39] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:45:40] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:45:44] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:45:45] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:45:49] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:45:50] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:45:54] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:45:55] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:45:59] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:46:00] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:46:04] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:46:05] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:46:09] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:46:10] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:46:14] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:46:15] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:46:19] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:46:20] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:46:24] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:46:25] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:46:29] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:46:30] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:46:34] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:46:35] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:46:39] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:46:40] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:46:44] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:46:45] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:46:49] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:46:50] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:46:54] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:46:55] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:46:59] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:47:00] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:47:04] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:47:05] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:47:09] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:47:10] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:47:14] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:47:15] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:47:19] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:47:20] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:47:24] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:47:25] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:47:29] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:47:30] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:47:34] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:47:35] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:47:39] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:47:40] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:47:44] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:47:45] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:47:49] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:47:50] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:47:54] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:47:55] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:47:59] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:48:00] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:48:04] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:48:05] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:48:09] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:48:10] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:48:14] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:48:15] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:48:19] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:48:20] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:48:24] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:48:25] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:48:29] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:48:30] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:48:34] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:48:35] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:48:39] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:48:40] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:48:44] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:48:45] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:48:49] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:48:50] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:48:54] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:48:55] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:48:59] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:49:00] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:49:04] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:49:05] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:49:09] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:49:10] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:49:14] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:49:15] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:49:19] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:49:20] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:49:24] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:49:25] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:49:29] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:49:30] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:49:34] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:49:35] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:49:39] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:49:40] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:49:44] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:49:45] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:49:49] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:49:50] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:49:54] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:49:55] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:49:59] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:50:00] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:50:04] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:50:05] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:50:09] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:50:10] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:50:14] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:50:15] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:50:19] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:50:20] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:50:24] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:50:25] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:50:29] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:50:30] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:50:34] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:50:35] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:50:39] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:50:40] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:50:44] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:50:45] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:50:49] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:50:50] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:50:54] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:50:55] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:50:59] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:51:00] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:51:04] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:51:05] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:51:09] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:51:10] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:51:14] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:51:15] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:51:19] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:51:20] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:51:24] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:51:25] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:51:29] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:51:30] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:51:34] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:51:35] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:51:39] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:51:40] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:51:44] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:51:45] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:51:49] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:51:50] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:51:54] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:51:55] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:51:59] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:52:00] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:52:04] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:52:05] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:52:09] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:52:10] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:52:14] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:52:15] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:52:19] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:52:20] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:52:24] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:52:25] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:52:29] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:52:30] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:52:34] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:52:35] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:52:39] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:52:40] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:52:44] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:52:45] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:52:49] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:52:50] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:52:54] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:52:55] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:52:59] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:53:00] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:53:04] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:53:05] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:53:09] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:53:10] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:53:14] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:53:15] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:53:19] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:53:20] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:53:24] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:53:25] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:53:29] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:53:30] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:53:34] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:53:35] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:53:39] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:53:40] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:53:44] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:53:45] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:53:49] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:53:50] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:53:54] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:53:55] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:53:59] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:54:00] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:54:04] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:54:05] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:54:09] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:54:10] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:54:14] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:54:15] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:54:19] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:54:20] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:54:24] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:54:25] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:54:29] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:54:30] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:54:34] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:54:35] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:54:39] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:54:40] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:54:44] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:54:45] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:54:49] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:54:50] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:54:54] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:54:55] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:54:59] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:55:00] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:55:03] [INFO ] Matchmaker driver OFFLINE: a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:55:03] [INFO ] Client disconnected: a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:55:05] [INFO ] Matchmaker driver OFFLINE: admin-001
+[2026-05-28 09:55:05] [INFO ] Client disconnected: admin-001
+[2026-05-28 09:56:37] [INFO ] === EthioRide Server started ===
+[2026-05-28 09:56:37] [INFO ] Matchmaker started — proximity matching every 5s.
+[2026-05-28 09:56:37] [INFO ] Server stopped.
+[2026-05-28 09:56:53] [INFO ] === EthioRide Server started ===
+[2026-05-28 09:56:53] [INFO ] Matchmaker started — proximity matching every 5s.
+[2026-05-28 09:56:53] [INFO ] Server stopped.
+[2026-05-28 09:57:10] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 09:57:10] [INFO ] Login: System Administrator (ADMIN)
+[2026-05-28 09:57:14] [INFO ] Sent 5 users to admin
+[2026-05-28 09:57:20] [INFO ] Sent 5 users to admin
+[2026-05-28 09:58:02] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 09:58:02] [INFO ] Login: Daniel Kebede (PASSENGER)
+[2026-05-28 09:58:04] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:58:06] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:58:09] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:58:09] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:58:14] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:58:14] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:58:18] [INFO ] Matchmaker driver ONLINE: d0e954fa-c8aa-4a76-bebd-9f2eaedf9389 (available drivers: 1)
+[2026-05-28 09:58:18] [INFO ] Driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389 is now ONLINE (1 available)
+[2026-05-28 09:58:19] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:58:19] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:58:24] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:58:24] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:58:29] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:58:29] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:58:34] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:58:34] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:58:39] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:58:39] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:58:44] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:58:44] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:58:49] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:58:49] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:58:54] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:58:54] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:58:59] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:58:59] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:59:04] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 09:59:04] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:59:04] [INFO ] Login: daniel (DRIVER)
+[2026-05-28 09:59:04] [INFO ] Matchmaker driver OFFLINE: a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:59:04] [INFO ] Client disconnected: a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 09:59:04] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 09:59:04] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:59:05] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 09:59:09] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:59:09] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:59:11] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 09:59:14] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:59:14] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:59:17] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 09:59:19] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:59:19] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:59:23] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 09:59:24] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:59:24] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:59:26] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 09:59:26] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-28 09:59:26] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> Adama, Oromia Region, 0408
+[2026-05-28 09:59:26] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-28 09:59:29] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:59:29] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:59:29] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 09:59:34] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:59:34] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:59:35] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 09:59:39] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:59:39] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:59:42] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 09:59:44] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:59:44] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:59:48] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 09:59:49] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:59:49] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:59:54] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 09:59:54] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:59:54] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:59:59] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 09:59:59] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:00:00] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:00:04] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:00:04] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:00:04] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-28 10:00:04] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> Adama, Oromia Region, 0408
+[2026-05-28 10:00:04] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:00:05] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-28 10:00:06] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:00:08] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:00:08] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-28 10:00:08] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> bo
+[2026-05-28 10:00:08] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-28 10:00:09] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:00:09] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:00:12] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:00:14] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:00:14] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:00:18] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:00:19] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:00:19] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:00:21] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:00:21] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-28 10:00:21] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> Bole, Arsi, Oromia Region
+[2026-05-28 10:00:22] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-28 10:00:24] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:00:24] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:00:24] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:00:29] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:00:29] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:00:30] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:00:34] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:00:34] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:00:36] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:00:39] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:00:39] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:00:39] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:00:39] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-28 10:00:39] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> Bole, Arsi, Oromia Region
+[2026-05-28 10:00:39] [ERROR] Price estimate error: Connection reset
+[2026-05-28 10:00:41] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:00:41] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-28 10:00:41] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> Garnet Avenue
+[2026-05-28 10:00:42] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:00:42] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-28 10:00:44] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:00:44] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:00:44] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-28 10:00:44] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> Kazanchis Square
+[2026-05-28 10:00:44] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:00:44] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-28 10:00:48] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:00:49] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:00:49] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:00:54] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:00:54] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:00:54] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:00:59] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:00:59] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:01:00] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:01:04] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:01:04] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:01:06] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:01:09] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:01:09] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:01:12] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:01:14] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:01:14] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:01:18] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:01:19] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:01:19] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:01:24] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:01:24] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:01:25] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:01:29] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:01:29] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:01:31] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:01:34] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:01:34] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:01:37] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:01:39] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:01:39] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:01:43] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:01:44] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:01:44] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:01:49] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:01:49] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:01:49] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:01:54] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:01:54] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:01:55] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:01:59] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:01:59] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:02:01] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:02:04] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:02:04] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:02:07] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:02:09] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:02:09] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:02:13] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:02:14] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:02:14] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:02:19] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:02:19] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:02:19] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:02:24] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:02:24] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:02:25] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:02:29] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:02:29] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:02:31] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:02:34] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:02:34] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:02:37] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:02:39] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:02:39] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:02:43] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:02:44] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:02:44] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:02:49] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:02:49] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:02:49] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:02:54] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:02:54] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:02:55] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:02:59] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:02:59] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:03:01] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:03:04] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:03:04] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:03:07] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:03:09] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:03:09] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:03:13] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:03:14] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:03:14] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:03:19] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:03:19] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:03:19] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:03:20] [INFO ] Sent 0 trips to admin
+[2026-05-28 10:03:24] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:03:24] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:03:25] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:03:28] [INFO ] Matchmaker driver OFFLINE: d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:03:28] [INFO ] Driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389 is now OFFLINE
+[2026-05-28 10:03:29] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:03:29] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:03:29] [INFO ] Matchmaker driver ONLINE: d0e954fa-c8aa-4a76-bebd-9f2eaedf9389 (available drivers: 1)
+[2026-05-28 10:03:29] [INFO ] Driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389 is now ONLINE (1 available)
+[2026-05-28 10:03:32] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:03:34] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:03:34] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:03:38] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:03:39] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:03:39] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:03:44] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:03:44] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:03:44] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:03:49] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:03:49] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:03:50] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:03:54] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:03:54] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:03:56] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:03:59] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:03:59] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:04:02] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:04:04] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:04:04] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:04:08] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:04:09] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:04:09] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:04:14] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:04:14] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:04:14] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:04:15] [INFO ] Sent 5 users to admin
+[2026-05-28 10:04:16] [INFO ] Sent 5 users to admin
+[2026-05-28 10:04:19] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:04:19] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:04:20] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:04:24] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:04:24] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:04:26] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:04:29] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:04:29] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:04:32] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:04:34] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:04:34] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:04:38] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:04:39] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:04:39] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:04:44] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:04:44] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:04:44] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:04:49] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:04:49] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:04:50] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:04:54] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:04:54] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:04:56] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:04:59] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:04:59] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:05:03] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:05:04] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:05:04] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:05:09] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:05:09] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:05:09] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:05:14] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:05:14] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:05:15] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:05:16] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:05:16] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-28 10:05:16] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> b
+[2026-05-28 10:05:19] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:05:19] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:05:19] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:05:19] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-28 10:05:19] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> Bole
+[2026-05-28 10:05:21] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:05:22] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:05:22] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-28 10:05:22] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> Bole,
+[2026-05-28 10:05:24] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:05:24] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:05:27] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:05:27] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:05:27] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-28 10:05:27] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> Bole, Arsi, Oromia Region
+[2026-05-28 10:05:27] [ERROR] Price estimate error: nominatim.openstreetmap.org
+[2026-05-28 10:05:27] [ERROR] Price estimate error: nominatim.openstreetmap.org
+[2026-05-28 10:05:27] [ERROR] Price estimate error: nominatim.openstreetmap.org
+[2026-05-28 10:05:27] [ERROR] Price estimate error: nominatim.openstreetmap.org
+[2026-05-28 10:05:29] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:05:29] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:05:33] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:05:34] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:05:34] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:05:39] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:05:39] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:05:39] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:05:44] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:05:44] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:05:45] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:05:49] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:05:49] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:05:51] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:05:54] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:05:54] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:05:57] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:05:59] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:05:59] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:06:03] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:06:04] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:06:04] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:06:09] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:06:09] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:06:09] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:06:14] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:06:14] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:06:15] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:06:19] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:06:19] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:06:21] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:06:24] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:06:24] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:06:27] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:06:29] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:06:29] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:06:33] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:06:34] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:06:34] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:06:39] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:06:39] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:06:39] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:06:44] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:06:44] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:06:45] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:06:49] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:06:49] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:06:51] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:06:54] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:06:54] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:06:57] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:06:59] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:06:59] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:07:03] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:07:04] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:07:04] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:07:06] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:07:06] [INFO ] Sent 0 trips to passenger a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:07:09] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:07:09] [INFO ] Sent 0 trips to passenger a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:07:09] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:07:09] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:07:09] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:07:09] [INFO ] Sent 0 trips to passenger a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:07:09] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:07:11] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:07:11] [INFO ] Sent 0 trips to passenger a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:07:13] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:07:14] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:07:14] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:07:15] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:07:19] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:07:19] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:07:19] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:07:22] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:07:24] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:07:24] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:07:24] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-28 10:07:24] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> bole
+[2026-05-28 10:07:24] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:07:25] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:07:28] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:07:29] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:07:29] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-28 10:07:29] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> bole
+[2026-05-28 10:07:29] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:07:29] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-28 10:07:29] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:07:31] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:07:32] [ERROR] Price estimate error: Connect timed out
+[2026-05-28 10:07:33] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:07:33] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-28 10:07:33] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> adama
+[2026-05-28 10:07:33] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-28 10:07:34] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:07:34] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:07:34] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:07:37] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:07:39] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:07:39] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:07:40] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:07:43] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:07:44] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:07:44] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:07:46] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:07:49] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:07:49] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:07:49] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:07:52] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:07:54] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:07:54] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:07:55] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:07:58] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:07:59] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:07:59] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:08:01] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:08:04] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:08:04] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:08:04] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:08:07] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:08:09] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:08:09] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:08:10] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:08:13] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:08:14] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:08:14] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:08:16] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:08:19] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:08:19] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:08:19] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:08:22] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:08:24] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:08:24] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:08:25] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:08:28] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:08:29] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:08:29] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:08:31] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:08:34] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:08:34] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:08:34] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:08:37] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:08:39] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:08:39] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:08:40] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:08:43] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:08:44] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:08:44] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:08:46] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:08:49] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:08:49] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:08:49] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:08:52] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:08:54] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:08:54] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:08:55] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:08:58] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:08:59] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:08:59] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:09:02] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:09:04] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:09:04] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:09:04] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:09:08] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:09:09] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:09:09] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:09:10] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:09:14] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:09:14] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:09:14] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:09:16] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:09:19] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:09:19] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:09:20] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:09:22] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:09:24] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:09:24] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:09:26] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:09:29] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:09:29] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:09:29] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:09:32] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:09:34] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:09:34] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:09:35] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:09:38] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:09:39] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:09:39] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:09:41] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:09:44] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:09:44] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:09:44] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:09:47] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:09:49] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:09:49] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:09:50] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:09:53] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:09:54] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:09:54] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:09:56] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:09:59] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:09:59] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:09:59] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:10:02] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:10:04] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:10:04] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:10:05] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:10:08] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:10:09] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:10:09] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:10:11] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:10:14] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:10:14] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:10:14] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:10:17] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:10:19] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:10:19] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:10:20] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:10:23] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:10:24] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:10:24] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:10:27] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:10:29] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:10:29] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:10:29] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:10:31] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:10:31] [INFO ] Calculating price for PREMIUM trip (OSM/OSRM)
+[2026-05-28 10:10:31] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> adama
+[2026-05-28 10:10:32] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-28 10:10:32] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:10:32] [INFO ] Calculating price for ELITE trip (OSM/OSRM)
+[2026-05-28 10:10:32] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> adama
+[2026-05-28 10:10:32] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-28 10:10:33] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:10:34] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:10:34] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:10:35] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:10:39] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:10:39] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:10:39] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:10:41] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:10:44] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:10:44] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:10:45] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:10:47] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:10:49] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:10:49] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:10:51] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:10:53] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:10:54] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:10:54] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:10:57] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:10:59] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:10:59] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:10:59] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:11:03] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:11:04] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:11:04] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:11:06] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:11:09] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:11:09] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:11:09] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:11:12] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:11:14] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:11:14] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:11:15] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:11:18] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:11:19] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:11:19] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:11:21] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:11:24] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:11:24] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:11:25] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:11:27] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:11:29] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:11:29] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:11:31] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:11:33] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:11:34] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:11:34] [INFO ] Sent 0 trips to driver d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:11:37] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:11:56] [INFO ] === EthioRide Server started ===
+[2026-05-28 10:11:56] [INFO ] Matchmaker started — proximity matching every 5s.
+[2026-05-28 10:11:56] [INFO ] Server listening on port 9090
+[2026-05-28 10:11:58] [INFO ] DB driver registered. URL: jdbc:mysql://localhost:3306/ethioride?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+[2026-05-28 10:13:56] [INFO ] === EthioRide Server started ===
+[2026-05-28 10:13:56] [INFO ] Matchmaker started — proximity matching every 5s.
+[2026-05-28 10:13:56] [INFO ] Server stopped.
+[2026-05-28 10:14:23] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:14:23] [INFO ] Login: Daniel Kebede (PASSENGER)
+[2026-05-28 10:14:38] [INFO ] Login: System Administrator (ADMIN)
+[2026-05-28 10:14:59] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:14:59] [INFO ] Login: daniel (DRIVER)
+[2026-05-28 10:15:00] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:15:05] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:15:10] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:15:15] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:15:20] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:15:25] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:15:25] [WARN ] Login failed - invalid credentials
+[2026-05-28 10:15:25] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:15:26] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:15:26] [WARN ] Login failed - invalid credentials
+[2026-05-28 10:15:30] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:15:30] [INFO ] Login: Daniel Kebede (PASSENGER)
+[2026-05-28 10:15:30] [INFO ] Matchmaker driver OFFLINE: d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:15:30] [INFO ] Client disconnected: d0e954fa-c8aa-4a76-bebd-9f2eaedf9389
+[2026-05-28 10:15:30] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:15:30] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:15:31] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:15:35] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:15:37] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:15:40] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:15:43] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:15:43] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-28 10:15:43] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> A
+[2026-05-28 10:15:43] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:15:44] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:15:44] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-28 10:15:44] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> A
+[2026-05-28 10:15:45] [ERROR] Price estimate error: Connection reset
+[2026-05-28 10:15:45] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:15:46] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:15:46] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-28 10:15:46] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> Ada
+[2026-05-28 10:15:46] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-28 10:15:46] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:15:46] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-28 10:15:46] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> Adama
+[2026-05-28 10:15:47] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-28 10:15:49] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:15:50] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:15:51] [ERROR] Price estimate error: Connect timed out
+[2026-05-28 10:15:55] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:15:55] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:16:00] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:16:01] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:16:01] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-28 10:16:01] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> Adama, Oromia Region, 0408
+[2026-05-28 10:16:01] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:16:02] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-28 10:16:05] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:16:07] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:16:10] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:16:13] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:16:15] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:16:19] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:16:20] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:16:25] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:16:25] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:16:30] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:16:31] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:16:35] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:16:37] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:16:40] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:16:43] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:16:45] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:16:49] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:16:50] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:16:55] [INFO ] Matchmaker driver ONLINE: a2159d62-d04e-4978-937b-a784c350b0c8 (available drivers: 1)
+[2026-05-28 10:16:55] [INFO ] Driver a2159d62-d04e-4978-937b-a784c350b0c8 is now ONLINE (1 available)
+[2026-05-28 10:16:55] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:16:55] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:17:00] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:17:01] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:17:05] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:17:07] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:17:10] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:17:13] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:17:15] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:17:19] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:17:20] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:17:25] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:17:25] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:17:30] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:17:31] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:17:35] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:17:37] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:17:40] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:17:43] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:17:45] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:17:49] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:17:50] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:17:55] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:17:55] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:18:00] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:18:01] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:18:05] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:18:07] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:18:10] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:18:13] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:18:15] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:18:19] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:18:20] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:18:21] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:18:21] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-28 10:18:21] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> Adama, Oromia Region, 0408
+[2026-05-28 10:18:21] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-28 10:18:25] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:18:25] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:18:30] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:18:31] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:18:31] [INFO ] Calculating price for ELITE trip (OSM/OSRM)
+[2026-05-28 10:18:31] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> Adama, Oromia Region, 0408
+[2026-05-28 10:18:31] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:18:31] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-28 10:18:32] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:18:32] [INFO ] Calculating price for PREMIUM trip (OSM/OSRM)
+[2026-05-28 10:18:32] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> Adama, Oromia Region, 0408
+[2026-05-28 10:18:32] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-28 10:18:33] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:18:33] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-28 10:18:33] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> Adama, Oromia Region, 0408
+[2026-05-28 10:18:33] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-28 10:18:34] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:18:34] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-28 10:18:34] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> Garnet Avenue
+[2026-05-28 10:18:34] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-28 10:18:35] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:18:35] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-28 10:18:35] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> Kazanchis Square
+[2026-05-28 10:18:35] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:18:35] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-28 10:18:37] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:18:37] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-28 10:18:37] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> Friendship Park
+[2026-05-28 10:18:37] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-28 10:18:37] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:18:39] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:18:39] [INFO ] Calculating price for ECONOMY trip (OSM/OSRM)
+[2026-05-28 10:18:39] [INFO ] Routing calculating route: ጎላ ሚካኤል አካባቢ, Addis Ababa -> Kazanchis Square
+[2026-05-28 10:18:39] [ERROR] Price estimate error: Key not found in JSON: lat
+[2026-05-28 10:18:40] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:18:43] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:18:45] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:18:49] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:18:50] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:18:55] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:18:55] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:19:00] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:19:02] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:19:05] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:19:08] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:19:10] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:19:14] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:19:15] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:19:20] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:19:20] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:19:25] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:19:26] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:19:30] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:19:32] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:19:35] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:19:38] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:19:40] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:19:44] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:19:45] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:19:50] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:19:50] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:19:55] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:19:56] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:20:00] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:20:02] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:20:05] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:20:08] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:20:10] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:20:14] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:20:15] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:20:20] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:20:20] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:20:25] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:20:26] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:20:30] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:20:32] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:20:35] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:20:38] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:20:40] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:20:44] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:20:45] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:20:50] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:20:50] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:20:55] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:20:56] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:21:00] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:21:02] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:21:05] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:21:08] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:21:10] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:21:14] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:21:15] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:21:20] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:21:20] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:21:25] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:21:26] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:21:30] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:21:32] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:21:35] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:21:38] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:21:40] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:21:44] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:21:45] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:21:50] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:21:50] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:21:55] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:21:56] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:22:00] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:22:02] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:22:05] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:22:08] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:22:10] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:22:14] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:22:15] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:22:20] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:22:20] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:22:25] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:22:26] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:22:30] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:22:32] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:22:35] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:22:38] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:22:40] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:22:44] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:22:45] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:22:50] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:22:50] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:22:55] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:22:56] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:23:00] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:23:02] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:23:05] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:23:08] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:23:10] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:23:14] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:23:15] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:23:20] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:23:20] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:23:25] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:23:26] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:23:30] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:23:32] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:23:35] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:23:38] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:23:40] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:23:44] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:23:45] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:23:50] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:23:50] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:23:55] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:23:56] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:24:00] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:24:02] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:24:05] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:24:08] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:24:10] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:24:14] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:24:15] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:24:20] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:24:20] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:24:25] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:24:27] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:24:30] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:24:33] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:24:35] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:24:39] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:24:40] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:24:45] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:24:45] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:24:51] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:24:51] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:24:55] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:24:57] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:25:00] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:25:03] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:25:05] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:25:09] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:25:10] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:25:15] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:25:15] [INFO ] Client connected: /127.0.0.1
+[2026-05-28 10:25:20] [INFO ] Sent 0 trips to driver a2159d62-d04e-4978-937b-a784c350b0c8
+[2026-05-28 10:25:21] [INFO ] Client connected: /127.0.0.1

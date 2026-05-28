@@ -61,8 +61,9 @@ public class RoutingService {
     public DistanceResult calculateDistance(String origin, String destination) throws Exception {
         ServerLogger.getInstance().info("Routing calculating route: " + origin + " -> " + destination);
 
-        // Step 1 & 2 — geocode both addresses (can run sequentially; Nominatim is 1 req/s)
+        // Step 1 & 2 — geocode both addresses (Nominatim: 1 req/s policy)
         double[] originCoords      = geocode(origin);
+        try { Thread.sleep(1100); } catch (InterruptedException ignored) {}
         double[] destinationCoords = geocode(destination);
 
         // Step 3 — get driving route from OSRM
@@ -158,12 +159,17 @@ public class RoutingService {
 
     // ── Minimal JSON helpers (no external library needed) ────────────────────
 
-    /** Extracts the first occurrence of "key": number from a JSON string. */
+    /** Extracts "key": number OR "key": "number" from JSON. Nominatim returns coords as strings. */
     private static double extractJsonDouble(String json, String key) throws Exception {
-        Pattern p = Pattern.compile("\"" + key + "\"\\s*:\\s*([\\d.eE+\\-]+)");
-        Matcher m = p.matcher(json);
-        if (!m.find()) throw new Exception("Key not found in JSON: " + key);
-        return Double.parseDouble(m.group(1));
+        // Try quoted string first: "lat":"9.032"
+        Pattern pStr = Pattern.compile("\"" + key + "\"\\s*:\\s*\"([\\d.eE+\\-]+)\"");
+        Matcher mStr = pStr.matcher(json);
+        if (mStr.find()) return Double.parseDouble(mStr.group(1));
+        // Try unquoted number: "distance":12345.6
+        Pattern pNum = Pattern.compile("\"" + key + "\"\\s*:\\s*([\\d.eE+\\-]+)");
+        Matcher mNum = pNum.matcher(json);
+        if (mNum.find()) return Double.parseDouble(mNum.group(1));
+        throw new Exception("Key not found in JSON: " + key);
     }
 
     /** Extracts the first occurrence of "key": "value" from a JSON string. */

@@ -1,7 +1,7 @@
 @echo off
 setlocal
 
-set LIB=lib\javafx.base.jar;lib\javafx.controls.jar;lib\javafx.fxml.jar;lib\javafx.graphics.jar;lib\mysql-connector-j.jar
+set LIB=lib\javafx.base.jar;lib\javafx.controls.jar;lib\javafx.fxml.jar;lib\javafx.graphics.jar;lib\javafx.web.jar;lib\mysql-connector-j.jar
 set OUT=out
 
 echo [1/5] Cleaning output...

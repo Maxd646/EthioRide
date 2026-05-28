@@ -11,6 +11,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.SplitPane;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -62,18 +63,32 @@ public class MainScreen {
 
     public MainScreen(Stage stage) { this.stage = stage; }
 
+    private MapView mapView;
+
     public void show() {
         BorderPane root = new BorderPane();
         root.setStyle("-fx-background-color:#0a0e1a;");
         root.setLeft(buildSidebar());
-        root.setCenter(buildContent());
-        stage.setScene(new Scene(root, 900, 640));
+
+        // Split: trip list (left) + live map (right)
+        SplitPane split = new SplitPane();
+        split.setStyle("-fx-background-color:#0a0e1a;-fx-box-border:transparent;");
+        split.setDividerPositions(0.42);
+
+        split.getItems().add(buildContent());
+
+        mapView = new MapView();
+        // Center map on Addis Ababa by default
+        split.getItems().add(mapView);
+
+        root.setCenter(split);
+        stage.setScene(new Scene(root, 1200, 700));
         stage.setResizable(true);
         stage.show();
         startPushListener();
         startLocationUpdater();
-        loadTrips(); // immediate load on open
-        startAutoRefresh(); // poll every 5s to catch missed pushes
+        loadTrips();
+        startAutoRefresh();
     }
 
     /** Polls the server every 5 seconds to catch any trips missed by the push listener. */
@@ -577,6 +592,11 @@ public class MainScreen {
                 double lng = baseLng + (Math.random() - 0.5) * 0.002;
                 nc.send(new Message(MessageType.DRIVER_LOCATION_UPDATE,
                         String.format("%.6f,%.6f", lat, lng), driverId));
+                // Update map marker
+                if (mapView != null) {
+                    final double fLat = lat, fLng = lng;
+                    Platform.runLater(() -> mapView.setDriverPosition(fLat, fLng));
+                }
             } catch (Exception ex) {
                 // ignore silently
             }

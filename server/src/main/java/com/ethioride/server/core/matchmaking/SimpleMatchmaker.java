@@ -159,6 +159,11 @@ public class SimpleMatchmaker {
                 .filter(d -> d.status == DriverStatus.AVAILABLE).count();
     }
 
+    /** Returns a snapshot of all known drivers (for map display). */
+    public java.util.List<DriverInfo> getAllDrivers() {
+        return new java.util.ArrayList<>(drivers.values());
+    }
+
     // ── Match cycle ───────────────────────────────────────────────────────────
 
     /**

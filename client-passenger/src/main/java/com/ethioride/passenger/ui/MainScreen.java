@@ -18,6 +18,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+import javafx.scene.control.SplitPane;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -83,15 +84,127 @@ public class MainScreen {
 
     public MainScreen(Stage stage) { this.stage = stage; }
 
+    // Map view — real Leaflet map
+    private MapView mapView;
+
     public void show() {
         BorderPane root = new BorderPane();
         root.setStyle("-fx-background-color: #0a0e1a;");
         root.setLeft(buildSidebar());
-        root.setCenter(buildMainPanel());
-        stage.setScene(new Scene(root, 900, 640));
+
+        // Split: booking panel (left) + live map (right)
+        SplitPane split = new SplitPane();
+        split.setStyle("-fx-background-color:#0a0e1a;-fx-box-border:transparent;");
+        split.setDividerPositions(0.38);
+
+        VBox bookingWrapper = new VBox();
+        bookingWrapper.setStyle("-fx-background-color:#0a0e1a;");
+        bookingWrapper.getChildren().add(buildMainPanel());
+        VBox.setVgrow(bookingWrapper.getChildren().get(0), Priority.ALWAYS);
+
+        mapView = new MapView();
+        mapView.setOnLocationSelected((name, coords) -> {
+            // When user picks a location from map search, fill the destination field
+            Platform.runLater(() -> {
+                if (tfPickup.getText().trim().isEmpty()) {
+                    tfPickup.setText(name);
+                } else {
+                    tfDestination.setText(name);
+                    mapView.setDropoff(coords[0], coords[1], name);
+                }
+                schedulePriceEstimate();
+            });
+        });
+        mapView.setOnMapClick((lat, lng) -> {
+            // Map click sets dropoff if pickup is already set
+            if (!tfPickup.getText().trim().isEmpty() && tfDestination.getText().trim().isEmpty()) {
+                reverseGeocode(lat, lng, addr -> {
+                    tfDestination.setText(addr);
+                    mapView.setDropoff(lat, lng, addr);
+                    schedulePriceEstimate();
+                });
+            }
+        });
+
+        split.getItems().addAll(bookingWrapper, mapView);
+        root.setCenter(split);
+
+        stage.setScene(new Scene(root, 1200, 700));
         stage.setResizable(true);
         stage.show();
-        detectAndSuggestLocation(); // auto-fill pickup from IP location
+        detectAndSuggestLocation();
+        startDriverMarkerUpdater();
+    }
+
+    /** Reverse geocode lat/lng to a human-readable address using Nominatim. */
+    private void reverseGeocode(double lat, double lng, java.util.function.Consumer<String> callback) {
+        Thread t = new Thread(() -> {
+            try {
+                String url = String.format(
+                    "https://nominatim.openstreetmap.org/reverse?lat=%.6f&lon=%.6f&format=json&zoom=16", lat, lng);
+                String json = httpGet(url, true);
+                String name = jsonStr(json, "display_name");
+                // Shorten to first 2 parts
+                String[] parts = name.split(",");
+                String short_ = parts.length > 1 ? parts[0].trim() + ", " + parts[1].trim() : name;
+                Platform.runLater(() -> callback.accept(short_));
+            } catch (Exception e) {
+                Platform.runLater(() -> callback.accept(String.format("%.4f, %.4f", lat, lng)));
+            }
+        }, "reverse-geocode");
+        t.setDaemon(true);
+        t.start();
+    }
+
+    /** Periodically updates driver markers on the map from the server. */
+    private void startDriverMarkerUpdater() {
+        Thread t = new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(6000);
+                    fetchAndUpdateDriverMarkers();
+                } catch (InterruptedException e) { break; }
+            }
+        }, "driver-marker-updater");
+        t.setDaemon(true);
+        t.start();
+        // Initial load
+        fetchAndUpdateDriverMarkers();
+    }
+
+    private void fetchAndUpdateDriverMarkers() {
+        try {
+            ServerConnection conn = new ServerConnection();
+            conn.connect();
+            Message resp = conn.sendAndWait(
+                new Message(MessageType.DRIVER_LOCATIONS_REQUEST, null, "passenger"),
+                MessageType.DRIVER_LOCATIONS_RESPONSE, 5000);
+            conn.close();
+            if (resp == null || resp.getType() != MessageType.DRIVER_LOCATIONS_RESPONSE) return;
+            String payload = resp.getPayload() != null ? resp.getPayload().toString() : "";
+            if (payload.isEmpty()) return;
+
+            Platform.runLater(() -> {
+                if (mapView == null) return;
+                mapView.clearDriverMarkers();
+                for (String entry : payload.split("\\|")) {
+                    String[] parts = entry.split(",", 4);
+                    if (parts.length < 4) continue;
+                    try {
+                        String id     = parts[0];
+                        double lat    = Double.parseDouble(parts[1]);
+                        double lng    = Double.parseDouble(parts[2]);
+                        String status = parts[3]; // AVAILABLE, ON_TRIP, OFFLINE
+                        String mapStatus = switch (status) {
+                            case "AVAILABLE" -> "ONLINE";
+                            case "ON_TRIP"   -> "BUSY";
+                            default          -> "OFFLINE";
+                        };
+                        mapView.addDriverMarker(id, lat, lng, "Driver", mapStatus);
+                    } catch (NumberFormatException ignored) {}
+                }
+            });
+        } catch (Exception ignored) {}
     }
 
     // ── Sidebar ───────────────────────────────────────────────────────────────
@@ -162,72 +275,290 @@ public class MainScreen {
 
     // ── Booking Panel ─────────────────────────────────────────────────────────
 
+    // Autocomplete suggestion list for destination
+    private VBox destSuggestions;
+    private java.util.concurrent.ScheduledFuture<?> pendingSuggest;
+
     private VBox buildBookingPanel() {
-        VBox panel = new VBox(16);
-        panel.setPadding(new Insets(30));
+        VBox panel = new VBox(12);
+        panel.setPadding(new Insets(24));
         panel.setStyle("-fx-background-color: #0a0e1a;");
 
         Label lblTitle = new Label("Where to?");
-        lblTitle.setFont(Font.font("Arial", FontWeight.BOLD, 26));
+        lblTitle.setFont(Font.font("Arial", FontWeight.BOLD, 24));
         lblTitle.setTextFill(Color.web("#f1f5f9"));
 
-        Label lblSub = new Label("Your ride, your way.");
-        lblSub.setFont(Font.font("Arial", 13));
-        lblSub.setTextFill(Color.web("#475569"));
-
+        // ── Pickup ────────────────────────────────────────────────────────────
         Label lblPickupLbl = new Label("Pickup Location");
         lblPickupLbl.setTextFill(Color.web("#94a3b8"));
-        lblPickupLbl.setFont(Font.font("Arial", 12));
+        lblPickupLbl.setFont(Font.font("Arial", 11));
 
         tfPickup = new TextField();
         tfPickup.setPromptText("Detecting your location...");
         styleField(tfPickup);
-        tfPickup.textProperty().addListener((o, ov, nv) -> schedulePriceEstimate());
 
-        // Location hint shown while auto-detecting
         lblLocationHint = new Label("📍 Detecting your location...");
         lblLocationHint.setTextFill(Color.web("#475569"));
         lblLocationHint.setFont(Font.font("Arial", 11));
         lblLocationHint.setVisible(false);
         lblLocationHint.setManaged(false);
 
+        // ── Destination with autocomplete ─────────────────────────────────────
         Label lblDestLbl = new Label("Destination");
         lblDestLbl.setTextFill(Color.web("#94a3b8"));
-        lblDestLbl.setFont(Font.font("Arial", 12));
+        lblDestLbl.setFont(Font.font("Arial", 11));
 
         tfDestination = new TextField();
-        tfDestination.setPromptText("Enter destination...");
+        tfDestination.setPromptText("Type to search (e.g. Bole, Adama, Piassa)...");
         styleField(tfDestination);
-        tfDestination.textProperty().addListener((o, ov, nv) -> schedulePriceEstimate());
 
-        Label lblCat = new Label("Select Ride Type");
+        destSuggestions = new VBox(0);
+        destSuggestions.setStyle("-fx-background-color:#0d1526;-fx-border-color:#1e3a5f;" +
+            "-fx-border-radius:0 0 8px 8px;-fx-background-radius:0 0 8px 8px;");
+        destSuggestions.setVisible(false);
+        destSuggestions.setManaged(false);
+
+        tfDestination.textProperty().addListener((o, ov, nv) -> {
+            if (nv.length() >= 2) scheduleDestSuggest(nv);
+            else hideSuggestions();
+        });
+
+        VBox destBox = new VBox(0, tfDestination, destSuggestions);
+
+        // ── Get Price button ──────────────────────────────────────────────────
+        Button btnGetPrice = new Button("🔍  Get Price & Availability");
+        btnGetPrice.setMaxWidth(Double.MAX_VALUE);
+        btnGetPrice.setFont(Font.font("Arial", FontWeight.BOLD, 13));
+        btnGetPrice.setStyle("-fx-background-color:#1e3a5f;-fx-text-fill:#f1f5f9;" +
+            "-fx-background-radius:8px;-fx-padding:10px;-fx-cursor:hand;");
+        btnGetPrice.setOnAction(e -> triggerPriceEstimate(panel));
+
+        // ── Info cards ────────────────────────────────────────────────────────
+        Label lblPrice = new Label("—");
+        lblPrice.setFont(Font.font("Arial", FontWeight.BOLD, 16));
+        lblPrice.setTextFill(Color.web("#22c55e"));
+
+        Label lblAvail = new Label("—");
+        lblAvail.setFont(Font.font("Arial", FontWeight.BOLD, 13));
+        lblAvail.setTextFill(Color.web("#94a3b8"));
+
+        Label lblDist = new Label("—");
+        lblDist.setFont(Font.font("Arial", FontWeight.BOLD, 13));
+        lblDist.setTextFill(Color.web("#3b82f6"));
+
+        HBox infoCards = new HBox(8);
+        infoCards.getChildren().addAll(
+            infoCard("💰 Price",        lblPrice, "#22c55e"),
+            infoCard("🚗 Availability", lblAvail, "#f59e0b"),
+            infoCard("📍 Distance",     lblDist,  "#3b82f6")
+        );
+
+        // Store card labels in panel for access from triggerPriceEstimate
+        panel.setUserData(new Label[]{lblPrice, lblAvail, lblDist});
+
+        // Hidden compat label
+        lblPriceEstimate = new Label("");
+        lblPriceEstimate.setVisible(false);
+        lblPriceEstimate.setManaged(false);
+
+        // ── Category ──────────────────────────────────────────────────────────
+        Label lblCat = new Label("Ride Type");
         lblCat.setTextFill(Color.web("#94a3b8"));
-        lblCat.setFont(Font.font("Arial", 12));
+        lblCat.setFont(Font.font("Arial", 11));
 
         HBox categoryRow = buildCategoryRow();
 
-        lblPriceEstimate = new Label("Enter destination for price estimate");
-        lblPriceEstimate.setFont(Font.font("Arial", FontWeight.BOLD, 16));
-        lblPriceEstimate.setTextFill(Color.web("#3b82f6"));
-        lblPriceEstimate.setStyle("-fx-background-color: #0d1526; -fx-padding: 12px; " +
-            "-fx-background-radius: 8px; -fx-border-color: #1e3a5f; -fx-border-radius: 8px;");
-        lblPriceEstimate.setMaxWidth(Double.MAX_VALUE);
-
+        // ── Request button ────────────────────────────────────────────────────
         btnRequest = new Button("Request Ride");
         btnRequest.setMaxWidth(Double.MAX_VALUE);
         btnRequest.setFont(Font.font("Arial", FontWeight.BOLD, 15));
-        btnRequest.setStyle("-fx-background-color: #3b82f6; -fx-text-fill: white; " +
-            "-fx-background-radius: 10px; -fx-padding: 14px; -fx-cursor: hand;");
+        btnRequest.setStyle("-fx-background-color:#3b82f6;-fx-text-fill:white;" +
+            "-fx-background-radius:10px;-fx-padding:14px;-fx-cursor:hand;");
         btnRequest.setOnAction(e -> onRequestRide());
 
         HBox quickRow = buildQuickLocations();
 
-        panel.getChildren().addAll(lblTitle, lblSub,
+        panel.getChildren().addAll(
+            lblTitle,
             lblPickupLbl, tfPickup, lblLocationHint,
-            lblDestLbl, tfDestination,
-            lblCat, categoryRow, lblPriceEstimate, btnRequest,
-            new Separator(), quickRow);
+            lblDestLbl, destBox,
+            btnGetPrice, infoCards,
+            lblCat, categoryRow,
+            lblPriceEstimate, btnRequest,
+            new Separator(), quickRow
+        );
         return panel;
+    }
+
+    private VBox infoCard(String label, Label valueLabel, String color) {
+        VBox card = new VBox(4);
+        card.setStyle("-fx-background-color:#0d1526;-fx-border-color:#1e3a5f;" +
+            "-fx-border-radius:8px;-fx-background-radius:8px;-fx-padding:10 12;");
+        HBox.setHgrow(card, Priority.ALWAYS);
+        Label lbl = new Label(label);
+        lbl.setTextFill(Color.web("#475569")); lbl.setFont(Font.font("Arial", 10));
+        card.getChildren().addAll(lbl, valueLabel);
+        return card;
+    }
+
+    private void scheduleDestSuggest(String query) {
+        if (pendingSuggest != null && !pendingSuggest.isDone()) pendingSuggest.cancel(false);
+        pendingSuggest = debouncer.schedule(() -> fetchDestSuggestions(query), 400, TimeUnit.MILLISECONDS);
+    }
+
+    private void fetchDestSuggestions(String query) {
+        Thread t = new Thread(() -> {
+            try {
+                String url = "https://nominatim.openstreetmap.org/search?q=" +
+                    java.net.URLEncoder.encode(query + " Ethiopia", StandardCharsets.UTF_8) +
+                    "&format=json&limit=5&addressdetails=0";
+                String json = httpGet(url, true);
+                java.util.List<String> names = new java.util.ArrayList<>();
+                java.util.regex.Matcher m = java.util.regex.Pattern
+                    .compile("\"display_name\"\\s*:\\s*\"([^\"]+)\"").matcher(json);
+                while (m.find() && names.size() < 5) {
+                    String full = m.group(1);
+                    String[] parts = full.split(",");
+                    names.add(parts.length > 2 ? parts[0].trim() + ", " + parts[1].trim() : full);
+                }
+                Platform.runLater(() -> showSuggestions(names));
+            } catch (Exception ignored) {}
+        }, "dest-suggest");
+        t.setDaemon(true);
+        t.start();
+    }
+
+    private void showSuggestions(java.util.List<String> names) {
+        destSuggestions.getChildren().clear();
+        if (names.isEmpty()) { hideSuggestions(); return; }
+        for (String name : names) {
+            Label item = new Label("📍  " + name);
+            item.setMaxWidth(Double.MAX_VALUE);
+            item.setTextFill(Color.web("#f1f5f9"));
+            item.setFont(Font.font("Arial", 12));
+            item.setPadding(new Insets(8, 14, 8, 14));
+            item.setStyle("-fx-cursor:hand;-fx-border-color:transparent transparent #1e3a5f transparent;" +
+                "-fx-border-width:0 0 1 0;");
+            item.setOnMouseEntered(e -> item.setStyle("-fx-cursor:hand;-fx-background-color:#1e3a5f;"));
+            item.setOnMouseExited(e  -> item.setStyle("-fx-cursor:hand;-fx-border-color:transparent transparent #1e3a5f transparent;-fx-border-width:0 0 1 0;"));
+            item.setOnMouseClicked(e -> {
+                tfDestination.setText(name);
+                hideSuggestions();
+                // Find the panel and trigger
+                VBox p = findBookingPanel();
+                if (p != null) triggerPriceEstimate(p);
+            });
+            destSuggestions.getChildren().add(item);
+        }
+        destSuggestions.setVisible(true);
+        destSuggestions.setManaged(true);
+    }
+
+    private void hideSuggestions() {
+        if (destSuggestions != null) {
+            destSuggestions.setVisible(false);
+            destSuggestions.setManaged(false);
+        }
+    }
+
+    private void triggerPriceEstimate(VBox panel) {
+        hideSuggestions();
+        String pickup = tfPickup.getText().trim();
+        String dest   = tfDestination.getText().trim();
+        if (pickup.isEmpty() || dest.isEmpty()) return;
+
+        Label[] cards = panel.getUserData() instanceof Label[] ? (Label[]) panel.getUserData() : null;
+        if (cards != null) {
+            cards[0].setText("Calculating..."); cards[0].setTextFill(Color.web("#94a3b8"));
+            cards[1].setText("Checking...");
+            cards[2].setText("...");
+        }
+
+        Thread t = new Thread(() -> {
+            try {
+                ServerConnection conn = new ServerConnection();
+                conn.connect();
+                Message response = conn.sendAndWait(
+                    new Message(MessageType.PRICE_ESTIMATE_REQUEST,
+                        pickup + "|" + dest + "|" + selectedCategory.name(), "passenger"),
+                    MessageType.PRICE_ESTIMATE_RESPONSE, 20000);
+                conn.close();
+
+                Platform.runLater(() -> {
+                    if (response != null && response.getType() == MessageType.PRICE_ESTIMATE_RESPONSE) {
+                        currentEstimate = (PriceEstimateDTO) response.getPayload();
+                        if (cards != null) {
+                            cards[0].setText(String.format("ETB %.2f", currentEstimate.getTotalFare()));
+                            cards[0].setTextFill(Color.web("#22c55e"));
+                            cards[2].setText(String.format("%.1f km  ~%.0f min",
+                                currentEstimate.getDistanceKm(), currentEstimate.getDurationMinutes()));
+                            cards[2].setTextFill(Color.web("#3b82f6"));
+                        }
+                        // Check driver availability via server
+                        checkDriverAvailability(cards);
+                        // Draw route on map
+                        if (mapView != null) {
+                            mapView.setPickup(currentEstimate.getOriginLat(), currentEstimate.getOriginLng(), pickup);
+                            mapView.setDropoff(currentEstimate.getDestLat(), currentEstimate.getDestLng(), dest);
+                            mapView.drawRoute(currentEstimate.getOriginLat(), currentEstimate.getOriginLng(),
+                                currentEstimate.getDestLat(), currentEstimate.getDestLng());
+                        }
+                    } else {
+                        String err = response != null ? response.getPayload().toString() : "Timeout";
+                        if (cards != null) { cards[0].setText("Failed"); cards[0].setTextFill(Color.web("#ef4444")); }
+                        showInfo("Price Error", err);
+                    }
+                });
+            } catch (Exception ex) {
+                Platform.runLater(() -> {
+                    if (cards != null) { cards[0].setText("Server offline"); cards[0].setTextFill(Color.web("#ef4444")); }
+                });
+            }
+        }, "price-estimate-thread");
+        t.setDaemon(true);
+        t.start();
+    }
+
+    private void checkDriverAvailability(Label[] cards) {
+        if (cards == null) return;
+        Thread t = new Thread(() -> {
+            try {
+                ServerConnection conn = new ServerConnection();
+                conn.connect();
+                Message resp = conn.sendAndWait(
+                    new Message(MessageType.DRIVER_LOCATIONS_REQUEST, null, "passenger"),
+                    MessageType.DRIVER_LOCATIONS_RESPONSE, 5000);
+                conn.close();
+                int count = 0;
+                if (resp != null && resp.getType() == MessageType.DRIVER_LOCATIONS_RESPONSE) {
+                    String payload = resp.getPayload() != null ? resp.getPayload().toString() : "";
+                    if (!payload.isEmpty()) {
+                        for (String e : payload.split("\\|")) {
+                            if (e.endsWith("AVAILABLE")) count++;
+                        }
+                    }
+                }
+                final int online = count;
+                Platform.runLater(() -> {
+                    cards[1].setText(online > 0 ? online + " driver(s) available" : "No drivers nearby");
+                    cards[1].setTextFill(Color.web(online > 0 ? "#22c55e" : "#ef4444"));
+                });
+            } catch (Exception ignored) {
+                Platform.runLater(() -> { cards[1].setText("Unknown"); cards[1].setTextFill(Color.web("#94a3b8")); });
+            }
+        }, "avail-check");
+        t.setDaemon(true);
+        t.start();
+    }
+
+    private VBox findBookingPanel() {
+        try {
+            javafx.scene.control.SplitPane split = (javafx.scene.control.SplitPane)
+                ((javafx.scene.layout.BorderPane) stage.getScene().getRoot()).getCenter();
+            javafx.scene.layout.VBox wrapper = (javafx.scene.layout.VBox) split.getItems().get(0);
+            javafx.scene.layout.StackPane stack = (javafx.scene.layout.StackPane) wrapper.getChildren().get(0);
+            return (VBox) stack.getChildren().get(0);
+        } catch (Exception e) { return null; }
     }
 
     // ── Trip Status Panel ─────────────────────────────────────────────────────
@@ -406,6 +737,18 @@ public class MainScreen {
                             currentEstimate.getDistanceKm(),
                             currentEstimate.getDurationMinutes()));
                         lblPriceEstimate.setTextFill(Color.web("#22c55e"));
+                        // Draw route on map
+                        if (mapView != null) {
+                            mapView.setPickup(currentEstimate.getOriginLat(), currentEstimate.getOriginLng(), pickup);
+                            mapView.setDropoff(currentEstimate.getDestLat(), currentEstimate.getDestLng(), dest);
+                            mapView.drawRoute(
+                                currentEstimate.getOriginLat(), currentEstimate.getOriginLng(),
+                                currentEstimate.getDestLat(),   currentEstimate.getDestLng());
+                        }
+                    } else if (response != null && response.getType() == MessageType.ERROR) {
+                        String err = response.getPayload() != null ? response.getPayload().toString() : "unknown";
+                        lblPriceEstimate.setText("Estimate failed: " + err);
+                        lblPriceEstimate.setTextFill(Color.web("#ef4444"));
                     } else {
                         lblPriceEstimate.setText("Price estimation unavailable");
                         lblPriceEstimate.setTextFill(Color.web("#ef4444"));
@@ -413,7 +756,7 @@ public class MainScreen {
                 });
             } catch (Exception ex) {
                 Platform.runLater(() -> {
-                    lblPriceEstimate.setText("Price estimation unavailable (server offline)");
+                    lblPriceEstimate.setText("Price estimation unavailable — " + ex.getMessage());
                     lblPriceEstimate.setTextFill(Color.web("#ef4444"));
                 });
             }
@@ -639,6 +982,7 @@ public class MainScreen {
         tfDestination.clear();
         lblPriceEstimate.setText("Enter destination for price estimate");
         lblPriceEstimate.setTextFill(Color.web("#475569"));
+        if (mapView != null) mapView.clearRoute();
     }
 
     // ── Location detection ────────────────────────────────────────────────────

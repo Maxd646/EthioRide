@@ -32,24 +32,36 @@ public class DBConnection {
 
     static {
         // Load credentials from db.properties
-        try (InputStream in = DBConnection.class.getResourceAsStream("/db.properties")) {
+        try {
             Properties props = new Properties();
-            props.load(in);
+
+            // Try classpath first (works when running from 'out/' directory)
+            InputStream in = DBConnection.class.getResourceAsStream("/db.properties");
+
+            // Fallback: load directly from the filesystem relative to working directory
+            if (in == null) {
+                java.io.File f = new java.io.File("db.properties");
+                if (!f.exists()) f = new java.io.File("server/src/main/resources/db.properties");
+                if (f.exists()) in = new java.io.FileInputStream(f);
+            }
+
+            if (in == null) {
+                ServerLogger.getInstance().error("DB db.properties not found on classpath or filesystem!");
+            } else {
+                props.load(in);
+                in.close();
+            }
 
             String host = props.getProperty("db.host", "localhost");
             String port = props.getProperty("db.port", "3306");
             String name = props.getProperty("db.name", "ethioride");
 
-            // JDBC URL — jdbc:mysql://host:port/dbname
             url      = "jdbc:mysql://" + host + ":" + port + "/" + name
                      + "?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
             user     = props.getProperty("db.user", "root");
             password = props.getProperty("db.password", "");
 
-            // Step 2: Load and register the MySQL driver using Class.forName()
-            // This dynamically loads the driver class into memory at runtime
             Class.forName("com.mysql.cj.jdbc.Driver");
-
             ServerLogger.getInstance().info("DB driver registered. URL: " + url);
 
         } catch (ClassNotFoundException e) {

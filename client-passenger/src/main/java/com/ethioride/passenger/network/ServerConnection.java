@@ -2,39 +2,43 @@ package com.ethioride.passenger.network;
 
 import com.ethioride.shared.constants.AppConstants;
 import com.ethioride.shared.protocol.Message;
+import com.ethioride.shared.protocol.MessageType;
 
 import java.io.*;
 import java.net.Socket;
 import java.util.function.Consumer;
 
 /**
- * TCP socket connection to the EthioRide server.
+ * TCP socket connection for the passenger client.
  *
- * Architecture: a single background receive loop owns ObjectInputStream
- * exclusively — no other thread reads from it. This prevents the
- * StreamCorruptedException that occurs when sendAndReceive() and
- * startListening() both read from the same stream simultaneously.
+ * Two modes:
+ *  1. Short-lived (new ServerConnection()) — connect, sendAndWait, close.
+ *     Used for login, price estimates, trip history, etc.
  *
- * Usage patterns:
- *  - Short-lived connections (price estimate, login): create new instance,
- *    connect(), sendAndWait(), close().
- *  - Persistent push connection (trip lifecycle): use getPersistent(),
- *    connect(), send(TRIP_REQUEST), startListening(handler).
+ *  2. Persistent (ServerConnection.getPersistent()) — stays open for the
+ *     whole session so the server can push TRIP_ACCEPTED / TRIP_STARTED /
+ *     TRIP_COMPLETED messages back to the passenger.
  */
 public class ServerConnection {
 
-    // ── Singleton persistent connection ──────────────────────────────────────
-    private static ServerConnection persistentInstance;
+    // ── Persistent singleton ──────────────────────────────────────────────────
+    private static volatile ServerConnection persistent;
 
-    public static synchronized ServerConnection getPersistent() {
-        if (persistentInstance == null) persistentInstance = new ServerConnection();
-        return persistentInstance;
+    public static ServerConnection getPersistent() {
+        if (persistent == null) {
+            synchronized (ServerConnection.class) {
+                if (persistent == null) persistent = new ServerConnection();
+            }
+        }
+        return persistent;
     }
 
-    public static synchronized void resetPersistent() {
-        if (persistentInstance != null) {
-            persistentInstance.close();
-            persistentInstance = null;
+    public static void resetPersistent() {
+        synchronized (ServerConnection.class) {
+            if (persistent != null) {
+                try { persistent.close(); } catch (Exception ignored) {}
+                persistent = null;
+            }
         }
     }
 
@@ -42,9 +46,12 @@ public class ServerConnection {
     private Socket             socket;
     private ObjectOutputStream out;
     private ObjectInputStream  in;
-    private volatile Consumer<Message>  messageHandler; // one-shot request/response
-    private volatile Consumer<Message>  pushHandler;    // persistent push listener
     private volatile boolean   connected;
+
+    // Push listener — receives server-initiated messages on the persistent conn
+    private volatile Consumer<Message> pushHandler;
+    private volatile boolean           listening;
+    private Thread                     listenThread;
 
     public ServerConnection() {}
 
@@ -57,7 +64,6 @@ public class ServerConnection {
         out.flush();
         in     = new ObjectInputStream(socket.getInputStream());
         connected = true;
-        startReceiveLoop(); // single thread owns 'in' from here on
     }
 
     public boolean isConnected() {
@@ -66,8 +72,8 @@ public class ServerConnection {
 
     public void close() {
         connected = false;
+        listening = false;
         try { if (socket != null) socket.close(); } catch (IOException ignored) {}
-        socket = null;
     }
 
     // ── Send ──────────────────────────────────────────────────────────────────
@@ -78,76 +84,75 @@ public class ServerConnection {
         out.flush();
     }
 
-    // ── Async request/response ────────────────────────────────────────────────
+    // ── Request / Response ────────────────────────────────────────────────────
 
     /**
-     * Sends a request and blocks until the matching response type arrives
-     * (or timeout expires). Safe — the receive loop delivers the response.
+     * Sends a message and blocks until a response of the expected type arrives
+     * or the timeout elapses.
      *
-     * Use this for price estimates, login, ride history requests, etc.
+     * Safe to call from a background thread. Never call from the JavaFX thread.
      */
-    public Message sendAndWait(Message request, com.ethioride.shared.protocol.MessageType expectedType,
-                               long timeoutMs) throws IOException, InterruptedException {
-        final Message[] result = {null};
-        final Object lock = new Object();
-        Consumer<Message> original = messageHandler;
-
-        messageHandler = msg -> {
-            if (msg.getType() == expectedType) {
-                synchronized (lock) {
-                    result[0] = msg;
-                    messageHandler = original;
-                    lock.notify();
-                }
-            } else if (original != null) {
-                original.accept(msg);
-            }
-        };
-
+    public Message sendAndWait(Message request, MessageType expectedType, long timeoutMs)
+            throws IOException, ClassNotFoundException {
         send(request);
-        synchronized (lock) {
-            if (result[0] == null) lock.wait(timeoutMs);
+        long deadline = System.currentTimeMillis() + timeoutMs;
+        while (System.currentTimeMillis() < deadline) {
+            socket.setSoTimeout((int) Math.max(1, deadline - System.currentTimeMillis()));
+            try {
+                Message response = (Message) in.readObject();
+                if (response.getType() == expectedType || response.getType() == MessageType.ERROR) {
+                    return response;
+                }
+                // Unexpected message type — keep reading until timeout
+            } catch (java.net.SocketTimeoutException e) {
+                break;
+            }
         }
-        return result[0];
+        return null;
     }
 
-    // ── Push listener ─────────────────────────────────────────────────────────
+    // ── Push listener (persistent connection only) ────────────────────────────
 
     /**
-     * Registers a persistent handler for server-pushed messages
-     * (TRIP_ACCEPTED, TRIP_STARTED, TRIP_COMPLETED, TRIP_CANCELLED).
-     * Call after sending TRIP_REQUEST on the persistent connection.
+     * Starts a background thread that reads server-pushed messages and
+     * dispatches them to the given handler.
+     * Call this after connecting the persistent connection.
      */
     public void startListening(Consumer<Message> handler) {
         this.pushHandler = handler;
+        if (listening) return;
+        listening = true;
+        listenThread = new Thread(() -> {
+            try {
+                while (listening && connected) {
+                    Message msg = (Message) in.readObject();
+                    if (pushHandler != null) pushHandler.accept(msg);
+                }
+            } catch (Exception e) {
+                // connection closed or error — stop listening
+            }
+            listening = false;
+        }, "passenger-push-listener");
+        listenThread.setDaemon(true);
+        listenThread.start();
     }
 
     public void stopListening() {
-        this.pushHandler = null;
+        listening = false;
     }
 
-    // ── Receive loop ──────────────────────────────────────────────────────────
+    // ── Legacy alias used by some screens ────────────────────────────────────
 
     /**
-     * Single background thread — the only reader of ObjectInputStream.
-     * Routes each message to either the one-shot handler or the push handler.
+     * Alias for sendAndWait — some screens call sendAndReceive.
      */
-    private void startReceiveLoop() {
-        Thread t = new Thread(() -> {
-            try {
-                while (connected) {
-                    Message msg = (Message) in.readObject();
-                    if (pushHandler != null) {
-                        pushHandler.accept(msg);
-                    } else if (messageHandler != null) {
-                        messageHandler.accept(msg);
-                    }
-                }
-            } catch (Exception e) {
-                connected = false;
-            }
-        }, "passenger-receiver");
-        t.setDaemon(true);
-        t.start();
+    public Message sendAndReceive(Message request) throws IOException, ClassNotFoundException {
+        send(request);
+        socket.setSoTimeout(8000);
+        try {
+            return (Message) in.readObject();
+        } catch (java.net.SocketTimeoutException e) {
+            return null;
+        }
     }
 }

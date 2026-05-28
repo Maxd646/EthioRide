@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>EthioRide Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body,
+        #map {
+            width: 100%;
+            height: 100%;
+            background: #0a0e1a;
+        }
+
+        /* Search autocomplete dropdown */
+        #search-box {
+            position: absolute;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            width: 340px;
+        }
+
+        #search-input {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid #1e3a5f;
+            background: #0d1526;
+            color: #f1f5f9;
+            font-size: 14px;
+            outline: none;
+        }
+
+        #search-input::placeholder {
+            color: #475569;
+        }
+
+        #suggestions {
+            background: #0d1526;
+            border: 1px solid #1e3a5f;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .suggestion-item {
+            padding: 9px 14px;
+            color: #f1f5f9;
+            font-size: 13px;
+            cursor: pointer;
+            border-bottom: 1px solid #1e3a5f;
+        }
+
+        .suggestion-item:hover {
+            background: #1e3a5f;
+        }
+
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Info panel */
+        #info-panel {
+            position: absolute;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background: #0d1526;
+            border: 1px solid #1e3a5f;
+            border-radius: 10px;
+            padding: 12px 20px;
+            color: #f1f5f9;
+            font-size: 13px;
+            display: none;
+            min-width: 280px;
+            text-align: center;
+        }
+
+        #info-panel .route-dist {
+            color: #22c55e;
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        #info-panel .route-time {
+            color: #3b82f6;
+        }
+
+        /* Leaflet popup dark theme */
+        .leaflet-popup-content-wrapper {
+            background: #0d1526;
+            color: #f1f5f9;
+            border: 1px solid #1e3a5f;
+            border-radius: 8px;
+        }
+
+        .leaflet-popup-tip {
+            background: #0d1526;
+        }
+
+        .leaflet-popup-content {
+            margin: 10px 14px;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="search-box">
+        <input id="search-input" type="text" placeholder="Search location (e.g. Bole, Adama, Piassa)..."
+            autocomplete="off" />
+        <div id="suggestions"></div>
+    </div>
+
+    <div id="map"></div>
+    <div id="info-panel">
+        <div id="info-text"></div>
+    </div>
+
+    <script>
+        // ── Map init ──────────────────────────────────────────────────────────────────
+        var map = L.map('map', { zoomControl: true }).setView([9.0320, 38.7469], 13);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors',
+            maxZoom: 19
+        }).addTo(map);
+
+        // ── Marker stores ─────────────────────────────────────────────────────────────
+        var driverMarkers = {};   // driverId -> L.marker
+        var pickupMarker = null;
+        var dropoffMarker = null;
+        var routeLayer = null;
+        var searchMarker = null;
+
+        // ── Custom icons ──────────────────────────────────────────────────────────────
+        function driverIcon(color) {
+            var c = color === 'green' ? '#22c55e' : color === 'red' ? '#ef4444' : '#6b7280';
+            return L.divIcon({
+                className: '',
+                html: '<div style="width:28px;height:28px;border-radius:50%;background:' + c +
+                    ';border:3px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.5);' +
+                    'display:flex;align-items:center;justify-content:center;font-size:14px;">🚗</div>',
+                iconSize: [28, 28], iconAnchor: [14, 14]
+            });
+        }
+
+        function pinIcon(color) {
+            var c = color || '#3b82f6';
+            return L.divIcon({
+                className: '',
+                html: '<div style="width:24px;height:24px;border-radius:50% 50% 50% 0;' +
+                    'background:' + c + ';border:3px solid white;transform:rotate(-45deg);' +
+                    'box-shadow:0 2px 6px rgba(0,0,0,0.5);"></div>',
+                iconSize: [24, 24], iconAnchor: [12, 24]
+            });
+        }
+
+        // ── Java bridge callbacks ─────────────────────────────────────────────────────
+        // Called from Java via webEngine.executeScript(...)
+
+        function addDriverMarker(id, lat, lng, name, status) {
+            var color = status === 'ONLINE' ? 'green' : status === 'BUSY' ? 'red' : 'gray';
+            if (driverMarkers[id]) {
+                driverMarkers[id].setLatLng([lat, lng]);
+                driverMarkers[id].setIcon(driverIcon(color));
+            } else {
+                var m = L.marker([lat, lng], { icon: driverIcon(color) })
+                    .bindPopup('<b>' + name + '</b><br>Status: ' + status)
+                    .addTo(map);
+                driverMarkers[id] = m;
+            }
+        }
+
+        function removeDriverMarker(id) {
+            if (driverMarkers[id]) {
+                map.removeLayer(driverMarkers[id]);
+                delete driverMarkers[id];
+            }
+        }
+
+        function clearDriverMarkers() {
+            Object.keys(driverMarkers).forEach(function (id) {
+                map.removeLayer(driverMarkers[id]);
+            });
+            driverMarkers = {};
+        }
+
+        function setPickup(lat, lng, label) {
+            if (pickupMarker) map.removeLayer(pickupMarker);
+            pickupMarker = L.marker([lat, lng], { icon: pinIcon('#22c55e') })
+                .bindPopup('<b>Pickup</b><br>' + label).addTo(map).openPopup();
+        }
+
+        function setDropoff(lat, lng, label) {
+            if (dropoffMarker) map.removeLayer(dropoffMarker);
+            dropoffMarker = L.marker([lat, lng], { icon: pinIcon('#ef4444') })
+                .bindPopup('<b>Destination</b><br>' + label).addTo(map).openPopup();
+        }
+
+        function moveTo(lat, lng, zoom) {
+            map.setView([lat, lng], zoom || 14);
+        }
+
+        function drawRoute(pickupLat, pickupLng, dropoffLat, dropoffLng) {
+            if (routeLayer) { map.removeLayer(routeLayer); routeLayer = null; }
+            var url = 'https://router.project-osrm.org/route/v1/driving/' +
+                pickupLng + ',' + pickupLat + ';' + dropoffLng + ',' + dropoffLat +
+                '?overview=full&geometries=geojson';
+            fetch(url)
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    if (data.code !== 'Ok' || !data.routes.length) return;
+                    var route = data.routes[0];
+                    var coords = route.geometry.coordinates.map(function (c) { return [c[1], c[0]]; });
+                    routeLayer = L.polyline(coords, {
+                        color: '#3b82f6', weight: 5, opacity: 0.8
+                    }).addTo(map);
+                    map.fitBounds(routeLayer.getBounds(), { padding: [40, 40] });
+
+                    var dist = (route.distance / 1000).toFixed(1);
+                    var mins = Math.round(route.duration / 60);
+                    showInfo('Route: <span class="route-dist">' + dist + ' km</span> &nbsp;|&nbsp; <span class="route-time">~' + mins + ' min</span>');
+                })
+                .catch(function () { });
+        }
+
+        function clearRoute() {
+            if (routeLayer) { map.removeLayer(routeLayer); routeLayer = null; }
+            if (pickupMarker) { map.removeLayer(pickupMarker); pickupMarker = null; }
+            if (dropoffMarker) { map.removeLayer(dropoffMarker); dropoffMarker = null; }
+            hideInfo();
+        }
+
+        function showInfo(html) {
+            document.getElementById('info-text').innerHTML = html;
+            document.getElementById('info-panel').style.display = 'block';
+        }
+
+        function hideInfo() {
+            document.getElementById('info-panel').style.display = 'none';
+        }
+
+        // ── Search with Nominatim + autocomplete ──────────────────────────────────────
+        var searchTimeout = null;
+        var input = document.getElementById('search-input');
+        var suggestionsBox = document.getElementById('suggestions');
+
+        input.addEventListener('input', function () {
+            var q = input.value.trim();
+            if (q.length < 2) { suggestionsBox.style.display = 'none'; return; }
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(function () { fetchSuggestions(q); }, 300);
+        });
+
+        input.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+                suggestionsBox.style.display = 'none';
+                doSearch(input.value.trim());
+            }
+            if (e.key === 'Escape') { suggestionsBox.style.display = 'none'; }
+        });
+
+        document.addEventListener('click', function (e) {
+            if (!document.getElementById('search-box').contains(e.target)) {
+                suggestionsBox.style.display = 'none';
+            }
+        });
+
+        function fetchSuggestions(q) {
+            var url = 'https://nominatim.openstreetmap.org/search?q=' +
+                encodeURIComponent(q + ', Ethiopia') +
+                '&format=json&limit=6&addressdetails=0';
+            fetch(url, { headers: { 'User-Agent': 'EthioRide/1.0' } })
+                .then(function (r) { return r.json(); })
+                .then(function (results) {
+                    suggestionsBox.innerHTML = '';
+                    if (!results.length) { suggestionsBox.style.display = 'none'; return; }
+                    results.forEach(function (r) {
+                        var item = document.createElement('div');
+                        item.className = 'suggestion-item';
+                        // Shorten display name
+                        var parts = r.display_name.split(',');
+                        item.textContent = parts.slice(0, 3).join(',').trim();
+                        item.dataset.lat = r.lat;
+                        item.dataset.lng = r.lon;
+                        item.dataset.name = item.textContent;
+                        item.addEventListener('click', function () {
+                            input.value = item.dataset.name;
+                            suggestionsBox.style.display = 'none';
+                            var lat = parseFloat(item.dataset.lat);
+                            var lng = parseFloat(item.dataset.lng);
+                            placeSearchMarker(lat, lng, item.dataset.name);
+                            // Notify Java bridge if available
+                            if (window.javaMap) {
+                                window.javaMap.onLocationSelected(item.dataset.name, lat, lng);
+                            }
+                        });
+                        suggestionsBox.appendChild(item);
+                    });
+                    suggestionsBox.style.display = 'block';
+                })
+                .catch(function () { suggestionsBox.style.display = 'none'; });
+        }
+
+        function doSearch(q) {
+            if (!q) return;
+            var url = 'https://nominatim.openstreetmap.org/search?q=' +
+                encodeURIComponent(q + ', Ethiopia') +
+                '&format=json&limit=1';
+            fetch(url, { headers: { 'User-Agent': 'EthioRide/1.0' } })
+                .then(function (r) { return r.json(); })
+                .then(function (results) {
+                    if (!results.length) { showInfo('Location not found: ' + q); return; }
+                    var r = results[0];
+                    var lat = parseFloat(r.lat), lng = parseFloat(r.lon);
+                    placeSearchMarker(lat, lng, q);
+                    if (window.javaMap) window.javaMap.onLocationSelected(q, lat, lng);
+                });
+        }
+
+        function placeSearchMarker(lat, lng, name) {
+            if (searchMarker) map.removeLayer(searchMarker);
+            searchMarker = L.marker([lat, lng], { icon: pinIcon('#f59e0b') })
+                .bindPopup('<b>' + name + '</b>').addTo(map).openPopup();
+            map.setView([lat, lng], 14);
+        }
+
+        // ── Map click → set pickup or dropoff ────────────────────────────────────────
+        map.on('click', function (e) {
+            if (window.javaMap) {
+                window.javaMap.onMapClick(e.latlng.lat, e.latlng.lng);
+            }
+        });
+    </script>
+</body>
+
+</html>

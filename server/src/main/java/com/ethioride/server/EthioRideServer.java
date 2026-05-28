@@ -117,6 +117,7 @@ public class EthioRideServer {
                 case PRICING_RULES_REQUEST       -> handlePricingRulesGet(msg, out);
                 case PRICING_RULES_UPDATE        -> handlePricingRulesUpdate(msg, out);
                 case FINANCIAL_REPORT_REQUEST    -> handleFinancialReport(msg, out);
+                case DRIVER_LOCATIONS_REQUEST    -> handleDriverLocations(msg, out);
                 case HEARTBEAT                   -> sendAck(out, msg.getSenderId());
                 default -> LOG.warn("Unhandled message type: " + msg.getType());
             }
@@ -668,6 +669,29 @@ public class EthioRideServer {
             } catch (Exception e) {
                 LOG.error("Price estimate error: " + e.getMessage());
                 out.writeObject(new Message(MessageType.ERROR, "Price calculation failed: " + e.getMessage(), "server"));
+                out.flush();
+            }
+        }
+
+        private void handleDriverLocations(Message msg, ObjectOutputStream out) throws IOException {
+            try {
+                java.util.List<SimpleMatchmaker.DriverInfo> drivers =
+                    SimpleMatchmaker.getInstance().getAllDrivers();
+                // Serialize as "id,lat,lng,status|id,lat,lng,status|..."
+                StringBuilder sb = new StringBuilder();
+                for (SimpleMatchmaker.DriverInfo d : drivers) {
+                    if (sb.length() > 0) sb.append("|");
+                    sb.append(d.driverId).append(",")
+                      .append(String.format("%.6f", d.lat)).append(",")
+                      .append(String.format("%.6f", d.lng)).append(",")
+                      .append(d.status.name());
+                }
+                out.writeObject(new Message(MessageType.DRIVER_LOCATIONS_RESPONSE,
+                    sb.toString(), "server"));
+                out.flush();
+            } catch (Exception e) {
+                LOG.error("Driver locations error: " + e.getMessage());
+                out.writeObject(new Message(MessageType.ERROR, "Failed", "server"));
                 out.flush();
             }
         }
