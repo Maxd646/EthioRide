@@ -44,8 +44,8 @@ public class RoutingService {
     private static final String USER_AGENT = "EthioRide/1.0 (ride-hailing app; contact@ethioride.com)";
 
     // HTTP timeouts in milliseconds
-    private static final int CONNECT_TIMEOUT = 8_000;
-    private static final int READ_TIMEOUT    = 8_000;
+    private static final int CONNECT_TIMEOUT = 12_000;
+    private static final int READ_TIMEOUT    = 12_000;
 
     // ── Public API ────────────────────────────────────────────────────────────
 
@@ -73,19 +73,25 @@ public class RoutingService {
                 originCoords[1],      originCoords[0],      // lng,lat of origin
                 destinationCoords[1], destinationCoords[0]); // lng,lat of destination
 
-        String osrmResponse = httpGet(osrmUrl, false);
+        double distanceKm;
+        double durationMinutes;
 
-        String osrmCode = extractJsonString(osrmResponse, "code");
-        if (!"Ok".equals(osrmCode)) {
-            throw new Exception("OSRM routing failed: " + osrmCode);
+        try {
+            String osrmResponse = httpGet(osrmUrl, false);
+            String osrmCode = extractJsonString(osrmResponse, "code");
+            if (!"Ok".equals(osrmCode)) throw new Exception("OSRM: " + osrmCode);
+            double distanceMeters  = extractJsonDouble(osrmResponse, "distance");
+            double durationSeconds = extractJsonDouble(osrmResponse, "duration");
+            distanceKm      = distanceMeters  / 1000.0;
+            durationMinutes = durationSeconds / 60.0;
+        } catch (Exception osrmEx) {
+            // OSRM timed out or failed — fall back to Haversine straight-line distance
+            ServerLogger.getInstance().warn("OSRM failed (" + osrmEx.getMessage() + "), using Haversine fallback");
+            distanceKm      = haversineKm(originCoords[0], originCoords[1],
+                                          destinationCoords[0], destinationCoords[1]);
+            // Estimate driving time: assume avg 30 km/h in city traffic
+            durationMinutes = (distanceKm / 30.0) * 60.0;
         }
-
-        // Step 4 — extract and convert (same math as the old Google service)
-        double distanceMeters  = extractJsonDouble(osrmResponse, "distance"); // metres
-        double durationSeconds = extractJsonDouble(osrmResponse, "duration"); // seconds
-
-        double distanceKm      = distanceMeters  / 1000.0;
-        double durationMinutes = durationSeconds / 60.0;
 
         ServerLogger.getInstance().info("Routing distance: " + String.format("%.2f", distanceKm) + " km");
         ServerLogger.getInstance().info("Routing duration: " + String.format("%.0f", durationMinutes) + " min");
@@ -155,6 +161,19 @@ public class RoutingService {
         } finally {
             conn.disconnect();
         }
+    }
+
+    // ── Haversine fallback ────────────────────────────────────────────────────
+
+    /** Straight-line distance between two lat/lng points in km. */
+    private static double haversineKm(double lat1, double lng1, double lat2, double lng2) {
+        final double R = 6371.0;
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLng = Math.toRadians(lng2 - lng1);
+        double a = Math.sin(dLat/2) * Math.sin(dLat/2)
+                 + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                 * Math.sin(dLng/2) * Math.sin(dLng/2);
+        return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
     }
 
     // ── Minimal JSON helpers (no external library needed) ────────────────────

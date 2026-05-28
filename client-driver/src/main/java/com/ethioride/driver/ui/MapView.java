@@ -33,7 +33,11 @@ public class MapView extends StackPane {
     public MapView() {
         webView = new WebView();
         engine  = webView.getEngine();
+        webView.setMaxWidth(Double.MAX_VALUE);
+        webView.setMaxHeight(Double.MAX_VALUE);
         getChildren().add(webView);
+        setMaxWidth(Double.MAX_VALUE);
+        setMaxHeight(Double.MAX_VALUE);
 
         engine.getLoadWorker().stateProperty().addListener((obs, old, newState) -> {
             if (newState == Worker.State.SUCCEEDED) {
@@ -50,7 +54,16 @@ public class MapView extends StackPane {
     public void setOnLocationSelected(BiConsumer<String, double[]> cb) { this.onLocationSelected = cb; }
 
     public void setDriverPosition(double lat, double lng) {
-        js("addDriverMarker('self'," + lat + "," + lng + ",'You','ONLINE')");
+        String name = "You";
+        try {
+            com.ethioride.driver.state.DriverSessionState state =
+                com.ethioride.driver.state.DriverSessionState.getInstance();
+            if (state.getCurrentDriver() != null && state.getCurrentDriver().getFullName() != null) {
+                name = state.getCurrentDriver().getFullName();
+            }
+        } catch (Exception ignored) {}
+        final String driverName = name;
+        js("addDriverMarker('self'," + lat + "," + lng + ",'" + esc(driverName) + "','ONLINE')");
         js("moveTo(" + lat + "," + lng + ",15)");
     }
 

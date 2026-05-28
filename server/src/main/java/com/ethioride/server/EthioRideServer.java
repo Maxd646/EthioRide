@@ -677,14 +677,22 @@ public class EthioRideServer {
             try {
                 java.util.List<SimpleMatchmaker.DriverInfo> drivers =
                     SimpleMatchmaker.getInstance().getAllDrivers();
-                // Serialize as "id,lat,lng,status|id,lat,lng,status|..."
+                com.ethioride.server.db.UserRepository userRepo =
+                    new com.ethioride.server.db.UserRepository();
                 StringBuilder sb = new StringBuilder();
                 for (SimpleMatchmaker.DriverInfo d : drivers) {
                     if (sb.length() > 0) sb.append("|");
+                    // Look up driver name
+                    String name = d.driverId;
+                    try {
+                        com.ethioride.shared.dto.UserDTO u = userRepo.findById(d.driverId);
+                        if (u != null) name = u.getFullName();
+                    } catch (Exception ignored) {}
                     sb.append(d.driverId).append(",")
                       .append(String.format("%.6f", d.lat)).append(",")
                       .append(String.format("%.6f", d.lng)).append(",")
-                      .append(d.status.name());
+                      .append(d.status.name()).append(",")
+                      .append(name.replace(",", " ").replace("|", " "));
                 }
                 out.writeObject(new Message(MessageType.DRIVER_LOCATIONS_RESPONSE,
                     sb.toString(), "server"));

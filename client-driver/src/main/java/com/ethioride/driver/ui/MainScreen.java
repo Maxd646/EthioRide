@@ -61,9 +61,12 @@ public class MainScreen {
         });
     private ScheduledFuture<?> pollTask;
 
-    public MainScreen(Stage stage) { this.stage = stage; }
+    // Driver's real location — stored in DriverSessionState so it persists across screen navigations
+    private Label  lblLocationStatus;
 
     private MapView mapView;
+
+    public MainScreen(Stage stage) { this.stage = stage; }
 
     public void show() {
         BorderPane root = new BorderPane();
@@ -78,7 +81,9 @@ public class MainScreen {
         split.getItems().add(buildContent());
 
         mapView = new MapView();
-        // Center map on Addis Ababa by default
+        mapView.setMaxWidth(Double.MAX_VALUE);
+        mapView.setMaxHeight(Double.MAX_VALUE);
+        SplitPane.setResizableWithParent(mapView, true);
         split.getItems().add(mapView);
 
         root.setCenter(split);
@@ -187,6 +192,39 @@ public class MainScreen {
         panel.setStyle("-fx-background-color:#0d1526;-fx-border-color:#1e3a5f;" +
                 "-fx-border-radius:12px;-fx-background-radius:12px;-fx-padding:16;");
 
+        // ── Location picker ───────────────────────────────────────────────────
+        Label lblLocTitle = new Label("Your Current Location");
+        lblLocTitle.setTextFill(Color.web("#94a3b8"));
+        lblLocTitle.setFont(Font.font("Arial", 11));
+
+        HBox locRow = new HBox(8);
+        locRow.setAlignment(Pos.CENTER_LEFT);
+
+        TextField tfLocation = new TextField();
+        tfLocation.setPromptText("Type your area (e.g. Bole, Piassa, Adama)...");
+        tfLocation.setStyle("-fx-background-color:#060a14;-fx-text-fill:#f1f5f9;" +
+            "-fx-prompt-text-fill:#475569;-fx-border-color:#1e3a5f;" +
+            "-fx-border-radius:8px;-fx-background-radius:8px;-fx-padding:8 12;-fx-font-size:12px;");
+        HBox.setHgrow(tfLocation, Priority.ALWAYS);
+
+        // Restore previously set location — persists across screen navigations
+        DriverSessionState sess = DriverSessionState.getInstance();
+        if (sess.isLocationSet()) tfLocation.setText(sess.getLocationName());
+
+        Button btnSetLoc = new Button("📍 Set");
+        btnSetLoc.setStyle("-fx-background-color:#1e3a5f;-fx-text-fill:#f1f5f9;" +
+            "-fx-background-radius:8px;-fx-padding:8 14;-fx-cursor:hand;-fx-font-size:12px;");
+        btnSetLoc.setOnAction(e -> geocodeAndSetLocation(tfLocation.getText().trim()));
+        tfLocation.setOnAction(e -> geocodeAndSetLocation(tfLocation.getText().trim()));
+
+        locRow.getChildren().addAll(tfLocation, btnSetLoc);
+
+        lblLocationStatus = new Label(sess.isLocationSet()
+            ? "✅ Location: " + sess.getLocationName()
+            : "⚠ Set your location before going online");
+        lblLocationStatus.setTextFill(Color.web(sess.isLocationSet() ? "#22c55e" : "#f59e0b"));
+        lblLocationStatus.setFont(Font.font("Arial", 10));
+
         // Online toggle
         toggleOnline = new ToggleButton("OFFLINE ○");
         toggleOnline.setMaxWidth(Double.MAX_VALUE);
@@ -200,6 +238,10 @@ public class MainScreen {
             lblDriverStatus.setText(online ? "Waiting for ride requests..." : "Go online to receive trips");
             lblDriverStatus.setTextFill(Color.web(online ? "#475569" : "#94a3b8"));
             sendStatusUpdate(online);
+            // Send current location immediately when going online
+            if (online) sendLocationUpdate(
+                DriverSessionState.getInstance().getLocationLat(),
+                DriverSessionState.getInstance().getLocationLng());
         });
 
         // Restore persisted state
@@ -232,7 +274,8 @@ public class MainScreen {
         lblDriverStatus.setTextFill(Color.web("#475569"));
         lblDriverStatus.setFont(Font.font("Arial", 11));
 
-        panel.getChildren().addAll(toggleOnline, earningsRow, lblDriverStatus);
+        panel.getChildren().addAll(lblLocTitle, locRow, lblLocationStatus,
+            toggleOnline, earningsRow, lblDriverStatus);
         return panel;
     }
 
@@ -556,6 +599,91 @@ public class MainScreen {
         t.start();
     }
 
+    /** Geocodes the driver's typed location and stores it as their real position. */
+    private void geocodeAndSetLocation(String address) {
+        if (address.isEmpty()) return;
+        lblLocationStatus.setText("📍 Locating...");
+        lblLocationStatus.setTextFill(Color.web("#94a3b8"));
+
+        Thread t = new Thread(() -> {
+            try {
+                String url = "https://nominatim.openstreetmap.org/search?q=" +
+                    java.net.URLEncoder.encode(address + " Ethiopia",
+                        java.nio.charset.StandardCharsets.UTF_8) +
+                    "&format=json&limit=1";
+                java.net.HttpURLConnection conn =
+                    (java.net.HttpURLConnection) new java.net.URL(url).openConnection();
+                conn.setRequestProperty("User-Agent", "EthioRide/1.0");
+                conn.setConnectTimeout(8000); conn.setReadTimeout(8000);
+                java.io.BufferedReader reader = new java.io.BufferedReader(
+                    new java.io.InputStreamReader(conn.getInputStream(),
+                        java.nio.charset.StandardCharsets.UTF_8));
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) sb.append(line);
+                reader.close();
+                String json = sb.toString();
+
+                if (json.trim().equals("[]")) {
+                    Platform.runLater(() -> {
+                        lblLocationStatus.setText("❌ Location not found: " + address);
+                        lblLocationStatus.setTextFill(Color.web("#ef4444"));
+                    });
+                    return;
+                }
+
+                // Extract lat/lon (Nominatim returns them as strings)
+                java.util.regex.Matcher mLat = java.util.regex.Pattern
+                    .compile("\"lat\"\\s*:\\s*\"([\\d.\\-]+)\"").matcher(json);
+                java.util.regex.Matcher mLon = java.util.regex.Pattern
+                    .compile("\"lon\"\\s*:\\s*\"([\\d.\\-]+)\"").matcher(json);
+
+                if (mLat.find() && mLon.find()) {
+                    double lat = Double.parseDouble(mLat.group(1));
+                    double lng = Double.parseDouble(mLon.group(1));
+
+                    // Persist in session state — survives screen navigation
+                    DriverSessionState.getInstance().setLocation(lat, lng, address);
+
+                    // Send to server immediately
+                    sendLocationUpdate(lat, lng);
+
+                    // Update map
+                    if (mapView != null) {
+                        Platform.runLater(() -> mapView.setDriverPosition(lat, lng));
+                    }
+
+                    Platform.runLater(() -> {
+                        lblLocationStatus.setText("✅ Location set: " + address);
+                        lblLocationStatus.setTextFill(Color.web("#22c55e"));
+                    });
+                }
+            } catch (Exception ex) {
+                Platform.runLater(() -> {
+                    lblLocationStatus.setText("❌ Error: " + ex.getMessage());
+                    lblLocationStatus.setTextFill(Color.web("#ef4444"));
+                });
+            }
+        }, "driver-geocode");
+        t.setDaemon(true);
+        t.start();
+    }
+
+    private void sendLocationUpdate(double lat, double lng) {
+        if (DriverSessionState.getInstance().getCurrentDriver() == null) return;
+        final String driverId = DriverSessionState.getInstance().getCurrentDriver().getId();
+        Thread t = new Thread(() -> {
+            try {
+                NetworkClient nc = NetworkClient.getInstance();
+                if (!nc.isConnected()) nc.connect();
+                nc.send(new Message(MessageType.DRIVER_LOCATION_UPDATE,
+                    String.format("%.6f,%.6f", lat, lng), driverId));
+            } catch (Exception ignored) {}
+        }, "loc-update");
+        t.setDaemon(true);
+        t.start();
+    }
+
     private void sendStatusUpdate(boolean online) {
         if (DriverSessionState.getInstance().getCurrentDriver() == null) return;
         final String driverId = DriverSessionState.getInstance().getCurrentDriver().getId();
@@ -576,8 +704,6 @@ public class MainScreen {
     private void startLocationUpdater() {
         if (DriverSessionState.getInstance().getCurrentDriver() == null) return;
         final String driverId = DriverSessionState.getInstance().getCurrentDriver().getId();
-        double baseLat = 9.0320 + (Math.random() - 0.5) * 0.05;
-        double baseLng = 38.7469 + (Math.random() - 0.5) * 0.05;
 
         java.util.concurrent.Executors.newSingleThreadScheduledExecutor(r -> {
             Thread th = new Thread(r, "driver-location-updater");
@@ -588,11 +714,11 @@ public class MainScreen {
             try {
                 NetworkClient nc = NetworkClient.getInstance();
                 if (!nc.isConnected()) return;
-                double lat = baseLat + (Math.random() - 0.5) * 0.002;
-                double lng = baseLng + (Math.random() - 0.5) * 0.002;
+                // Use real driver location from session state with tiny drift
+                double lat = DriverSessionState.getInstance().getLocationLat() + (Math.random() - 0.5) * 0.001;
+                double lng = DriverSessionState.getInstance().getLocationLng() + (Math.random() - 0.5) * 0.001;
                 nc.send(new Message(MessageType.DRIVER_LOCATION_UPDATE,
                         String.format("%.6f,%.6f", lat, lng), driverId));
-                // Update map marker
                 if (mapView != null) {
                     final double fLat = lat, fLng = lng;
                     Platform.runLater(() -> mapView.setDriverPosition(fLat, fLng));

@@ -103,6 +103,8 @@ public class MainScreen {
         VBox.setVgrow(bookingWrapper.getChildren().get(0), Priority.ALWAYS);
 
         mapView = new MapView();
+        VBox.setVgrow(mapView, Priority.ALWAYS);
+        mapView.setMaxHeight(Double.MAX_VALUE);
         mapView.setOnLocationSelected((name, coords) -> {
             // When user picks a location from map search, fill the destination field
             Platform.runLater(() -> {
@@ -188,19 +190,20 @@ public class MainScreen {
                 if (mapView == null) return;
                 mapView.clearDriverMarkers();
                 for (String entry : payload.split("\\|")) {
-                    String[] parts = entry.split(",", 4);
+                    String[] parts = entry.split(",", 5);
                     if (parts.length < 4) continue;
                     try {
                         String id     = parts[0];
                         double lat    = Double.parseDouble(parts[1]);
                         double lng    = Double.parseDouble(parts[2]);
-                        String status = parts[3]; // AVAILABLE, ON_TRIP, OFFLINE
+                        String status = parts[3];
+                        String name   = parts.length > 4 ? parts[4] : "Driver";
                         String mapStatus = switch (status) {
                             case "AVAILABLE" -> "ONLINE";
                             case "ON_TRIP"   -> "BUSY";
                             default          -> "OFFLINE";
                         };
-                        mapView.addDriverMarker(id, lat, lng, "Driver", mapStatus);
+                        mapView.addDriverMarker(id, lat, lng, name, mapStatus);
                     } catch (NumberFormatException ignored) {}
                 }
             });

@@ -52,7 +52,11 @@ public class MapView extends StackPane {
     public MapView() {
         webView = new WebView();
         engine  = webView.getEngine();
+        webView.setMaxWidth(Double.MAX_VALUE);
+        webView.setMaxHeight(Double.MAX_VALUE);
         getChildren().add(webView);
+        setMaxWidth(Double.MAX_VALUE);
+        setMaxHeight(Double.MAX_VALUE);
 
         engine.getLoadWorker().stateProperty().addListener((obs, oldState, newState) -> {
             if (newState == Worker.State.SUCCEEDED) {
