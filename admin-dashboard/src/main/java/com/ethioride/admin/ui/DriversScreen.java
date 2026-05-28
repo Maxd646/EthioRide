@@ -154,7 +154,10 @@ public class DriversScreen {
         });
 
         content.getChildren().addAll(title, toolbar, table);
-        return content;
+        ScrollPane sp2 = new ScrollPane(content);
+        sp2.setFitToWidth(true);
+        sp2.setStyle("-fx-background-color:#0a0e1a;-fx-background:#0a0e1a;");
+        return sp2;
     }
 
     private void loadDrivers() {

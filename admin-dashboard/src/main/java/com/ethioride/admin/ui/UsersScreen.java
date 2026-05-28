@@ -293,35 +293,38 @@ public class UsersScreen {
     }
 
     private void createUser(String name, String phone, String email, String password, UserRole role, Stage dialog) {
-        // Send to server via AdminService
+        // Disable the save button to prevent double-submit
+        dialog.getScene().getRoot().setDisable(true);
+
         AdminService.getInstance().createUser(name, phone, email, password, role, response -> {
             Platform.runLater(() -> {
+                dialog.getScene().getRoot().setDisable(false);
                 if (response instanceof UserDTO) {
-                    // Success - user created
                     UserDTO newUser = (UserDTO) response;
                     allUsers.add(newUser);
                     dialog.close();
-
-                    Alert success = new Alert(Alert.AlertType.INFORMATION);
+                    Alert success = new Alert(Alert.AlertType.INFORMATION,
+                        name + " has been added successfully.", ButtonType.OK);
                     success.setTitle("Success");
                     success.setHeaderText(role.name() + " Created");
-                    success.setContentText(name + " has been added successfully.");
                     success.showAndWait();
                 } else if ("PHONE_EXISTS".equals(response)) {
-                    Alert error = new Alert(Alert.AlertType.ERROR);
-                    error.setTitle("Error");
-                    error.setHeaderText("Phone Number Already Exists");
-                    error.setContentText("A user with phone number " + phone + " already exists.");
-                    error.showAndWait();
+                    showDialogError(dialog, "Phone number " + phone + " already exists.");
+                } else if ("INVALID".equals(response)) {
+                    showDialogError(dialog, "Invalid data — check all fields.");
                 } else {
-                    Alert error = new Alert(Alert.AlertType.ERROR);
-                    error.setTitle("Error");
-                    error.setHeaderText("Failed to Create User");
-                    error.setContentText("An error occurred while creating the user. Please try again.");
-                    error.showAndWait();
+                    showDialogError(dialog, "Server error: " + response + "\nCheck that the server is running.");
                 }
             });
         });
+    }
+
+    private void showDialogError(Stage dialog, String msg) {
+        Alert error = new Alert(Alert.AlertType.ERROR, msg, ButtonType.OK);
+        error.setTitle("Error");
+        error.setHeaderText("Could not create user");
+        error.initOwner(dialog);
+        error.showAndWait();
     }
 
     private void confirmDelete(UserDTO user) {

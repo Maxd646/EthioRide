@@ -144,7 +144,13 @@ public class AdminService {
                           Consumer<Object> callback) {
         String payload = String.format("%s|%s|%s|%s|%s", name, phone, email, password, role.name());
         sendRequest(MessageType.USER_CREATE_REQUEST, payload,
-            MessageType.USER_CREATE_RESPONSE, msg -> callback.accept(msg.getPayload()));
+            MessageType.USER_CREATE_RESPONSE, msg -> {
+                if (msg.getType() == MessageType.ERROR) {
+                    callback.accept("ERROR: " + msg.getPayload());
+                } else {
+                    callback.accept(msg.getPayload());
+                }
+            });
     }
 
     /** Deletes a user by ID. */
@@ -179,22 +185,34 @@ public class AdminService {
     /**
      * Generic request-response helper.
      * Registers a one-shot handler in the pending map keyed by the expected
-     * response type, then sends the request.  Because the map is keyed by
-     * MessageType, concurrent requests for *different* response types never
-     * interfere.  Concurrent requests for the *same* response type (rare in
-     * this UI) will have the second registration overwrite the first — the
-     * first callback will be silently dropped, which is the same behaviour as
-     * before but now at least the second request succeeds correctly.
+     * response type, then sends the request. Includes a 8s timeout so the
+     * callback is always invoked even if the server doesn't respond.
      */
     private void sendRequest(MessageType requestType, Object payload,
                              MessageType responseType, Consumer<Message> onResponse) {
         try {
             pendingHandlers.put(responseType, onResponse);
             AdminSocketClient.getInstance().send(new Message(requestType, payload, "admin"));
+
+            // Timeout: if no response in 8s, invoke callback with an ERROR message
+            Thread timeoutThread = new Thread(() -> {
+                try { Thread.sleep(8000); } catch (InterruptedException ignored) {}
+                Consumer<Message> pending = pendingHandlers.remove(responseType);
+                if (pending != null) {
+                    pending.accept(new Message(MessageType.ERROR, "TIMEOUT", "server"));
+                    if (logHandler != null)
+                        logHandler.accept("[WARN] Request " + requestType + " timed out.");
+                }
+            }, "req-timeout-" + requestType);
+            timeoutThread.setDaemon(true);
+            timeoutThread.start();
+
         } catch (IOException e) {
             pendingHandlers.remove(responseType);
             if (logHandler != null)
                 logHandler.accept("[ERROR] Request failed (" + requestType + "): " + e.getMessage());
+            // Invoke callback with error so UI doesn't hang
+            onResponse.accept(new Message(MessageType.ERROR, "CONNECTION_FAILED: " + e.getMessage(), "server"));
         }
     }
 }
